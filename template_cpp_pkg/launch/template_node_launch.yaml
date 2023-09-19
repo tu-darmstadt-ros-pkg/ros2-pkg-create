@@ -1,0 +1,9 @@
+launch:
+  - node:
+      pkg: template_cpp_pkg
+      exec: template_cpp_pkg_node
+      name: template_cpp_pkg_node
+      output: screen
+      param:
+        - name: period
+          value: 1.0
