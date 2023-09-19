@@ -17,6 +17,7 @@ def parseCli():
     )
 
     parser.add_argument("pkg_name", type=str, help="package name")
+    parser.add_argument("--action", type=str, default=None, help="action name")
 
     args = parser.parse_args()
 
@@ -36,16 +37,12 @@ def loadJinjaTemplates(templates_dir: str) -> Dict[str, jinja2.Template]:
     return templates
 
 
-def renderJinjaTemplates(templates: Dict[str, jinja2.Template], package_name: str) -> Dict[str, str]:
+def renderJinjaTemplates(templates: Dict[str, jinja2.Template], **kwargs) -> Dict[str, str]:
 
     docs = {}
 
-    context = {
-        "package_name": package_name,
-    }
-
     for template_file, template in templates.items():
-        docs[template_file] = template.render(context)
+        docs[template_file] = template.render(kwargs)
 
     return docs
 
@@ -62,7 +59,11 @@ def main():
 
     templates = loadJinjaTemplates(template_dir)
 
-    docs = renderJinjaTemplates(templates, args.pkg_name)
+    docs = renderJinjaTemplates(
+        templates,
+        package_name=args.pkg_name,
+        action=args.action
+    )
 
     for template_file, doc in docs.items():
         doc_file = template_file.replace(".jinja2", "")

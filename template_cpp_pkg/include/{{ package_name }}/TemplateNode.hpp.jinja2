@@ -48,24 +48,26 @@ class TemplateNode : public rclcpp::Node {
     std::shared_ptr<template_interfaces_pkg::srv::TemplateService::Response>
       response);
 
+{% if action %}
   rclcpp_action::GoalResponse actionHandleGoal(
     const rclcpp_action::GoalUUID& uuid,
-    std::shared_ptr<const template_interfaces_pkg::action::TemplateAction::Goal>
+    std::shared_ptr<const {{ action }}::Goal>
       goal);
 
   rclcpp_action::CancelResponse actionHandleCancel(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-      template_interfaces_pkg::action::TemplateAction>>
+      {{ action }}>>
       goal_handle);
 
   void actionHandleAccepted(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-      template_interfaces_pkg::action::TemplateAction>>
+      {{ action }}>>
       goal_handle);
 
   void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-                       template_interfaces_pkg::action::TemplateAction>>
+                       {{ action }}>>
                        goal_handle);
+{% endif %}
 
  private:
   OnSetParametersCallbackHandle::SharedPtr parameters_callback_;
@@ -81,8 +83,10 @@ class TemplateNode : public rclcpp::Node {
   rclcpp::Service<template_interfaces_pkg::srv::TemplateService>::SharedPtr
     service_server_;
 
+{% if action %}
   rclcpp_action::Server<
-    template_interfaces_pkg::action::TemplateAction>::SharedPtr action_server_;
+    {{ action }}>::SharedPtr action_server_;
+{% endif %}
 
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
   std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
