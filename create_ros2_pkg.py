@@ -28,9 +28,10 @@ def loadJinjaTemplates(templates_dir: str) -> Dict[str, jinja2.Template]:
     templates = {}
 
     env = jinja2.Environment(loader=jinja2.FileSystemLoader(templates_dir), trim_blocks=False)
-    template_files = glob.glob(os.path.join(templates_dir, "*.jinja2"))
+    template_files = glob.glob(os.path.join(templates_dir, "**/*.jinja2"), recursive=True)
+
     for f in template_files:
-        templates[f] = env.get_template(os.path.basename(f))
+        templates[f] = env.get_template(os.path.relpath(f, templates_dir))
 
     return templates
 
@@ -44,8 +45,7 @@ def renderJinjaTemplates(templates: Dict[str, jinja2.Template], package_name: st
     }
 
     for template_file, template in templates.items():
-        doc_file = template_file.replace(".jinja2", "")
-        docs[doc_file] = template.render(context)
+        docs[template_file] = template.render(context)
 
     return docs
 
@@ -64,9 +64,11 @@ def main():
 
     docs = renderJinjaTemplates(templates, args.pkg_name)
 
-    for doc_file, doc in docs.items():
+    for template_file, doc in docs.items():
+        doc_file = template_file.replace(".jinja2", "")
         with open(doc_file, "w") as f:
             f.write(doc)
+        os.remove(template_file)
         print("Created file: {}".format(doc_file))
 
 
