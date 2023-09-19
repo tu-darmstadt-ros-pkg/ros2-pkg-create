@@ -8,16 +8,16 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     config = os.path.join(
-        get_package_share_directory("template_cpp_pkg"),
+        get_package_share_directory("{{ package_name }}"),
         "config",
         "params.yaml"
     )
 
     return LaunchDescription([
         Node(
-            package="template_cpp_pkg",
-            executable="template_cpp_pkg_node",
-            name="template_cpp_pkg_node",
+            package="{{ package_name }}",
+            executable="{{ package_name }}_node",
+            name="{{ package_name }}_node",
             output="screen",
             emulate_tty=True,
             parameters=[config]

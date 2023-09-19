@@ -4,14 +4,14 @@
 #include <functional>
 #include <thread>
 
-#include <template_cpp_pkg/TemplateNode.hpp>
+#include <{{ package_name }}/TemplateNode.hpp>
 
 
 /**
  * @brief Namespace for C++ template node
- * 
+ *
  */
-namespace template_cpp_pkg {
+namespace {{ package_name }} {
 
 
 // parameter names
@@ -24,7 +24,7 @@ const std::string TemplateNode::kOutputTopic = "~/topic";
 
 /**
  * @brief Creates the template node inheriting from the Node class.
- * 
+ *
  */
 TemplateNode::TemplateNode() : Node("template_node") {
 
@@ -34,7 +34,7 @@ TemplateNode::TemplateNode() : Node("template_node") {
 
 /**
  * @brief Loads ROS parameters used in the node.
- * 
+ *
  */
 void TemplateNode::loadParameters() {
 
@@ -61,7 +61,7 @@ void TemplateNode::loadParameters() {
 
 /**
  * @brief Sets up subscribers, publishers, and more.
- * 
+ *
  */
 void TemplateNode::setup() {
 
@@ -111,10 +111,10 @@ void TemplateNode::setup() {
 
 /**
  * @brief This callback is invoked when a parameter value has changed
- * 
+ *
  * @param[in] parameters                                  input
- * 
- * @return    rcl_interfaces::msg::SetParametersResult    output  
+ *
+ * @return    rcl_interfaces::msg::SetParametersResult    output
  */
 rcl_interfaces::msg::SetParametersResult TemplateNode::parametersCallback(
   const std::vector<rclcpp::Parameter> &parameters) {
@@ -140,7 +140,7 @@ rcl_interfaces::msg::SetParametersResult TemplateNode::parametersCallback(
 
 /**
  * @brief This callback is invoked when the subscriber receives a message
- * 
+ *
  * @param[in] msg   input
  */
 void TemplateNode::topicCallback(
@@ -167,7 +167,7 @@ void TemplateNode::topicCallback(
 
 /**
  * @brief This callback is invoked every period seconds by the timer
- * 
+ *
  */
 void TemplateNode::publishTimerCallback() {
 
@@ -202,7 +202,7 @@ void TemplateNode::publishTimerCallback() {
 
 /**
  * @brief This callback is invoked when the service is called
- * 
+ *
  * @param[in] request   input1
  * @param[in] response  input2
  */
@@ -221,10 +221,10 @@ void TemplateNode::serviceCallback(
 
 /**
  * @brief This callback is invoked when an action goal is requested
- * 
+ *
  * @param[in] uuid                          input1
  * @param[in] goal                          input2
- * 
+ *
  * @return    rclcpp_action::GoalResponse   output
  */
 rclcpp_action::GoalResponse TemplateNode::actionHandleGoal(
@@ -240,9 +240,9 @@ rclcpp_action::GoalResponse TemplateNode::actionHandleGoal(
 
 /**
  * @brief This callback is invoked when a running action is requested to cancel
- * 
+ *
  * @param[in] goal_handle                     input
- * 
+ *
  * @return    rclcpp_action::CancelResponse   output
  */
 rclcpp_action::CancelResponse TemplateNode::actionHandleCancel(
@@ -258,7 +258,7 @@ rclcpp_action::CancelResponse TemplateNode::actionHandleCancel(
 
 /**
  * @brief This callback is invoked when an action goal request is accepted
- * 
+ *
  * @param[in] goal_handle     input
  */
 void TemplateNode::actionHandleAccepted(
@@ -276,7 +276,7 @@ void TemplateNode::actionHandleAccepted(
 
 /**
  * @brief Execution of action
- * 
+ *
  * @param[in] goal_handle     input
  */
 void TemplateNode::actionExecute(
@@ -333,13 +333,13 @@ void TemplateNode::actionExecute(
 }
 
 
-}  // namespace template_cpp_pkg
+}  // namespace {{ package_name }}
 
 
 int main(int argc, char *argv[]) {
 
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<template_cpp_pkg::TemplateNode>());
+  rclcpp::spin(std::make_shared<{{ package_name }}::TemplateNode>());
   rclcpp::shutdown();
 
   return 0;

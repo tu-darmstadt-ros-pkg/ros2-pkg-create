@@ -13,7 +13,7 @@
 #include <tf2_ros/transform_listener.h>
 
 
-namespace template_cpp_pkg {
+namespace {{ package_name }} {
 
 
 class TemplateNode : public rclcpp::Node {
@@ -94,4 +94,4 @@ class TemplateNode : public rclcpp::Node {
 };
 
 
-}  // namespace template_cpp_pkg
+}  // namespace {{ package_name }}

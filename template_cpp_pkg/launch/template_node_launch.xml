@@ -1,7 +1,0 @@
-<launch>
-
-  <node pkg="template_cpp_pkg" exec="template_cpp_pkg_node" name="template_cpp_pkg_node" output="screen">
-    <param from="$(find-pkg-share template_cpp_pkg)/config/params.yaml" />
-  </node>
-
-</launch>
