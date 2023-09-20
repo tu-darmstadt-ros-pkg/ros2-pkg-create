@@ -28,5 +28,9 @@
   },
   "_extensions": [
     "jinja2_strcase.StrcaseExtension"
-  ]
+  ],
+  "_jinja2_env_vars": {
+    "lstrip_blocks": true,
+    "trim_blocks": true
+  }
 }
