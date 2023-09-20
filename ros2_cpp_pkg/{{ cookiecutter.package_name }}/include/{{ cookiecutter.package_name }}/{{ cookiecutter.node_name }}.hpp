@@ -48,7 +48,7 @@ class {{ cookiecutter.node_cpp_class_name }} : public rclcpp::Node {
     std::shared_ptr<template_interfaces_pkg::srv::TemplateService::Response>
       response);
 
-{% if cookiecutter.action %}
+{% if cookiecutter.has_action_server %}
   rclcpp_action::GoalResponse actionHandleGoal(
     const rclcpp_action::GoalUUID& uuid,
     std::shared_ptr<const {{ cookiecutter.action }}::Goal>
@@ -83,7 +83,7 @@ class {{ cookiecutter.node_cpp_class_name }} : public rclcpp::Node {
   rclcpp::Service<template_interfaces_pkg::srv::TemplateService>::SharedPtr
     service_server_;
 
-{% if cookiecutter.action %}
+{% if cookiecutter.has_action_server %}
   rclcpp_action::Server<
     {{ cookiecutter.action }}>::SharedPtr action_server_;
 {% endif %}
