@@ -16,8 +16,8 @@ def generate_launch_description():
     return LaunchDescription([
         Node(
             package="{{ cookiecutter.package_name }}",
-            executable="{{ cookiecutter.package_name }}_node",
-            name="{{ cookiecutter.package_name }}_node",
+            executable="{{ cookiecutter.node_name }}",
+            name="{{ cookiecutter.node_name }}",
             output="screen",
             emulate_tty=True,
             parameters=[config]

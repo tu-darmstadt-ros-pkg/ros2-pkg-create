@@ -1,8 +1,8 @@
 launch:
   - node:
       pkg: {{ cookiecutter.package_name }}
-      exec: {{ cookiecutter.package_name }}_node
-      name: {{ cookiecutter.package_name }}_node
+      exec: {{ cookiecutter.node_name }}
+      name: {{ cookiecutter.node_name }}
       output: screen
       param:
         - name: period
