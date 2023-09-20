@@ -3,6 +3,9 @@
   "node_name": "ros2_node",
   "node_cpp_class_name": "{{ cookiecutter.node_name | to_camel }}",
   "action": false,
+  "__prompts__": {
+    "action": "Does the node run an [bold yellow]action[/] server?"
+  },
   "_extensions": [
     "jinja2_strcase.StrcaseExtension"
   ]
