@@ -1,0 +1,9 @@
+launch:
+  - node:
+      pkg: ros_cpp_pkg
+      exec: ros_cpp_pkg_node
+      name: ros_cpp_pkg_node
+      output: screen
+      param:
+        - name: period
+          value: 1.0

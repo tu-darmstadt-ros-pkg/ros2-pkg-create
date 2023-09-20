@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project({{ cookiecutter.package_name }})
+project(ros_cpp_pkg)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -16,16 +16,14 @@ find_package(template_interfaces_pkg REQUIRED)
 find_package(tf2 REQUIRED)
 find_package(tf2_ros REQUIRED)
 
-set(NODE_TARGET {{ cookiecutter.node_name }})
+add_executable({{ cookiecutter.node_name }} src/ros_node.cpp)
 
-add_executable(${NODE_TARGET} src/{{ cookiecutter.node_name }}.cpp)
-
-target_include_directories(${NODE_TARGET} PUBLIC
+target_include_directories({{ cookiecutter.node_name }} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>)
-target_compile_features(${NODE_TARGET} PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features({{ cookiecutter.node_name }} PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
-ament_target_dependencies(${NODE_TARGET}
+ament_target_dependencies({{ cookiecutter.node_name }}
   geometry_msgs
   rclcpp
   template_interfaces_pkg
@@ -34,7 +32,7 @@ ament_target_dependencies(${NODE_TARGET}
 )
 
 install(TARGETS
-  ${NODE_TARGET}
+  {{ cookiecutter.node_name }}
   DESTINATION lib/${PROJECT_NAME}
 )
 

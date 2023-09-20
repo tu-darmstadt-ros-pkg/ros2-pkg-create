@@ -4,29 +4,29 @@
 #include <functional>
 #include <thread>
 
-#include <{{ cookiecutter.package_name }}/TemplateNode.hpp>
+#include <ros_cpp_pkg/ros_node.hpp>
 
 
 /**
  * @brief Namespace for C++ template node
  *
  */
-namespace {{ cookiecutter.package_name }} {
+namespace ros_cpp_pkg {
 
 
 // parameter names
-const std::string TemplateNode::kPeriodParam = "period";
+const std::string RosNode::kPeriodParam = "period";
 
 // constants
-const std::string TemplateNode::kInputTopic = "~/topic";
-const std::string TemplateNode::kOutputTopic = "~/topic";
+const std::string RosNode::kInputTopic = "~/topic";
+const std::string RosNode::kOutputTopic = "~/topic";
 
 
 /**
  * @brief Creates the template node inheriting from the Node class.
  *
  */
-TemplateNode::TemplateNode() : Node("template_node") {
+RosNode::RosNode() : Node("template_node") {
 
   this->loadParameters();
   this->setup();
@@ -36,7 +36,7 @@ TemplateNode::TemplateNode() : Node("template_node") {
  * @brief Loads ROS parameters used in the node.
  *
  */
-void TemplateNode::loadParameters() {
+void RosNode::loadParameters() {
 
   // set parameter description
   rcl_interfaces::msg::ParameterDescriptor period_desc;
@@ -63,11 +63,11 @@ void TemplateNode::loadParameters() {
  * @brief Sets up subscribers, publishers, and more.
  *
  */
-void TemplateNode::setup() {
+void RosNode::setup() {
 
   // create a callback for dynamic parameter configuration
   parameters_callback_ = this->add_on_set_parameters_callback(
-    std::bind(&TemplateNode::parametersCallback, this, std::placeholders::_1));
+    std::bind(&RosNode::parametersCallback, this, std::placeholders::_1));
 
   // create a transform broadcaster and listener
   tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
@@ -78,7 +78,7 @@ void TemplateNode::setup() {
   subscriber_ =
     this->create_subscription<template_interfaces_pkg::msg::TemplateMessage>(
       kInputTopic, 10,
-      std::bind(&TemplateNode::topicCallback, this, std::placeholders::_1));
+      std::bind(&RosNode::topicCallback, this, std::placeholders::_1));
   RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
 
   // create a publisher for publishing messages
@@ -89,23 +89,23 @@ void TemplateNode::setup() {
   // create a timer for repeatedly invoking a callback to publish messages
   publish_timer_ =
     this->create_wall_timer(std::chrono::duration<double>(period_),
-                            std::bind(&TemplateNode::publishTimerCallback,
+                            std::bind(&RosNode::publishTimerCallback,
                             this));
 
   // create a service server for handling service calls
   service_server_ =
     this->create_service<template_interfaces_pkg::srv::TemplateService>(
-      "service", std::bind(&TemplateNode::serviceCallback, this,
+      "service", std::bind(&RosNode::serviceCallback, this,
                            std::placeholders::_1, std::placeholders::_2));
 
   // create an action server for handling action goal requests
   action_server_ = rclcpp_action::create_server<
     template_interfaces_pkg::action::TemplateAction>(
     this, "action",
-    std::bind(&TemplateNode::actionHandleGoal, this, std::placeholders::_1,
+    std::bind(&RosNode::actionHandleGoal, this, std::placeholders::_1,
               std::placeholders::_2),
-    std::bind(&TemplateNode::actionHandleCancel, this, std::placeholders::_1),
-    std::bind(&TemplateNode::actionHandleAccepted, this,
+    std::bind(&RosNode::actionHandleCancel, this, std::placeholders::_1),
+    std::bind(&RosNode::actionHandleAccepted, this,
               std::placeholders::_1));
 }
 
@@ -116,7 +116,7 @@ void TemplateNode::setup() {
  *
  * @return    rcl_interfaces::msg::SetParametersResult    output
  */
-rcl_interfaces::msg::SetParametersResult TemplateNode::parametersCallback(
+rcl_interfaces::msg::SetParametersResult RosNode::parametersCallback(
   const std::vector<rclcpp::Parameter> &parameters) {
 
   // update timer with newly configured period parameter value
@@ -126,7 +126,7 @@ rcl_interfaces::msg::SetParametersResult TemplateNode::parametersCallback(
       period_ = param.as_double();
       publish_timer_ =
         this->create_wall_timer(std::chrono::duration<double>(period_),
-                                std::bind(&TemplateNode::publishTimerCallback,
+                                std::bind(&RosNode::publishTimerCallback,
                                 this));
     }
   }
@@ -143,7 +143,7 @@ rcl_interfaces::msg::SetParametersResult TemplateNode::parametersCallback(
  *
  * @param[in] msg   input
  */
-void TemplateNode::topicCallback(
+void RosNode::topicCallback(
   const template_interfaces_pkg::msg::TemplateMessage &msg) {
 
   // echo received message
@@ -169,7 +169,7 @@ void TemplateNode::topicCallback(
  * @brief This callback is invoked every period seconds by the timer
  *
  */
-void TemplateNode::publishTimerCallback() {
+void RosNode::publishTimerCallback() {
 
   // skip callback if the published topic has no subscription
   if (publisher_->get_subscription_count() == 0) return;
@@ -206,7 +206,7 @@ void TemplateNode::publishTimerCallback() {
  * @param[in] request   input1
  * @param[in] response  input2
  */
-void TemplateNode::serviceCallback(
+void RosNode::serviceCallback(
   const template_interfaces_pkg::srv::TemplateService::Request::SharedPtr
     request,
   template_interfaces_pkg::srv::TemplateService::Response::SharedPtr
@@ -227,7 +227,7 @@ void TemplateNode::serviceCallback(
  *
  * @return    rclcpp_action::GoalResponse   output
  */
-rclcpp_action::GoalResponse TemplateNode::actionHandleGoal(
+rclcpp_action::GoalResponse RosNode::actionHandleGoal(
   const rclcpp_action::GoalUUID &uuid,
   template_interfaces_pkg::action::TemplateAction::Goal::ConstSharedPtr
     goal) {
@@ -245,7 +245,7 @@ rclcpp_action::GoalResponse TemplateNode::actionHandleGoal(
  *
  * @return    rclcpp_action::CancelResponse   output
  */
-rclcpp_action::CancelResponse TemplateNode::actionHandleCancel(
+rclcpp_action::CancelResponse RosNode::actionHandleCancel(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     template_interfaces_pkg::action::TemplateAction>>
     goal_handle) {
@@ -261,14 +261,14 @@ rclcpp_action::CancelResponse TemplateNode::actionHandleCancel(
  *
  * @param[in] goal_handle     input
  */
-void TemplateNode::actionHandleAccepted(
+void RosNode::actionHandleAccepted(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     template_interfaces_pkg::action::TemplateAction>>
     goal_handle) {
 
   // execute the action in a separate thread to avoid blocking
   std::thread{
-    std::bind(&TemplateNode::actionExecute, this, std::placeholders::_1),
+    std::bind(&RosNode::actionExecute, this, std::placeholders::_1),
     goal_handle}
     .detach();
 }
@@ -279,7 +279,7 @@ void TemplateNode::actionHandleAccepted(
  *
  * @param[in] goal_handle     input
  */
-void TemplateNode::actionExecute(
+void RosNode::actionExecute(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     template_interfaces_pkg::action::TemplateAction>>
     goal_handle) {
@@ -333,13 +333,13 @@ void TemplateNode::actionExecute(
 }
 
 
-}  // namespace {{ cookiecutter.package_name }}
+}  // namespace ros_cpp_pkg
 
 
 int main(int argc, char *argv[]) {
 
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<{{ cookiecutter.package_name }}::TemplateNode>());
+  rclcpp::spin(std::make_shared<ros_cpp_pkg::RosNode>());
   rclcpp::shutdown();
 
   return 0;
