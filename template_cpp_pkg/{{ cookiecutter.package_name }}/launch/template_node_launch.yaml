@@ -1,0 +1,9 @@
+launch:
+  - node:
+      pkg: {{ cookiecutter.package_name }}
+      exec: {{ cookiecutter.package_name }}_node
+      name: {{ cookiecutter.package_name }}_node
+      output: screen
+      param:
+        - name: period
+          value: 1.0

@@ -8,16 +8,16 @@ from launch_ros.actions import Node
 def generate_launch_description():
 
     config = os.path.join(
-        get_package_share_directory("{{ package_name }}"),
+        get_package_share_directory("{{ cookiecutter.package_name }}"),
         "config",
         "params.yaml"
     )
 
     return LaunchDescription([
         Node(
-            package="{{ package_name }}",
-            executable="{{ package_name }}_node",
-            name="{{ package_name }}_node",
+            package="{{ cookiecutter.package_name }}",
+            executable="{{ cookiecutter.package_name }}_node",
+            name="{{ cookiecutter.package_name }}_node",
             output="screen",
             emulate_tty=True,
             parameters=[config]

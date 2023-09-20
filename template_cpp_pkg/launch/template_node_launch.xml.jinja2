@@ -1,7 +1,0 @@
-<launch>
-
-  <node pkg="{{ package_name }}" exec="{{ package_name }}_node" name="{{ package_name }}_node" output="screen">
-    <param from="$(find-pkg-share {{ package_name }})/config/params.yaml" />
-  </node>
-
-</launch>

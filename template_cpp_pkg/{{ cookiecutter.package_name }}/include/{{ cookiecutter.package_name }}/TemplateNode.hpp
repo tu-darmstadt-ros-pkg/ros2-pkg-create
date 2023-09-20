@@ -13,7 +13,7 @@
 #include <tf2_ros/transform_listener.h>
 
 
-namespace {{ package_name }} {
+namespace {{ cookiecutter.package_name }} {
 
 
 class TemplateNode : public rclcpp::Node {
@@ -48,24 +48,24 @@ class TemplateNode : public rclcpp::Node {
     std::shared_ptr<template_interfaces_pkg::srv::TemplateService::Response>
       response);
 
-{% if action %}
+{% if cookiecutter.action %}
   rclcpp_action::GoalResponse actionHandleGoal(
     const rclcpp_action::GoalUUID& uuid,
-    std::shared_ptr<const {{ action }}::Goal>
+    std::shared_ptr<const {{ cookiecutter.action }}::Goal>
       goal);
 
   rclcpp_action::CancelResponse actionHandleCancel(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-      {{ action }}>>
+      {{ cookiecutter.action }}>>
       goal_handle);
 
   void actionHandleAccepted(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-      {{ action }}>>
+      {{ cookiecutter.action }}>>
       goal_handle);
 
   void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-                       {{ action }}>>
+                       {{ cookiecutter.action }}>>
                        goal_handle);
 {% endif %}
 
@@ -83,9 +83,9 @@ class TemplateNode : public rclcpp::Node {
   rclcpp::Service<template_interfaces_pkg::srv::TemplateService>::SharedPtr
     service_server_;
 
-{% if action %}
+{% if cookiecutter.action %}
   rclcpp_action::Server<
-    {{ action }}>::SharedPtr action_server_;
+    {{ cookiecutter.action }}>::SharedPtr action_server_;
 {% endif %}
 
   std::unique_ptr<tf2_ros::TransformBroadcaster> tf_broadcaster_;
@@ -98,4 +98,4 @@ class TemplateNode : public rclcpp::Node {
 };
 
 
-}  // namespace {{ package_name }}
+}  // namespace {{ cookiecutter.package_name }}

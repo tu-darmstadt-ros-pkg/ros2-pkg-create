@@ -1,0 +1,7 @@
+<launch>
+
+  <node pkg="{{ cookiecutter.package_name }}" exec="{{ cookiecutter.package_name }}_node" name="{{ cookiecutter.package_name }}_node" output="screen">
+    <param from="$(find-pkg-share {{ cookiecutter.package_name }})/config/params.yaml" />
+  </node>
+
+</launch>

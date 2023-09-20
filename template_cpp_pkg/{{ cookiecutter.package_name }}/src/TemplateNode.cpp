@@ -4,14 +4,14 @@
 #include <functional>
 #include <thread>
 
-#include <{{ package_name }}/TemplateNode.hpp>
+#include <{{ cookiecutter.package_name }}/TemplateNode.hpp>
 
 
 /**
  * @brief Namespace for C++ template node
  *
  */
-namespace {{ package_name }} {
+namespace {{ cookiecutter.package_name }} {
 
 
 // parameter names
@@ -333,13 +333,13 @@ void TemplateNode::actionExecute(
 }
 
 
-}  // namespace {{ package_name }}
+}  // namespace {{ cookiecutter.package_name }}
 
 
 int main(int argc, char *argv[]) {
 
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<{{ package_name }}::TemplateNode>());
+  rclcpp::spin(std::make_shared<{{ cookiecutter.package_name }}::TemplateNode>());
   rclcpp::shutdown();
 
   return 0;
