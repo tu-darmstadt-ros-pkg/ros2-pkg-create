@@ -1,5 +1,5 @@
 # package_generator
 
-```
-cookiecutter template_cpp_pkg
+```bash
+cookiecutter ros2_cpp_pkg
 ```
