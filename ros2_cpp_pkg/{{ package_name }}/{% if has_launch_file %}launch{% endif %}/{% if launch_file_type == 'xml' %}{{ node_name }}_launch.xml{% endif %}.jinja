@@ -1,7 +1,9 @@
 <launch>
 
   <node pkg="{{ package_name }}" exec="{{ node_name }}" name="{{ node_name }}" output="screen">
+{% if has_params %}
     <param from="$(find-pkg-share {{ package_name }})/config/params.yaml" />
+{% endif %}
   </node>
 
 </launch>

@@ -32,9 +32,9 @@ const std::string {{ node_cpp_class_name }}::kParam = "param";
  *
  */
 {% if is_component %}
-{{ node_cpp_class_name }}::{{ node_cpp_class_name }}(const rclcpp::NodeOptions& options) : Node("{{ node_name }", options) {
+{{ node_cpp_class_name }}::{{ node_cpp_class_name }}(const rclcpp::NodeOptions& options) : Node("{{ node_name }}", options) {
 {% else %}
-{{ node_cpp_class_name }}::{{ node_cpp_class_name }}() : Node("{{ node_name }") {
+{{ node_cpp_class_name }}::{{ node_cpp_class_name }}() : Node("{{ node_name }}") {
 {% endif %}
 
   this->loadParameters();

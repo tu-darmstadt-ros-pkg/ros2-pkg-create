@@ -60,6 +60,17 @@ is_lifecycle:
   default: false
   help: Make it a lifecycle node?
 
+has_launch_file:
+  type: bool
+  default: true
+  help: Add a launch file?
+
+launch_file_type:
+  when: "{{ has_launch_file }}"
+  type: str
+  choices: [xml, py, yml]
+  help: Type of launch file
+
 has_params:
   type: bool
   default: true
