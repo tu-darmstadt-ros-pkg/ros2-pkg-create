@@ -15,8 +15,8 @@ generate:
     - copier copy --trust --defaults -d package_name=service        -d has_service_server=true  ros2_cpp_pkg packages
     - copier copy --trust --defaults -d package_name=action         -d has_action_server=true   ros2_cpp_pkg packages
     - copier copy --trust --defaults -d package_name=timer          -d has_timer=true           ros2_cpp_pkg packages
-    - copier copy --trust --defaults -d package_name=no_params      -d has_params:=false        ros2_cpp_pkg packages
-    - copier copy --trust --defaults -d package_name=no_launch_file -d has_launch_file:=false   ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=no_params      -d has_params=false         ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=no_launch_file -d has_launch_file=false    ros2_cpp_pkg packages
     - copier copy --trust --defaults -d package_name=all            -d is_component=true -d is_lifecycle=true -d has_service_server=true -d has_action_server=true -d has_timer=true ros2_cpp_pkg packages
   artifacts:
     paths:
