@@ -6,97 +6,99 @@ _jinja_extensions:
   - jinja2_strcase.StrcaseExtension
 
 package_name:
+  help: Package name
   type: str
   placeholder: ros2_cpp_pkg
-  help: Package name
+  validator: "{% if not package_name %}Package name is required{% endif %}"
 
 description:
-  type: str
-  placeholder: TODO
   help: Description
+  type: str
+  default: TODO
 
 maintainer:
-  type: str
-  placeholder: TODO
   help: Maintainer
+  type: str
+  default: TODO
 
 maintainer_email:
-  type: str
-  placeholder: TODO
   help: Maintainer email
+  type: str
+  default: "{{ maintainer | lower | replace(' ', '.') }}@TODO.com"
 
 author:
-  type: str
-  placeholder: TODO
   help: Author
+  type: str
+  default: "{{ maintainer }}"
 
 author_email:
-  type: str
-  placeholder: TODO
   help: Author email
+  type: str
+  default: "{{ author | lower | replace(' ', '.') }}@TODO.com"
 
 license:
+  help: License
   type: str
   choices: [TODO, Apache-2.0, BSL-1.0, BSD-2.0, BSD-2-Clause, BSD-3-Clause, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT, MIT-0]
-  help: License
 
 node_name:
+  help: Node name
   type: str
   default: "{{ package_name }}_node"
-  help: Node name
 
 node_cpp_class_name:
+  help: C++ class name of node
   type: str
   default: "{{ node_name | to_camel }}"
-  help: C++ class name of node
 
 is_component:
-  type: bool
-  default: false
   help: Make it a component?
-
-is_lifecycle:
   type: bool
   default: false
+
+# TODO
+is_lifecycle:
   help: Make it a lifecycle node?
+  type: bool
+  default: false
 
 has_launch_file:
+  help: Add a launch file?
   type: bool
   default: true
-  help: Add a launch file?
 
 launch_file_type:
+  help: Type of launch file
   when: "{{ has_launch_file }}"
   type: str
   choices: [xml, py, yml]
-  help: Type of launch file
 
 has_params:
+  help: Add parameter loading?
   type: bool
   default: true
-  help: Add parameter loading?
 
 has_subscriber:
+  help: Add a subscriber?
   type: bool
   default: true
-  help: Add a subscriber?
 
 has_publisher:
+  help: Add a publisher?
   type: bool
   default: true
-  help: Add a publisher?
 
 has_service_server:
-  type: bool
-  default: true
   help: Add a service server?
+  type: bool
+  default: false
 
 has_action_server:
-  type: bool
-  default: true
   help: Add an action server?
+  type: bool
+  default: false
 
 has_timer:
-  type: bool
-  default: true
   help: Add a timer callback?
+  type: bool
+  default: false
