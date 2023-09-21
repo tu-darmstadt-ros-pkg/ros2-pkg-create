@@ -1,0 +1,24 @@
+stages:
+  - generate
+  - build
+
+
+generate:
+  stage: generate
+  image: python:3.10
+  before_script:
+    - pip install -r requirements.txt
+  script:
+    - copier copy --trust --data package_name=my_pkg --defaults ros2_cpp_pkg .
+  artifacts:
+    paths:
+      - my_pkg/
+    expire_in: 1 week
+
+
+build:
+  stage: build
+  image: rwthika/ros2:latest
+  needs: [generate]
+  script:
+    - colcon build --packages-select my_pkg
