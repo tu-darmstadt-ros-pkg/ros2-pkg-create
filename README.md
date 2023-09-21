@@ -1,5 +1,5 @@
 # package_generator
 
 ```bash
-cookiecutter ros2_cpp_pkg
+copier copy --trust ros2_cpp_pkg .
 ```

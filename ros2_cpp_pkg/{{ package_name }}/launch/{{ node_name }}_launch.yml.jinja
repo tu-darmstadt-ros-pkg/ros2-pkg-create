@@ -1,0 +1,9 @@
+launch:
+  - node:
+      pkg: {{ package_name }}
+      exec: {{ node_name }}
+      name: {{ node_name }}
+      output: screen
+      param:
+        - name: period
+          value: 1.0

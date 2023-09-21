@@ -1,0 +1,91 @@
+_envops:
+  lstrip_blocks: true
+  trim_blocks: true
+
+_jinja_extensions:
+  - jinja2_strcase.StrcaseExtension
+
+package_name:
+  type: str
+  placeholder: ros2_cpp_pkg
+  help: Package name
+
+description:
+  type: str
+  placeholder: TODO
+  help: Description
+
+maintainer:
+  type: str
+  placeholder: TODO
+  help: Maintainer
+
+maintainer_email:
+  type: str
+  placeholder: TODO
+  help: Maintainer email
+
+author:
+  type: str
+  placeholder: TODO
+  help: Author
+
+author_email:
+  type: str
+  placeholder: TODO
+  help: Author email
+
+license:
+  type: str
+  choices: [TODO, Apache-2.0, BSL-1.0, BSD-2.0, BSD-2-Clause, BSD-3-Clause, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT, MIT-0]
+  help: License
+
+node_name:
+  type: str
+  default: "{{ package_name }}_node"
+  help: Node name
+
+node_cpp_class_name:
+  type: str
+  default: "{{ node_name | to_camel }}"
+  help: C++ class name of node
+
+is_component:
+  type: bool
+  default: false
+  help: Make it a component?
+
+is_lifecycle:
+  type: bool
+  default: false
+  help: Make it a lifecycle node?
+
+has_params:
+  type: bool
+  default: true
+  help: Add parameter loading?
+
+has_subscriber:
+  type: bool
+  default: true
+  help: Add a subscriber?
+
+has_publisher:
+  type: bool
+  default: true
+  help: Add a publisher?
+
+has_service_server:
+  type: bool
+  default: true
+  help: Add a service server?
+
+has_action_server:
+  type: bool
+  default: true
+  help: Add an action server?
+
+has_timer:
+  type: bool
+  default: true
+  help: Add a timer callback?
