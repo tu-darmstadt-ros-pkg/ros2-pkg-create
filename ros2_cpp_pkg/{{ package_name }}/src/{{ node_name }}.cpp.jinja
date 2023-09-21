@@ -87,7 +87,7 @@ void {{ node_cpp_class_name }}::setup() {
 {% if has_subscriber %}
   // create a subscriber for handling incoming messages
   subscriber_ =
-    this->create_subscription<template_interfaces_pkg::msg::TemplateMessage>(
+    this->create_subscription<std_msgs::msg::Int32>(
       kInputTopic, 10,
       std::bind(&{{ node_cpp_class_name }}::topicCallback, this, std::placeholders::_1));
   RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
@@ -95,7 +95,7 @@ void {{ node_cpp_class_name }}::setup() {
 
 {% if has_publisher %}
   // create a publisher for publishing messages
-  publisher_ = this->create_publisher<template_interfaces_pkg::msg::TemplateMessage>(
+  publisher_ = this->create_publisher<std_msgs::msg::Int32>(
     kOutputTopic, 10);
   RCLCPP_INFO(this->get_logger(), "Publishing to '%s'", publisher_->get_topic_name());
 {% endif %}
@@ -103,7 +103,7 @@ void {{ node_cpp_class_name }}::setup() {
 {% if has_service_server %}
   // create a service server for handling service calls
   service_server_ =
-    this->create_service<template_interfaces_pkg::srv::TemplateService>(
+    this->create_service<std_srvs::srv::SetBool>(
       "service", std::bind(&{{ node_cpp_class_name }}::serviceCallback, this,
                            std::placeholders::_1, std::placeholders::_2));
 {% endif %}
@@ -146,10 +146,6 @@ rcl_interfaces::msg::SetParametersResult {{ node_cpp_class_name }}::parametersCa
   for (const auto &param : parameters) {
     if (param.get_name() == kParam) {
       param_ = param.as_double();
-      publish_timer_ =
-        this->create_wall_timer(std::chrono::duration<double>(param_),
-                                std::bind(&{{ node_cpp_class_name }}::publishTimerCallback,
-                                this));
     }
   }
 
@@ -169,25 +165,9 @@ rcl_interfaces::msg::SetParametersResult {{ node_cpp_class_name }}::parametersCa
  * @param[in] msg   input
  */
 void {{ node_cpp_class_name }}::topicCallback(
-  const template_interfaces_pkg::msg::TemplateMessage &msg) {
+  const std_msgs::msg::Int32 &msg) {
 
-  // echo received message
-  RCLCPP_INFO(this->get_logger(), "I heard: '%s'", msg.s.c_str());
-
-  // lookup and echo a dynamic transform
-  geometry_msgs::msg::TransformStamped tf;
-  std::string to_frame = "base_link";
-  std::string from_frame = "map";
-  try {
-    tf = tf_buffer_->lookupTransform(to_frame, from_frame, tf2::TimePointZero);
-  } catch (const tf2::TransformException &ex) {
-    RCLCPP_INFO(this->get_logger(), "Could not transform '%s' to '%s': '%s'",
-                to_frame.c_str(), from_frame.c_str(), ex.what());
-    return;
-  }
-  RCLCPP_INFO(this->get_logger(), "map -> base_link: [%.2f,%.2f,%.2f]",
-              tf.transform.translation.x, tf.transform.translation.y,
-              tf.transform.translation.z);
+  RCLCPP_INFO(this->get_logger(), "I heard: '%d'", msg.data);
 }
 {% endif %}
 
@@ -200,15 +180,14 @@ void {{ node_cpp_class_name }}::topicCallback(
  * @param[in] response  input2
  */
 void {{ node_cpp_class_name }}::serviceCallback(
-  const template_interfaces_pkg::srv::TemplateService::Request::SharedPtr
+  const std_srvs::srv::SetBool::Request::SharedPtr
     request,
-  template_interfaces_pkg::srv::TemplateService::Response::SharedPtr
+  std_srvs::srv::SetBool::Response::SharedPtr
     response) {
 
   RCLCPP_INFO(this->get_logger(), "Received service request");
 
-  // compute service response (sum of two integers)
-  response->sum = request->a + request->b;
+  response->success = true;
 }
 {% endif %}
 
@@ -338,33 +317,6 @@ void {{ node_cpp_class_name }}::actionExecute(
  */
 void {{ node_cpp_class_name }}::publishTimerCallback() {
 
-  // skip callback if the published topic has no subscription
-  if (publisher_->get_subscription_count() == 0) return;
-
-  // create and publish a new message
-  template_interfaces_pkg::msg::TemplateMessage msg;
-  msg.i = count_;
-  msg.s = "Hello ROS 2! (" + std::to_string(count_) + ")";
-  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg.s.c_str());
-  publisher_->publish(msg);
-
-  // create and broadcast a new dynamic transform
-  geometry_msgs::msg::TransformStamped tf;
-  tf.header.stamp = get_clock()->now();
-  tf.header.frame_id = "map";
-  tf.child_frame_id = "base_link";
-  tf.transform.translation.x = count_ % 11;
-  tf.transform.translation.y = count_ % 11;
-  tf.transform.translation.z = count_ % 11;
-  tf2::Quaternion q;
-  q.setRPY(0.0, 0.0, count_ % 37 * 10 / 180.0 * M_PI);
-  tf.transform.rotation.x = q.x();
-  tf.transform.rotation.y = q.y();
-  tf.transform.rotation.z = q.z();
-  tf.transform.rotation.w = q.w();
-  tf_broadcaster_->sendTransform(tf);
-
-  count_++;
 }
 {% endif %}
 

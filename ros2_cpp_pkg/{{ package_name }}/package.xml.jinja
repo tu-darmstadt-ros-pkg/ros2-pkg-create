@@ -17,6 +17,10 @@
 {% if is_component %}
   <depend>rclcpp_components</depend>
 {% endif %}
+  <depend>std_msgs</depend>
+{% if has_service_server %}
+  <depend>std_srvs</depend>
+{% endif %}
 
   <export>
     <build_type>ament_cmake</build_type>

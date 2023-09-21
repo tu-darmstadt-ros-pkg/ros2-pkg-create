@@ -1,6 +1,12 @@
+#pragma once
+
 #include <rclcpp/rclcpp.hpp>
 {% if has_action_server %}
 #include <rclcpp_action/rclcpp_action.hpp>
+{% endif %}
+#include <std_msgs/msg/int32.hpp>
+{% if has_service_server %}
+#include <std_msgs/srv/set_bool.hpp>
 {% endif %}
 
 
@@ -42,11 +48,11 @@ class {{ node_cpp_class_name }} : public rclcpp::Node {
 
 {% endif %}
 {% if has_subscriber %}
-  void topicCallback(const template_interfaces_pkg::msg::TemplateMessage& msg);
+  void topicCallback(const std_msgs::msg::Int32& msg);
 
 {% endif %}
 {% if has_service_server %}
-  void serviceCallback(const std::shared_ptr<template_interfaces_pkg::srv::TemplateService::Request>request, std::shared_ptr<template_interfaces_pkg::srv::TemplateService::Response> response);
+  void serviceCallback(const std::shared_ptr<std_srvs::srv::SetBool::Request>request, std::shared_ptr<std_srvs::srv::SetBool::Response> response);
 
 {% endif %}
 {% if has_action_server %}
@@ -67,15 +73,15 @@ class {{ node_cpp_class_name }} : public rclcpp::Node {
 
 {% endif %}
 {% if has_subscriber %}
-  rclcpp::Subscription<template_interfaces_pkg::msg::TemplateMessage>::SharedPtr subscriber_;
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subscriber_;
 
 {% endif %}
 {% if has_publisher %}
-  rclcpp::Publisher<template_interfaces_pkg::msg::TemplateMessage>::SharedPtr publisher_;
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
 
 {% endif %}
 {% if has_service_server %}
-  rclcpp::Service<template_interfaces_pkg::srv::TemplateService>::SharedPtr service_server_;
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_server_;
 
 {% endif %}
 {% if has_action_server %}

@@ -7,6 +7,13 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+{% if is_component %}
+find_package(rclcpp REQUIRED)
+{% endif %}
+find_package(std_msgs REQUIRED)
+{% if has_service_server %}
+find_package(std_srvs REQUIRED)
+{% endif %}
 
 {% if is_component %}
 set(TARGET_NAME {{ node_name }}_component)
@@ -35,6 +42,10 @@ ament_target_dependencies(${TARGET_NAME}
   rclcpp
 {% if is_component %}
   rclcpp_components
+{% endif %}
+  std_msgs
+{% if has_service_server %}
+  std_srvs
 {% endif %}
 )
 
