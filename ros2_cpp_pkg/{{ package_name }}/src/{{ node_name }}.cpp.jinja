@@ -8,30 +8,32 @@
 
 
 /**
- * @brief Namespace for C++ template node
+ * @brief Namespace for {{ package_name }} package
  *
  */
 namespace {{ package_name }} {
 
 
 // parameter names
-const std::string {{ node_cpp_class_name }}::kPeriodParam = "period";
 
 // constants
 const std::string {{ node_cpp_class_name }}::kInputTopic = "~/topic";
 const std::string {{ node_cpp_class_name }}::kOutputTopic = "~/topic";
+const std::string {{ node_cpp_class_name }}::kParam = "param";
 
 
 /**
- * @brief Creates the template node inheriting from the Node class.
+ * @brief Creates a {{ node_cpp_class_name }} node
  *
  */
-{{ node_cpp_class_name }}::{{ node_cpp_class_name }}() : Node("template_node") {
+{{ node_cpp_class_name }}::{{ node_cpp_class_name }}() : Node("{{ node_name }") {
 
   this->loadParameters();
   this->setup();
 }
 
+
+{% if has_params %}
 /**
  * @brief Loads ROS parameters used in the node.
  *
@@ -39,25 +41,27 @@ const std::string {{ node_cpp_class_name }}::kOutputTopic = "~/topic";
 void {{ node_cpp_class_name }}::loadParameters() {
 
   // set parameter description
-  rcl_interfaces::msg::ParameterDescriptor period_desc;
-  period_desc.description = "Period between published messages";
+  rcl_interfaces::msg::ParameterDescriptor param_desc;
+  param_desc.description = "TODO";
 
   // set allowed parameter range
-  rcl_interfaces::msg::FloatingPointRange period_range;
-  period_range.set__from_value(0.1).set__to_value(10.0).set__step(0.1);
-  period_desc.floating_point_range = {period_range};
+  rcl_interfaces::msg::FloatingPointRange param_range;
+  param_range.set__from_value(0.1).set__to_value(10.0).set__step(0.1);
+  param_desc.floating_point_range = {param_range};
 
   // declare parameter
-  this->declare_parameter(kPeriodParam, rclcpp::ParameterType::PARAMETER_DOUBLE, period_desc);
+  this->declare_parameter(kParam, rclcpp::ParameterType::PARAMETER_DOUBLE, param_desc);
 
   // load parameter
   try {
-    period_ = this->get_parameter(kPeriodParam).as_double();
+    param_ = this->get_parameter(kParam).as_double();
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
-    RCLCPP_FATAL(this->get_logger(), "Parameter '%s' is required", kPeriodParam.c_str());
+    RCLCPP_FATAL(this->get_logger(), "Parameter '%s' is required", kParam.c_str());
     exit(EXIT_FAILURE);
   }
 }
+{% endif %}
+
 
 /**
  * @brief Sets up subscribers, publishers, and more.
@@ -65,39 +69,37 @@ void {{ node_cpp_class_name }}::loadParameters() {
  */
 void {{ node_cpp_class_name }}::setup() {
 
+{% if has_params %}
   // create a callback for dynamic parameter configuration
   parameters_callback_ = this->add_on_set_parameters_callback(
     std::bind(&{{ node_cpp_class_name }}::parametersCallback, this, std::placeholders::_1));
+{% endif %}
 
-  // create a transform broadcaster and listener
-  tf_broadcaster_ = std::make_unique<tf2_ros::TransformBroadcaster>(*this);
-  tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
-  tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
-
+{% if has_subscriber %}
   // create a subscriber for handling incoming messages
   subscriber_ =
     this->create_subscription<template_interfaces_pkg::msg::TemplateMessage>(
       kInputTopic, 10,
       std::bind(&{{ node_cpp_class_name }}::topicCallback, this, std::placeholders::_1));
   RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
+{% endif %}
 
+{% if has_publisher %}
   // create a publisher for publishing messages
   publisher_ = this->create_publisher<template_interfaces_pkg::msg::TemplateMessage>(
     kOutputTopic, 10);
   RCLCPP_INFO(this->get_logger(), "Publishing to '%s'", publisher_->get_topic_name());
+{% endif %}
 
-  // create a timer for repeatedly invoking a callback to publish messages
-  publish_timer_ =
-    this->create_wall_timer(std::chrono::duration<double>(period_),
-                            std::bind(&{{ node_cpp_class_name }}::publishTimerCallback,
-                            this));
-
+{% if has_service_server %}
   // create a service server for handling service calls
   service_server_ =
     this->create_service<template_interfaces_pkg::srv::TemplateService>(
       "service", std::bind(&{{ node_cpp_class_name }}::serviceCallback, this,
                            std::placeholders::_1, std::placeholders::_2));
+{% endif %}
 
+{% if has_action_server %}
   // create an action server for handling action goal requests
   action_server_ = rclcpp_action::create_server<
     template_interfaces_pkg::action::TemplateAction>(
@@ -107,8 +109,19 @@ void {{ node_cpp_class_name }}::setup() {
     std::bind(&{{ node_cpp_class_name }}::actionHandleCancel, this, std::placeholders::_1),
     std::bind(&{{ node_cpp_class_name }}::actionHandleAccepted, this,
               std::placeholders::_1));
+{% endif %}
+
+{% if has_timer %}
+  // create a timer for repeatedly invoking a callback to publish messages
+  publish_timer_ =
+    this->create_wall_timer(std::chrono::duration<double>(param_),
+                            std::bind(&{{ node_cpp_class_name }}::publishTimerCallback,
+                            this));
+{% endif %}
 }
 
+
+{% if has_params %}
 /**
  * @brief This callback is invoked when a parameter value has changed
  *
@@ -122,10 +135,10 @@ rcl_interfaces::msg::SetParametersResult {{ node_cpp_class_name }}::parametersCa
   // update timer with newly configured period parameter value
   rcl_interfaces::msg::SetParametersResult result;
   for (const auto &param : parameters) {
-    if (param.get_name() == "period") {
-      period_ = param.as_double();
+    if (param.get_name() == kParam) {
+      param_ = param.as_double();
       publish_timer_ =
-        this->create_wall_timer(std::chrono::duration<double>(period_),
+        this->create_wall_timer(std::chrono::duration<double>(param_),
                                 std::bind(&{{ node_cpp_class_name }}::publishTimerCallback,
                                 this));
     }
@@ -137,7 +150,10 @@ rcl_interfaces::msg::SetParametersResult {{ node_cpp_class_name }}::parametersCa
 
   return result;
 }
+{% endif %}
 
+
+{% if has_subscriber %}
 /**
  * @brief This callback is invoked when the subscriber receives a message
  *
@@ -164,42 +180,10 @@ void {{ node_cpp_class_name }}::topicCallback(
               tf.transform.translation.x, tf.transform.translation.y,
               tf.transform.translation.z);
 }
+{% endif %}
 
-/**
- * @brief This callback is invoked every period seconds by the timer
- *
- */
-void {{ node_cpp_class_name }}::publishTimerCallback() {
 
-  // skip callback if the published topic has no subscription
-  if (publisher_->get_subscription_count() == 0) return;
-
-  // create and publish a new message
-  template_interfaces_pkg::msg::TemplateMessage msg;
-  msg.i = count_;
-  msg.s = "Hello ROS 2! (" + std::to_string(count_) + ")";
-  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg.s.c_str());
-  publisher_->publish(msg);
-
-  // create and broadcast a new dynamic transform
-  geometry_msgs::msg::TransformStamped tf;
-  tf.header.stamp = get_clock()->now();
-  tf.header.frame_id = "map";
-  tf.child_frame_id = "base_link";
-  tf.transform.translation.x = count_ % 11;
-  tf.transform.translation.y = count_ % 11;
-  tf.transform.translation.z = count_ % 11;
-  tf2::Quaternion q;
-  q.setRPY(0.0, 0.0, count_ % 37 * 10 / 180.0 * M_PI);
-  tf.transform.rotation.x = q.x();
-  tf.transform.rotation.y = q.y();
-  tf.transform.rotation.z = q.z();
-  tf.transform.rotation.w = q.w();
-  tf_broadcaster_->sendTransform(tf);
-
-  count_++;
-}
-
+{% if has_service_server %}
 /**
  * @brief This callback is invoked when the service is called
  *
@@ -217,8 +201,10 @@ void {{ node_cpp_class_name }}::serviceCallback(
   // compute service response (sum of two integers)
   response->sum = request->a + request->b;
 }
+{% endif %}
 
 
+{% if has_action_server %}
 /**
  * @brief This callback is invoked when an action goal is requested
  *
@@ -238,6 +224,7 @@ rclcpp_action::GoalResponse {{ node_cpp_class_name }}::actionHandleGoal(
   return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 }
 
+
 /**
  * @brief This callback is invoked when a running action is requested to cancel
  *
@@ -255,6 +242,7 @@ rclcpp_action::CancelResponse {{ node_cpp_class_name }}::actionHandleCancel(
   // accept action cancel request
   return rclcpp_action::CancelResponse::ACCEPT;
 }
+
 
 /**
  * @brief This callback is invoked when an action goal request is accepted
@@ -331,9 +319,48 @@ void {{ node_cpp_class_name }}::actionExecute(
     RCLCPP_INFO(this->get_logger(), "Goal succeeded");
   }
 }
+{% endif %}
 
 
-}  // namespace {{ package_name }}
+{% if has_timer %}
+/**
+ * @brief This callback is invoked every period seconds by the timer
+ *
+ */
+void {{ node_cpp_class_name }}::publishTimerCallback() {
+
+  // skip callback if the published topic has no subscription
+  if (publisher_->get_subscription_count() == 0) return;
+
+  // create and publish a new message
+  template_interfaces_pkg::msg::TemplateMessage msg;
+  msg.i = count_;
+  msg.s = "Hello ROS 2! (" + std::to_string(count_) + ")";
+  RCLCPP_INFO(this->get_logger(), "Publishing: '%s'", msg.s.c_str());
+  publisher_->publish(msg);
+
+  // create and broadcast a new dynamic transform
+  geometry_msgs::msg::TransformStamped tf;
+  tf.header.stamp = get_clock()->now();
+  tf.header.frame_id = "map";
+  tf.child_frame_id = "base_link";
+  tf.transform.translation.x = count_ % 11;
+  tf.transform.translation.y = count_ % 11;
+  tf.transform.translation.z = count_ % 11;
+  tf2::Quaternion q;
+  q.setRPY(0.0, 0.0, count_ % 37 * 10 / 180.0 * M_PI);
+  tf.transform.rotation.x = q.x();
+  tf.transform.rotation.y = q.y();
+  tf.transform.rotation.z = q.z();
+  tf.transform.rotation.w = q.w();
+  tf_broadcaster_->sendTransform(tf);
+
+  count_++;
+}
+{% endif %}
+
+
+}
 
 
 int main(int argc, char *argv[]) {

@@ -82,7 +82,10 @@ class {{ node_cpp_class_name }} : public rclcpp::Node {
   rclcpp::TimerBase::SharedPtr publish_timer_;
 
 {% endif %}
-  double period_ = 1.0;
+{% if has_params %}
+  double param_ = 1.0;
+
+{% endif %}
 
   int count_ = 0;
 };
