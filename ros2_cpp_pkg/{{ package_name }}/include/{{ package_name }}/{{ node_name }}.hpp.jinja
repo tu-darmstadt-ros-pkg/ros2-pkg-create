@@ -11,7 +11,11 @@ class {{ node_cpp_class_name }} : public rclcpp::Node {
 
  public:
 
+{% if is_component %}
+  explicit {{ node_cpp_class_name }}(const rclcpp::NodeOptions& options);
+{% else %}
   {{ node_cpp_class_name }}();
+{% endif %}
 
  private:
 

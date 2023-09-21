@@ -8,21 +8,47 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 
-add_executable({{ node_name }} src/{{ node_name }}.cpp)
+{% if is_component %}
+set(TARGET_NAME {{ node_name }}_component)
+{% else %}
+set(TARGET_NAME {{ node_name }})
+{% endif %}
 
-target_include_directories({{ node_name }} PUBLIC
+{% if is_component %}
+add_library(${TARGET_NAME} src/{{ node_name }}.cpp)
+
+rclcpp_components_register_node(${TARGET_NAME}
+  PLUGIN "{{ package_name }}::{{ node_cpp_class_name }}"
+  EXECUTABLE {{ node_name }}
+)
+{% else %}
+add_executable(${TARGET_NAME} src/{{ node_name }}.cpp)
+{% endif %}
+
+target_include_directories(${TARGET_NAME} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_compile_features({{ node_name }} PUBLIC c_std_99 cxx_std_17)
+target_compile_features(${TARGET_NAME} PUBLIC c_std_99 cxx_std_17)
 
-ament_target_dependencies({{ node_name }}
+ament_target_dependencies(${TARGET_NAME}
   rclcpp
+{% if is_component %}
+  rclcpp_components
+{% endif %}
 )
 
-install(TARGETS {{ node_name }}
+{% if is_component %}
+install(TARGETS ${TARGET_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
+)
+{% else %}
+install(TARGETS ${TARGET_NAME}
   DESTINATION lib/${PROJECT_NAME}
 )
+{% endif %}
 
 install(DIRECTORY launch
   DESTINATION share/${PROJECT_NAME}

@@ -14,6 +14,9 @@
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
+{% if is_component %}
+  <depend>rclcpp_components</depend>
+{% endif %}
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -6,6 +6,11 @@
 
 #include <{{ package_name }}/{{ node_name }}.hpp>
 
+{% if is_component %}
+#include <rclcpp_components/register_node_macro.hpp>
+RCLCPP_COMPONENTS_REGISTER_NODE({{ package_name }}::{{ node_cpp_class_name }})
+{% endif %}
+
 
 /**
  * @brief Namespace for {{ package_name }} package
@@ -26,7 +31,11 @@ const std::string {{ node_cpp_class_name }}::kParam = "param";
  * @brief Creates a {{ node_cpp_class_name }} node
  *
  */
+{% if is_component %}
+{{ node_cpp_class_name }}::{{ node_cpp_class_name }}(const rclcpp::NodeOptions& options) : Node("{{ node_name }", options) {
+{% else %}
 {{ node_cpp_class_name }}::{{ node_cpp_class_name }}() : Node("{{ node_name }") {
+{% endif %}
 
   this->loadParameters();
   this->setup();
@@ -362,6 +371,7 @@ void {{ node_cpp_class_name }}::publishTimerCallback() {
 
 }
 
+{% if not is_component %}
 
 int main(int argc, char *argv[]) {
 
@@ -371,3 +381,4 @@ int main(int argc, char *argv[]) {
 
   return 0;
 }
+{% endif %}
