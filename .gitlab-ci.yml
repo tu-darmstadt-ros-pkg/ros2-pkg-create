@@ -22,4 +22,4 @@ build:
   stage: build
   image: rwthika/ros2:latest
   script:
-    - colcon build
+    - colcon build --continue-on-error
