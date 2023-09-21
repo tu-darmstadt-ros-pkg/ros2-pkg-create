@@ -9,7 +9,9 @@ generate:
   before_script:
     - pip install -r requirements.txt
   script:
-    - copier copy --trust --data package_name=my_pkg --defaults ros2_cpp_pkg .
+    - copier copy --trust -d package_name=pkg --defaults ros2_cpp_pkg .
+    - copier copy --trust -d package_name=component_pkg -d is_component=true --defaults ros2_cpp_pkg .
+    - copier copy --trust -d package_name=action_pkg -d has_action_server=true --defaults ros2_cpp_pkg .
   artifacts:
     paths:
       - my_pkg/
@@ -19,6 +21,5 @@ generate:
 build:
   stage: build
   image: rwthika/ros2:latest
-  needs: [generate]
   script:
-    - colcon build --packages-select my_pkg
+    - colcon build
