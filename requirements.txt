@@ -1,2 +1,0 @@
-copier~=8.3.0
-jinja2-strcase~=0.0.2
