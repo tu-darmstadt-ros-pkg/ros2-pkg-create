@@ -1,9 +1,18 @@
+_subdirectory: "templates/{{ template }}"
+
 _envops:
   lstrip_blocks: true
   trim_blocks: true
 
 _jinja_extensions:
   - jinja2_strcase.StrcaseExtension
+
+
+template:
+  help: Template
+  type: str
+  default: ros2_cpp_pkg
+  choices: [ros2_cpp_pkg]
 
 package_name:
   help: Package name
@@ -54,12 +63,14 @@ node_cpp_class_name:
 
 is_component:
   help: Make it a component?
+  when: "{{ template == 'ros2_cpp_pkg' }}"
   type: bool
   default: false
 
 # TODO
 is_lifecycle:
   help: Make it a lifecycle node?
+  when: "{{ template == 'ros2_cpp_pkg' }}"
   type: bool
   default: false
 
