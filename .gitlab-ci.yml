@@ -24,8 +24,51 @@ generate:
     expire_in: 1 week
 
 
-build:
+.build:
   stage: build
   image: rwthika/ros2:latest
+
+pkg_default:
+  extends: .build
   script:
-    - colcon build --continue-on-error
+    - colcon build --packages-select pkg_default
+
+pkg_component:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_component
+
+pkg_lifecycle:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_lifecycle
+
+pkg_service:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_service
+
+pkg_action:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_action
+
+pkg_timer:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_timer
+
+pkg_no_params:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_no_params
+
+pkg_no_launch_file:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_no_launch_file
+
+pkg_all:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_all
