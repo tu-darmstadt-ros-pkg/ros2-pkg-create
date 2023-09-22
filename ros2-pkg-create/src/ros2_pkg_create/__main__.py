@@ -51,8 +51,7 @@ def main():
                         os.getcwd(),
                         data=answers,
                         defaults=args.defaults,
-                        unsafe=True,
-                        vcs_ref="pipeline")
+                        unsafe=True)
     except copier.CopierAnswersInterrupt:
         print("Aborted")
         return
