@@ -56,8 +56,8 @@ node_name:
   type: str
   default: "{{ package_name }}_node"
 
-node_cpp_class_name:
-  help: C++ class name of node
+node_class_name:
+  help: Class name of node
   type: str
   default: "{{ node_name | to_camel }}"
 
