@@ -3,7 +3,7 @@
 ### Installation
 
 ```bash
-pip install -i https://test.pypi.org/simple/ ros2-pkg-create
+pip install --extra-index-url https://test.pypi.org/simple/ ros2-pkg-create
 ```
 
 ### Usage
