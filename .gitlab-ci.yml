@@ -7,7 +7,7 @@ generate:
   stage: generate
   image: python:3.10
   before_script:
-    - pip install -r requirements.txt
+    - pip install "copier~=8.3.0" "jinja2-strcase~=0.0.2"
   script:
     - copier copy --trust --defaults -d package_name=pkg_default                                    ros2_cpp_pkg packages
     - copier copy --trust --defaults -d package_name=pkg_component      -d is_component=true        ros2_cpp_pkg packages
