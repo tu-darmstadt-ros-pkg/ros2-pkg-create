@@ -13,14 +13,14 @@
 namespace {{ package_name }} {
 
 
-class {{ node_cpp_class_name }} : public rclcpp::Node {
+class {{ node_class_name }} : public rclcpp::Node {
 
  public:
 
 {% if is_component %}
-  explicit {{ node_cpp_class_name }}(const rclcpp::NodeOptions& options);
+  explicit {{ node_class_name }}(const rclcpp::NodeOptions& options);
 {% else %}
-  {{ node_cpp_class_name }}();
+  {{ node_class_name }}();
 {% endif %}
 
  private:

@@ -9,17 +9,66 @@ generate:
   before_script:
     - pip install -r requirements.txt
   script:
-    - copier copy --trust -d package_name=pkg --defaults ros2_cpp_pkg packages
-    - copier copy --trust -d package_name=component_pkg -d is_component=true --defaults ros2_cpp_pkg packages
-    - copier copy --trust -d package_name=action_pkg -d has_action_server=true --defaults ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_default                                    ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_component      -d is_component=true        ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_lifecycle      -d is_lifecycle=true        ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_service        -d has_service_server=true  ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_action         -d has_action_server=true   ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_timer          -d has_timer=true           ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_no_params      -d has_params=false         ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_no_launch_file -d has_launch_file=false    ros2_cpp_pkg packages
+    - copier copy --trust --defaults -d package_name=pkg_all            -d is_component=true -d is_lifecycle=true -d has_service_server=true -d has_action_server=true -d has_timer=true ros2_cpp_pkg packages
   artifacts:
     paths:
       - packages/
     expire_in: 1 week
 
 
-build:
+.build:
   stage: build
   image: rwthika/ros2:latest
+
+pkg_default:
+  extends: .build
   script:
-    - colcon build
+    - colcon build --packages-select pkg_default
+
+pkg_component:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_component
+
+pkg_lifecycle:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_lifecycle
+
+pkg_service:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_service
+
+pkg_action:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_action
+
+pkg_timer:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_timer
+
+pkg_no_params:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_no_params
+
+pkg_no_launch_file:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_no_launch_file
+
+pkg_all:
+  extends: .build
+  script:
+    - colcon build --packages-select pkg_all

@@ -8,7 +8,7 @@ endif()
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 {% if is_component %}
-find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
 {% endif %}
 find_package(std_msgs REQUIRED)
 {% if has_service_server %}
@@ -25,7 +25,7 @@ set(TARGET_NAME {{ node_name }})
 add_library(${TARGET_NAME} src/{{ node_name }}.cpp)
 
 rclcpp_components_register_node(${TARGET_NAME}
-  PLUGIN "{{ package_name }}::{{ node_cpp_class_name }}"
+  PLUGIN "{{ package_name }}::{{ node_class_name }}"
   EXECUTABLE {{ node_name }}
 )
 {% else %}
