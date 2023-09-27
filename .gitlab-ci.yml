@@ -8,8 +8,8 @@ generate:
   image: python:3.10
   before_script:
     - pip install "copier~=8.3.0" "jinja2-strcase~=0.0.2"
-    - git config user.name "dummy"
-    - git config user.email "dummy@dummy.com"
+    - git config --global user.name "dummy"
+    - git config --global user.email "dummy@dummy.com"
   script:
     - copier copy --trust --defaults -d template=ros2_cpp_pkg -d package_name=pkg_default                                    . packages
     - copier copy --trust --defaults -d template=ros2_cpp_pkg -d package_name=pkg_component      -d is_component=true        . packages
