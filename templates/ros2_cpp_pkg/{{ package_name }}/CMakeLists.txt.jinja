@@ -9,7 +9,7 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 {% if has_action_server %}
 find_package(rclcpp_action REQUIRED)
-find_package(template_interfaces_pkg REQUIRED)
+find_package({{ package_name }}_interfaces REQUIRED)
 {% endif %}
 {% if is_component %}
 find_package(rclcpp_components REQUIRED)
@@ -46,7 +46,7 @@ ament_target_dependencies(${TARGET_NAME}
   rclcpp
 {% if has_action_server %}
   rclcpp_action
-  template_interfaces_pkg
+  {{ package_name }}_interfaces
 {% endif %}
 {% if is_component %}
   rclcpp_components

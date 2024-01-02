@@ -111,7 +111,7 @@ void {{ node_class_name }}::setup() {
 {% if has_action_server %}
   // create an action server for handling action goal requests
   action_server_ = rclcpp_action::create_server<
-    template_interfaces_pkg::action::Fibonacci>(
+    {{ package_name }}_interfaces::action::Fibonacci>(
     this, "action",
     std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1,
               std::placeholders::_2),
@@ -204,7 +204,7 @@ void {{ node_class_name }}::serviceCallback(
  */
 rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
   const rclcpp_action::GoalUUID &uuid,
-  template_interfaces_pkg::action::Fibonacci::Goal::ConstSharedPtr
+  {{ package_name }}_interfaces::action::Fibonacci::Goal::ConstSharedPtr
     goal) {
 
   RCLCPP_INFO(this->get_logger(), "Received action goal request with order %d", goal->order);
@@ -224,7 +224,7 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
  */
 rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::Fibonacci>>
+    {{ package_name }}_interfaces::action::Fibonacci>>
     goal_handle) {
 
   RCLCPP_INFO(this->get_logger(), "Received request to cancel action goal");
@@ -242,7 +242,7 @@ rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
  */
 void {{ node_class_name }}::actionHandleAccepted(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::Fibonacci>>
+    {{ package_name }}_interfaces::action::Fibonacci>>
     goal_handle) {
 
   // execute the action in a separate thread to avoid blocking
@@ -260,7 +260,7 @@ void {{ node_class_name }}::actionHandleAccepted(
  */
 void {{ node_class_name }}::actionExecute(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::Fibonacci>>
+    {{ package_name }}_interfaces::action::Fibonacci>>
     goal_handle) {
 
   RCLCPP_INFO(this->get_logger(), "Executing action goal");
@@ -271,9 +271,9 @@ void {{ node_class_name }}::actionExecute(
   // create handy accessors for the action goal, feedback, and result
   const auto goal = goal_handle->get_goal();
   auto feedback = std::make_shared<
-    template_interfaces_pkg::action::Fibonacci::Feedback>();
+    {{ package_name }}_interfaces::action::Fibonacci::Feedback>();
   auto result =
-    std::make_shared<template_interfaces_pkg::action::Fibonacci::Result>();
+    std::make_shared<{{ package_name }}_interfaces::action::Fibonacci::Result>();
 
   // initialize the Fibonacci sequence
   auto &partial_sequence = feedback->partial_sequence;
