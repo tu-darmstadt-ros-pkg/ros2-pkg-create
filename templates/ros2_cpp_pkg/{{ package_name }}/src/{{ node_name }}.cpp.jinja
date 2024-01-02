@@ -111,7 +111,7 @@ void {{ node_class_name }}::setup() {
 {% if has_action_server %}
   // create an action server for handling action goal requests
   action_server_ = rclcpp_action::create_server<
-    template_interfaces_pkg::action::TemplateAction>(
+    template_interfaces_pkg::action::Fibonacci>(
     this, "action",
     std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1,
               std::placeholders::_2),
@@ -203,10 +203,11 @@ void {{ node_class_name }}::serviceCallback(
  */
 rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
   const rclcpp_action::GoalUUID &uuid,
-  template_interfaces_pkg::action::TemplateAction::Goal::ConstSharedPtr
+  template_interfaces_pkg::action::Fibonacci::Goal::ConstSharedPtr
     goal) {
 
-  RCLCPP_INFO(this->get_logger(), "Received action goal request");
+  RCLCPP_INFO(this->get_logger(), "Received action goal request with order %d", goal->order);
+  (void)uuid;
 
   // accept action goal request
   return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
@@ -222,10 +223,11 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
  */
 rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::TemplateAction>>
+    template_interfaces_pkg::action::Fibonacci>>
     goal_handle) {
 
   RCLCPP_INFO(this->get_logger(), "Received request to cancel action goal");
+  (void)goal_handle;
 
   // accept action cancel request
   return rclcpp_action::CancelResponse::ACCEPT;
@@ -239,7 +241,7 @@ rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
  */
 void {{ node_class_name }}::actionHandleAccepted(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::TemplateAction>>
+    template_interfaces_pkg::action::Fibonacci>>
     goal_handle) {
 
   // execute the action in a separate thread to avoid blocking
@@ -257,7 +259,7 @@ void {{ node_class_name }}::actionHandleAccepted(
  */
 void {{ node_class_name }}::actionExecute(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
-    template_interfaces_pkg::action::TemplateAction>>
+    template_interfaces_pkg::action::Fibonacci>>
     goal_handle) {
 
   RCLCPP_INFO(this->get_logger(), "Executing action goal");
@@ -268,29 +270,29 @@ void {{ node_class_name }}::actionExecute(
   // create handy accessors for the action goal, feedback, and result
   const auto goal = goal_handle->get_goal();
   auto feedback = std::make_shared<
-    template_interfaces_pkg::action::TemplateAction::Feedback>();
+    template_interfaces_pkg::action::Fibonacci::Feedback>();
   auto result =
-    std::make_shared<template_interfaces_pkg::action::TemplateAction::Result>();
+    std::make_shared<template_interfaces_pkg::action::Fibonacci::Result>();
 
   // initialize the Fibonacci sequence
-  auto &partial_fibonacci = feedback->partial_fibonacci;
-  partial_fibonacci.push_back(0);
-  partial_fibonacci.push_back(1);
+  auto &partial_sequence = feedback->partial_sequence;
+  partial_sequence.push_back(0);
+  partial_sequence.push_back(1);
 
   // compute the Fibonacci sequence up to the requested order n
-  for (int i = 1; i < goal->n && rclcpp::ok(); ++i) {
+  for (int i = 1; i < goal->order && rclcpp::ok(); ++i) {
 
     // cancel, if requested
     if (goal_handle->is_canceling()) {
-      result->fibonacci = feedback->partial_fibonacci;
+      result->sequence = feedback->partial_sequence;
       goal_handle->canceled(result);
       RCLCPP_INFO(this->get_logger(), "Action goal canceled");
       return;
     }
 
     // compute the next Fibonacci number
-    partial_fibonacci.push_back(partial_fibonacci[i] +
-                                partial_fibonacci[i - 1]);
+    partial_sequence.push_back(partial_sequence[i] +
+                                partial_sequence[i - 1]);
 
     // publish the current sequence as action feedback
     goal_handle->publish_feedback(feedback);
@@ -302,7 +304,7 @@ void {{ node_class_name }}::actionExecute(
 
   // finish by publishing the action result
   if (rclcpp::ok()) {
-    result->fibonacci = partial_fibonacci;
+    result->sequence = partial_sequence;
     goal_handle->succeed(result);
     RCLCPP_INFO(this->get_logger(), "Goal succeeded");
   }

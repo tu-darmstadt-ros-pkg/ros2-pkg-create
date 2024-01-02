@@ -21,6 +21,9 @@
 {% if has_service_server %}
   <depend>std_srvs</depend>
 {% endif %}
+{% if has_action_server %}
+  <depend>template_interfaces_pkg</depend>
+{% endif %}
 
   <export>
     <build_type>ament_cmake</build_type>
