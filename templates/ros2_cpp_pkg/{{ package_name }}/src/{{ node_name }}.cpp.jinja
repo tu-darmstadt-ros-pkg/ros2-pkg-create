@@ -22,9 +22,15 @@ namespace {{ package_name }} {
 // parameter names
 
 // constants
+{% if has_subscriber %}
 const std::string {{ node_class_name }}::kInputTopic = "~/topic";
+{% endif %}
+{% if has_publisher %}
 const std::string {{ node_class_name }}::kOutputTopic = "~/topic";
+{% endif %}
+{% if has_params %}
 const std::string {{ node_class_name }}::kParam = "param";
+{% endif %}
 
 
 /**
