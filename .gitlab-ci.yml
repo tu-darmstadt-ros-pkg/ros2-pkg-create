@@ -33,44 +33,44 @@ generate:
 pkg_default:
   extends: .build
   script:
-    - colcon build --packages-select pkg_default
+    - colcon build --packages-up-to pkg_default
 
 pkg_component:
   extends: .build
   script:
-    - colcon build --packages-select pkg_component
+    - colcon build --packages-up-to pkg_component
 
 pkg_lifecycle:
   extends: .build
   script:
-    - colcon build --packages-select pkg_lifecycle
+    - colcon build --packages-up-to pkg_lifecycle
 
 pkg_service:
   extends: .build
   script:
-    - colcon build --packages-select pkg_service
+    - colcon build --packages-up-to pkg_service
 
 pkg_action:
   extends: .build
   script:
-    - colcon build --packages-select pkg_action
+    - colcon build --packages-up-to pkg_action
 
 pkg_timer:
   extends: .build
   script:
-    - colcon build --packages-select pkg_timer
+    - colcon build --packages-up-to pkg_timer
 
 pkg_no_params:
   extends: .build
   script:
-    - colcon build --packages-select pkg_no_params
+    - colcon build --packages-up-to pkg_no_params
 
 pkg_no_launch_file:
   extends: .build
   script:
-    - colcon build --packages-select pkg_no_launch_file
+    - colcon build --packages-up-to pkg_no_launch_file
 
 pkg_all:
   extends: .build
   script:
-    - colcon build --packages-select pkg_all
+    - colcon build --packages-up-to pkg_all
