@@ -186,6 +186,7 @@ void {{ node_class_name }}::serviceCallback(
     response) {
 
   RCLCPP_INFO(this->get_logger(), "Received service request");
+  (void)request;
 
   response->success = true;
 }
