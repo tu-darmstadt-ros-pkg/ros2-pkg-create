@@ -26,7 +26,7 @@ set(TARGET_NAME {{ node_name }})
 {% endif %}
 
 {% if is_component %}
-add_library(${TARGET_NAME} src/{{ node_name }}.cpp)
+add_library(${TARGET_NAME} SHARED src/{{ node_name }}.cpp)
 
 rclcpp_components_register_node(${TARGET_NAME}
   PLUGIN "{{ package_name }}::{{ node_class_name }}"
