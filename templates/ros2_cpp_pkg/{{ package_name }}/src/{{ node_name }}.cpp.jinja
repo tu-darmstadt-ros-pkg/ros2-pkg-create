@@ -411,7 +411,9 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
     const rclcpp_lifecycle::State& state) {
   RCLCPP_INFO(get_logger(), "on_configure() is called from state %s.", state.label().c_str());
 
+{% if has_params %}
   loadParameters();
+{% endif %}
   setup();
 
   return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
@@ -522,7 +524,11 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 int main(int argc, char *argv[]) {
 
   rclcpp::init(argc, argv);
+{% if is_lifecycle %}
+  rclcpp::spin(std::make_shared<{{ package_name }}::{{ node_class_name }}>()->get_node_base_interface());
+{% else %}
   rclcpp::spin(std::make_shared<{{ package_name }}::{{ node_class_name }}>());
+{% endif %}
   rclcpp::shutdown();
 
   return 0;
