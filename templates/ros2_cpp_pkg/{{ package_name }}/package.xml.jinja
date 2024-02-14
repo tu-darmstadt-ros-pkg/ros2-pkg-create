@@ -13,9 +13,15 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+{% if is_lifecycle %}
+  <depend>lifecycle_msgs</depend>
+{% endif %}
   <depend>rclcpp</depend>
 {% if is_component %}
   <depend>rclcpp_components</depend>
+{% endif %}
+{% if is_lifecycle %}
+  <depend>rclcpp_lifecycle</depend>
 {% endif %}
   <depend>std_msgs</depend>
 {% if has_service_server %}

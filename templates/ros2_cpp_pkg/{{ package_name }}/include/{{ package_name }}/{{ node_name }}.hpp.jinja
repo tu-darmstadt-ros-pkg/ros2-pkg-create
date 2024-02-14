@@ -1,6 +1,12 @@
 #pragma once
 
 #include <rclcpp/rclcpp.hpp>
+{% if is_lifecycle %}
+#include <lifecycle_msgs/msg/state.hpp>
+#include <lifecycle_msgs/msg/transition.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+#include <rclcpp_lifecycle/lifecycle_publisher.hpp>
+{% endif %}
 {% if has_action_server %}
 #include <rclcpp_action/rclcpp_action.hpp>
 #include <{{ package_name }}_interfaces/action/fibonacci.hpp>
@@ -14,7 +20,11 @@
 namespace {{ package_name }} {
 
 
+{% if is_lifecycle %}
+class {{ node_class_name }} : public rclcpp_lifecycle::LifecycleNode {
+{% else %}
 class {{ node_class_name }} : public rclcpp::Node {
+{% endif %}
 
  public:
 
@@ -24,6 +34,21 @@ class {{ node_class_name }} : public rclcpp::Node {
   {{ node_class_name }}();
 {% endif %}
 
+{% if is_lifecycle %}
+ protected:
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(
+      const rclcpp_lifecycle::State& state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(
+      const rclcpp_lifecycle::State& state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(
+      const rclcpp_lifecycle::State& state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(
+      const rclcpp_lifecycle::State& state) override;
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(
+      const rclcpp_lifecycle::State& state) override;
+
+{% endif %}
  private:
 
 {% if has_subscriber %}
@@ -36,13 +61,20 @@ class {{ node_class_name }} : public rclcpp::Node {
   static const std::string kParam;
 {% endif %}
 
- private:
-
 {% if has_params %}
+  void declareParameters();
   void loadParameters();
 
 {% endif %}
+{% if is_lifecycle %}
+  template <typename T>
+  void declare_parameter_if_not_exists(const std::string& name, const T& type_or_default, const std::string& desc);
+
+{% endif %}
   void setup();
+{% if is_lifecycle %}
+  void cleanUp();
+{% endif %}
 
 {% if has_params %}
   rcl_interfaces::msg::SetParametersResult parametersCallback(const std::vector<rclcpp::Parameter>& parameters);
@@ -67,7 +99,6 @@ class {{ node_class_name }} : public rclcpp::Node {
   void publishTimerCallback();
 
 {% endif %}
- private:
 
 {% if has_params %}
   OnSetParametersCallbackHandle::SharedPtr parameters_callback_;
@@ -78,7 +109,11 @@ class {{ node_class_name }} : public rclcpp::Node {
 
 {% endif %}
 {% if has_publisher %}
+{% if is_lifecycle %}
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int32>::SharedPtr publisher_;
+{% else %}
   rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
+{% endif %}
 
 {% endif %}
 {% if has_service_server %}

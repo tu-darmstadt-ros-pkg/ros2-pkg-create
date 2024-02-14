@@ -37,25 +37,60 @@ const std::string {{ node_class_name }}::kParam = "param";
  * @brief Creates a {{ node_class_name }} node
  *
  */
-{% if is_component %}
+{% if is_lifecycle and is_component %}
+{{ node_class_name }}::{{ node_class_name }}(const rclcpp::NodeOptions& options) : rclcpp_lifecycle::LifecycleNode("{{ node_name }}", options) {
+{% elif is_lifecycle %}
+{{ node_class_name }}::{{ node_class_name }}() : rclcpp_lifecycle::LifecycleNode("{{ node_name }}") {
+{% elif is_component %}
 {{ node_class_name }}::{{ node_class_name }}(const rclcpp::NodeOptions& options) : Node("{{ node_name }}", options) {
 {% else %}
 {{ node_class_name }}::{{ node_class_name }}() : Node("{{ node_name }}") {
 {% endif %}
 
+{% if is_lifecycle %}
+this->declare_parameter_if_not_exists("startup_state", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE, "State to go to in startup");
 {% if has_params %}
+this->declareParameters();
+{% endif %}
+int startup_state = this->get_parameter("startup_state").as_int();
+if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED) {
+  trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
+}
+if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
+  trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
+}
+{% else %}
+{% if has_params %}
+  this->declareParameters();
   this->loadParameters();
 {% endif %}
   this->setup();
+{% endif %}
 }
+
+{% if is_lifecycle %}
+/**
+ * @brief Declares a parameter, if it is not already declared
+ * @tparam T anything convertible to either rclcpp::ParameterValue or
+ * rclcpp::ParameterType
+ */
+template <typename T>
+void {{ node_class_name }}::declare_parameter_if_not_exists(const std::string& name, const T& type_or_default, const std::string& desc) {
+  auto params = list_parameters({name}, 1);
+  if (std::find(params.names.begin(), params.names.end(), name) == params.names.end()) {
+    rcl_interfaces::msg::ParameterDescriptor descriptor;
+    descriptor.description = desc;
+    declare_parameter(name, type_or_default, descriptor);
+  }
+}
+{% endif %}
 
 
 {% if has_params %}
 /**
- * @brief Loads ROS parameters used in the node.
- *
+ * @brief Declares all parameters that this node uses
  */
-void {{ node_class_name }}::loadParameters() {
+void {{ node_class_name }}::declareParameters() {
 
   // set parameter description
   rcl_interfaces::msg::ParameterDescriptor param_desc;
@@ -68,6 +103,13 @@ void {{ node_class_name }}::loadParameters() {
 
   // declare parameter
   this->declare_parameter(kParam, rclcpp::ParameterType::PARAMETER_DOUBLE, param_desc);
+}
+
+/**
+ * @brief Loads ROS parameters used in the node.
+ *
+ */
+void {{ node_class_name }}::loadParameters() {
 
   // load parameter
   try {
@@ -128,7 +170,7 @@ void {{ node_class_name }}::setup() {
               std::placeholders::_1));
 {% endif %}
 
-{% if has_timer %}
+{% if has_timer and not is_lifecycle %}
   // create a timer for repeatedly invoking a callback to publish messages
   publish_timer_ =
     this->create_wall_timer(std::chrono::duration<double>(param_),
@@ -331,6 +373,147 @@ void {{ node_class_name }}::publishTimerCallback() {
 }
 {% endif %}
 
+{% if is_lifecycle %}
+/**
+ * @brief Resets all unique or shared pointers to subcomponents, in particular
+ * publisher/subscriber
+ */
+void {{ node_class_name }}::cleanUp() {
+{% if has_subscriber %}
+  subscriber_.reset();
+{% endif %}
+{% if has_publisher %}
+  publisher_.reset();
+{% endif %}
+{% if has_service_server %}
+  service_server_.reset();
+{% endif %}
+{% if has_action_server %}
+  action_server_.reset();
+{% endif %}
+{% if has_params %}
+  parameters_callback_.reset();
+{% endif %}
+}
+
+/// Transition callback for state configuring
+/**
+ * on_configure callback is being called when the lifecycle node
+ * enters the "configuring" state.
+ * Depending on the return value of this function, the state machine
+ * either invokes a transition to the "inactive" state or stays
+ * in "unconfigured".
+ * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
+ * TRANSITION_CALLBACK_FAILURE transitions to "unconfigured"
+ * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+ */
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_configure(
+    const rclcpp_lifecycle::State& state) {
+  RCLCPP_INFO(get_logger(), "on_configure() is called from state %s.", state.label().c_str());
+
+  loadParameters();
+  setup();
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+/// Transition callback for state activating
+/**
+ * on_activate callback is being called when the lifecycle node
+ * enters the "activating" state.
+ * Depending on the return value of this function, the state machine
+ * either invokes a transition to the "active" state or stays
+ * in "inactive".
+ * TRANSITION_CALLBACK_SUCCESS transitions to "active"
+ * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
+ * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+ */
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_activate(
+    const rclcpp_lifecycle::State& state) {
+  RCLCPP_INFO(get_logger(), "on_activate() is called from state %s.", state.label().c_str());
+
+{% if has_publisher %}
+  publisher_->on_activate();
+{% endif %}
+{% if has_timer %}
+  // create a timer for repeatedly invoking a callback to publish messages
+  publish_timer_ = this->create_wall_timer(std::chrono::duration<double>(param_),
+                                           std::bind(&{{ node_class_name }}::publishTimerCallback, this));
+{% endif %}
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+/// Transition callback for state deactivating
+/**
+ * on_deactivate callback is being called when the lifecycle node
+ * enters the "deactivating" state.
+ * Depending on the return value of this function, the state machine
+ * either invokes a transition to the "inactive" state or stays
+ * in "active".
+ * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
+ * TRANSITION_CALLBACK_FAILURE transitions to "active"
+ * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+ */
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_deactivate(
+    const rclcpp_lifecycle::State& state) {
+  RCLCPP_INFO(get_logger(), "on_deactivate() is called from state %s.", state.label().c_str());
+
+{% if has_timer %}
+  publish_timer_.reset();
+{% endif %}
+{% if has_publisher %}
+  publisher_->on_deactivate();
+{% endif %}
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+/// Transition callback for state cleaningup
+/**
+ * on_cleanup callback is being called when the lifecycle node
+ * enters the "cleaningup" state.
+ * Depending on the return value of this function, the state machine
+ * either invokes a transition to the "unconfigured" state or stays
+ * in "inactive".
+ * TRANSITION_CALLBACK_SUCCESS transitions to "unconfigured"
+ * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
+ * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+ */
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_cleanup(
+    const rclcpp_lifecycle::State& state) {
+  RCLCPP_INFO(get_logger(), "on cleanup is called from state %s.", state.label().c_str());
+
+  cleanUp();
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+/// Transition callback for state shutting down
+/**
+ * on_shutdown callback is being called when the lifecycle node
+ * enters the "shuttingdown" state.
+ * Depending on the return value of this function, the state machine
+ * either invokes a transition to the "finalized" state or stays
+ * in its current state.
+ * TRANSITION_CALLBACK_SUCCESS transitions to "finalized"
+ * TRANSITION_CALLBACK_FAILURE transitions to current state
+ * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
+ */
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_shutdown(
+    const rclcpp_lifecycle::State& state) {
+  RCLCPP_INFO(get_logger(), "on shutdown is called from state %s.", state.label().c_str());
+
+  if (state.id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE) {
+    on_deactivate(state);
+  }
+  if (state.id() >= lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
+    on_cleanup(state);
+  }
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+{% endif %}
 
 }
 
