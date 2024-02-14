@@ -67,7 +67,6 @@ is_component:
   type: bool
   default: false
 
-# TODO
 is_lifecycle:
   help: Make it a lifecycle node?
   when: "{{ template == 'ros2_cpp_pkg' }}"
