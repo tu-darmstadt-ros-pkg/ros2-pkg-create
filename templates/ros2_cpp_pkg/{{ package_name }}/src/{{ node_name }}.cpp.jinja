@@ -260,6 +260,7 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
     goal) {
 
   (void)uuid;
+  (void)goal;
 
   RCLCPP_INFO(this->get_logger(), "Received action goal request");
 
