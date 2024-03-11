@@ -23,10 +23,10 @@ namespace {{ package_name }} {
 
 // constants
 {% if has_subscriber %}
-const std::string {{ node_class_name }}::kInputTopic = "~/topic";
+const std::string {{ node_class_name }}::kInputTopic = "~/input";
 {% endif %}
 {% if has_publisher %}
-const std::string {{ node_class_name }}::kOutputTopic = "~/topic";
+const std::string {{ node_class_name }}::kOutputTopic = "~/output";
 {% endif %}
 {% if has_params %}
 const std::string {{ node_class_name }}::kParam = "param";
@@ -235,11 +235,13 @@ void {{ node_class_name }}::serviceCallback(
   std_srvs::srv::SetBool::Response::SharedPtr
     response) {
 
-  RCLCPP_INFO(this->get_logger(), "Received service request");
   (void)request;
+
+  RCLCPP_INFO(this->get_logger(), "Received service request");
 
   response->success = true;
 }
+
 {% endif %}
 
 
@@ -257,8 +259,9 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
   {{ package_name }}_interfaces::action::Fibonacci::Goal::ConstSharedPtr
     goal) {
 
-  RCLCPP_INFO(this->get_logger(), "Received action goal request with order %d", goal->order);
   (void)uuid;
+
+  RCLCPP_INFO(this->get_logger(), "Received action goal request");
 
   // accept action goal request
   return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
@@ -277,8 +280,9 @@ rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
     {{ package_name }}_interfaces::action::Fibonacci>>
     goal_handle) {
 
-  RCLCPP_INFO(this->get_logger(), "Received request to cancel action goal");
   (void)goal_handle;
+
+  RCLCPP_INFO(this->get_logger(), "Received request to cancel action goal");
 
   // accept action cancel request
   return rclcpp_action::CancelResponse::ACCEPT;

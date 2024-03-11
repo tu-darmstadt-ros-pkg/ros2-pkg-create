@@ -6,9 +6,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-{% if is_lifecycle %}
-find_package(lifecycle_msgs REQUIRED)
-{% endif %}
 find_package(rclcpp REQUIRED)
 {% if has_action_server %}
 find_package(rclcpp_action REQUIRED)
@@ -49,9 +46,6 @@ target_include_directories(${TARGET_NAME} PUBLIC
 target_compile_features(${TARGET_NAME} PUBLIC c_std_99 cxx_std_17)
 
 ament_target_dependencies(${TARGET_NAME}
-{% if is_lifecycle %}
-  lifecycle_msgs
-{% endif %}
   rclcpp
 {% if has_action_server %}
   rclcpp_action
