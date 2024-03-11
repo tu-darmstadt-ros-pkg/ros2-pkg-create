@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import os
+
 from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 {% if is_lifecycle %}
@@ -14,57 +15,55 @@ from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 {% endif %}
 
+
 def generate_launch_description():
 
-    name_arg = DeclareLaunchArgument("name", default_value="{{ node_name }}")
-    namespace_arg = DeclareLaunchArgument("namespace", default_value="")
-
-{% if has_params %}
-    config = os.path.join(
-        get_package_share_directory("{{ package_name }}"),
-        "config",
-        "params.yaml"
-    )
-
-{% endif %}
+    arg_name = DeclareLaunchArgument("name", default_value="{{ node_name }}")
+    arg_namespace = DeclareLaunchArgument("namespace", default_value="")
 {% if is_lifecycle %}
-    startup_state_arg = DeclareLaunchArgument('startup_state',
-                                              default_value='None')
+    arg_startup_state = DeclareLaunchArgument("startup_state", default_value="None")
+{% endif %}
+
+{% if is_lifecycle %}
     node = LifecycleNode(
+{% else %}
+    node = Node(
+{% endif %}
         package="{{ package_name }}",
         executable="{{ node_name }}",
         namespace=LaunchConfiguration("namespace"),
         name=LaunchConfiguration("name"),
+{% if has_params %}
+        parameters=[
+            os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"),
+        ],
+{% endif %}
         output="screen",
         emulate_tty=True,
-{% if has_params %}
-        parameters=[config]
-{% endif %}
     )
-    node_group = GroupAction(actions=[
-        SetParameter(name='startup_state',
-                     value=LaunchConfiguration('startup_state'),
-                     condition=LaunchConfigurationNotEquals(
-                         'startup_state', "None")), node
-    ])
+{% if is_lifecycle %}
+
+    node_with_startup_state = GroupAction(
+        actions=[
+            SetParameter(
+                name="startup_state",
+                value=LaunchConfiguration("startup_state"),
+                condition=LaunchConfigurationNotEquals("startup_state", "None")
+            ),
+            node
+        ]
+    )
+{% endif %}
 
     return LaunchDescription([
-        startup_state_arg,
-        node_group
-    ])
+        arg_name,
+        arg_namespace,
+{% if is_lifecycle %}
+        arg_startup_state,
+{% endif %}
+{% if is_lifecycle %}
+        node_with_startup_state,
 {% else %}
-
-    return LaunchDescription([
-        Node(
-            package="{{ package_name }}",
-            executable="{{ node_name }}",
-            namespace=LaunchConfiguration("namespace"),
-            name=LaunchConfiguration("name"),
-            output="screen",
-            emulate_tty=True,
-{% if has_params %}
-            parameters=[config]
+        node
 {% endif %}
-        )
     ])
-{% endif %}
