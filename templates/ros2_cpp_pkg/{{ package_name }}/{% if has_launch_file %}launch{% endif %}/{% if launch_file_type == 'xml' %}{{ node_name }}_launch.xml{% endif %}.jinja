@@ -1,6 +1,9 @@
 <launch>
 
-  <node pkg="{{ package_name }}" exec="{{ node_name }}" name="{{ node_name }}" output="screen">
+  <arg name="name" default="{{ node_name }}" />
+  <arg name="namespace" default="" />
+
+  <node pkg="{{ package_name }}" exec="{{ node_name }}" ns="$(arg namespace)" name="$(arg name)" output="screen">
 {% if has_params %}
     <param from="$(find-pkg-share {{ package_name }})/config/params.yaml" />
 {% endif %}

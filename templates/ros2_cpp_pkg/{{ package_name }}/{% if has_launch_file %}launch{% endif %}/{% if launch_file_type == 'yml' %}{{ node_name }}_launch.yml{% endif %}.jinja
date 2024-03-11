@@ -1,8 +1,15 @@
 launch:
+  - arg:
+      name: name
+      default: {{ node_name }}
+  - arg:
+      name: namespace
+      default: ""
   - node:
       pkg: {{ package_name }}
       exec: {{ node_name }}
-      name: {{ node_name }}
+      namespace: "$(var namespace)"
+      name: "$(var name)"
       output: screen
 {% if has_params %}
       param:

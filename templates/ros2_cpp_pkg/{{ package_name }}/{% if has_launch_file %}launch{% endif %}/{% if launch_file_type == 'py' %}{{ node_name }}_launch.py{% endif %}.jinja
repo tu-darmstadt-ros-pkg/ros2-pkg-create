@@ -9,10 +9,15 @@ from launch.conditions import LaunchConfigurationNotEquals
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import LifecycleNode, SetParameter
 {% else %}
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 {% endif %}
 
 def generate_launch_description():
+
+    name_arg = DeclareLaunchArgument("name", default_value="{{ node_name }}")
+    namespace_arg = DeclareLaunchArgument("namespace", default_value="")
 
 {% if has_params %}
     config = os.path.join(
@@ -28,7 +33,8 @@ def generate_launch_description():
     node = LifecycleNode(
         package="{{ package_name }}",
         executable="{{ node_name }}",
-        name="{{ node_name }}",
+        namespace=LaunchConfiguration("namespace"),
+        name=LaunchConfiguration("name"),
         output="screen",
         emulate_tty=True,
 {% if has_params %}
@@ -52,7 +58,8 @@ def generate_launch_description():
         Node(
             package="{{ package_name }}",
             executable="{{ node_name }}",
-            name="{{ node_name }}",
+            namespace=LaunchConfiguration("namespace"),
+            name=LaunchConfiguration("name"),
             output="screen",
             emulate_tty=True,
 {% if has_params %}
