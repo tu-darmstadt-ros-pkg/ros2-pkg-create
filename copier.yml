@@ -54,7 +54,7 @@ license:
 node_name:
   help: Node name
   type: str
-  default: "{{ package_name }}_node"
+  default: "{{ package_name }}"
 
 node_class_name:
   help: Class name of node
