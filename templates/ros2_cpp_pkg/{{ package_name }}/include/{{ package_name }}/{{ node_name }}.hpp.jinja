@@ -1,5 +1,9 @@
 #pragma once
 
+#include <memory>
+#include <string>
+#include <vector>
+
 {% if is_lifecycle %}
 #include <lifecycle_msgs/msg/state.hpp>
 #include <lifecycle_msgs/msg/transition.hpp>
@@ -68,10 +72,11 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 
  private:
-{% if has_params %}
+{% if has_params or is_lifecycle %}
 
   void declareParameters();
-
+{% endif %}
+{% if has_params %}
   void loadParameters();
 
   rcl_interfaces::msg::SetParametersResult parametersCallback(const std::vector<rclcpp::Parameter>& parameters);
@@ -97,7 +102,7 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 {% if has_action_server %}
 
-  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid,std::shared_ptr<const {{ package_name }}_interfaces::action::Fibonacci::Goal> goal);
+  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid, std::shared_ptr<const {{ package_name }}_interfaces::action::Fibonacci::Goal> goal);
 
   rclcpp_action::CancelResponse actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle);
 
@@ -107,7 +112,7 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 {% if has_timer %}
 
-  void publishTimerCallback();
+  void timerCallback();
 {% endif %}
 
  private:
@@ -137,14 +142,12 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 {% if has_timer %}
 
-  rclcpp::TimerBase::SharedPtr publish_timer_;
+  rclcpp::TimerBase::SharedPtr timer_;
 {% endif %}
 {% if has_params %}
 
   double param_ = 1.0;
 {% endif %}
-
-  int count_ = 0;
 };
 
 

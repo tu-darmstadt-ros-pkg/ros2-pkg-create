@@ -1,27 +1,25 @@
-#include <math.h>
-
+{% if is_lifecycle %}
+#include <algorithm>
+{% endif %}
+{% if has_timer %}
 #include <chrono>
+{% endif %}
 #include <functional>
+{% if has_action_server %}
 #include <thread>
+{% endif %}
 
 #include <{{ package_name }}/{{ node_name }}.hpp>
-
 {% if is_component %}
+
 #include <rclcpp_components/register_node_macro.hpp>
 RCLCPP_COMPONENTS_REGISTER_NODE({{ package_name }}::{{ node_class_name }})
 {% endif %}
 
 
-/**
- * @brief Namespace for {{ package_name }} package
- *
- */
 namespace {{ package_name }} {
 
 
-// parameter names
-
-// constants
 {% if has_subscriber %}
 const std::string {{ node_class_name }}::kInputTopic = "~/input";
 {% endif %}
@@ -33,10 +31,6 @@ const std::string {{ node_class_name }}::kParam = "param";
 {% endif %}
 
 
-/**
- * @brief Creates a {{ node_class_name }} node
- *
- */
 {% if is_lifecycle and is_component %}
 {{ node_class_name }}::{{ node_class_name }}(const rclcpp::NodeOptions& options) : rclcpp_lifecycle::LifecycleNode("{{ node_name }}", options) {
 {% elif is_lifecycle %}
@@ -47,35 +41,26 @@ const std::string {{ node_class_name }}::kParam = "param";
 {{ node_class_name }}::{{ node_class_name }}() : Node("{{ node_name }}") {
 {% endif %}
 
+  this->declareParameters();
 {% if is_lifecycle %}
-this->declare_parameter_if_not_exists("startup_state", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE, "State to go to in startup");
-{% if has_params %}
-this->declareParameters();
-{% endif %}
-int startup_state = this->get_parameter("startup_state").as_int();
-if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED) {
-  trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
-}
-if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
-  trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
-}
+  int startup_state = this->get_parameter("startup_state").as_int();
+  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
+    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
+  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
+    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
 {% else %}
 {% if has_params %}
-  this->declareParameters();
   this->loadParameters();
 {% endif %}
   this->setup();
 {% endif %}
 }
-
 {% if is_lifecycle %}
-/**
- * @brief Declares a parameter, if it is not already declared
- * @tparam T anything convertible to either rclcpp::ParameterValue or
- * rclcpp::ParameterType
- */
+
+
 template <typename T>
 void {{ node_class_name }}::declare_parameter_if_not_exists(const std::string& name, const T& type_or_default, const std::string& desc) {
+
   auto params = list_parameters({name}, 1);
   if (std::find(params.names.begin(), params.names.end(), name) == params.names.end()) {
     rcl_interfaces::msg::ParameterDescriptor descriptor;
@@ -84,34 +69,30 @@ void {{ node_class_name }}::declare_parameter_if_not_exists(const std::string& n
   }
 }
 {% endif %}
+{% if has_params or is_lifecycle %}
 
 
-{% if has_params %}
-/**
- * @brief Declares all parameters that this node uses
- */
 void {{ node_class_name }}::declareParameters() {
+{% if is_lifecycle %}
 
-  // set parameter description
+  this->declare_parameter_if_not_exists("startup_state", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE, "Initial lifecycle state");
+{% endif %}
+{% if has_params %}
+
   rcl_interfaces::msg::ParameterDescriptor param_desc;
   param_desc.description = "TODO";
-
-  // set allowed parameter range
   rcl_interfaces::msg::FloatingPointRange param_range;
   param_range.set__from_value(0.1).set__to_value(10.0).set__step(0.1);
   param_desc.floating_point_range = {param_range};
-
-  // declare parameter
   this->declare_parameter(kParam, rclcpp::ParameterType::PARAMETER_DOUBLE, param_desc);
+{% endif %}
 }
+{% endif %}
+{% if has_params %}
 
-/**
- * @brief Loads ROS parameters used in the node.
- *
- */
+
 void {{ node_class_name }}::loadParameters() {
 
-  // load parameter
   try {
     param_ = this->get_parameter(kParam).as_double();
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
@@ -119,81 +100,14 @@ void {{ node_class_name }}::loadParameters() {
     exit(EXIT_FAILURE);
   }
 }
-{% endif %}
 
 
-/**
- * @brief Sets up subscribers, publishers, and more.
- *
- */
-void {{ node_class_name }}::setup() {
-
-{% if has_params %}
-  // create a callback for dynamic parameter configuration
-  parameters_callback_ = this->add_on_set_parameters_callback(
-    std::bind(&{{ node_class_name }}::parametersCallback, this, std::placeholders::_1));
-{% endif %}
-
-{% if has_subscriber %}
-  // create a subscriber for handling incoming messages
-  subscriber_ =
-    this->create_subscription<std_msgs::msg::Int32>(
-      kInputTopic, 10,
-      std::bind(&{{ node_class_name }}::topicCallback, this, std::placeholders::_1));
-  RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
-{% endif %}
-
-{% if has_publisher %}
-  // create a publisher for publishing messages
-  publisher_ = this->create_publisher<std_msgs::msg::Int32>(
-    kOutputTopic, 10);
-  RCLCPP_INFO(this->get_logger(), "Publishing to '%s'", publisher_->get_topic_name());
-{% endif %}
-
-{% if has_service_server %}
-  // create a service server for handling service calls
-  service_server_ =
-    this->create_service<std_srvs::srv::SetBool>(
-      "service", std::bind(&{{ node_class_name }}::serviceCallback, this,
-                           std::placeholders::_1, std::placeholders::_2));
-{% endif %}
-
-{% if has_action_server %}
-  // create an action server for handling action goal requests
-  action_server_ = rclcpp_action::create_server<
-    {{ package_name }}_interfaces::action::Fibonacci>(
-    this, "action",
-    std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1,
-              std::placeholders::_2),
-    std::bind(&{{ node_class_name }}::actionHandleCancel, this, std::placeholders::_1),
-    std::bind(&{{ node_class_name }}::actionHandleAccepted, this,
-              std::placeholders::_1));
-{% endif %}
-
-{% if has_timer and not is_lifecycle %}
-  // create a timer for repeatedly invoking a callback to publish messages
-  publish_timer_ =
-    this->create_wall_timer(std::chrono::duration<double>(param_),
-                            std::bind(&{{ node_class_name }}::publishTimerCallback,
-                            this));
-{% endif %}
-}
-
-
-{% if has_params %}
-/**
- * @brief This callback is invoked when a parameter value has changed
- *
- * @param[in] parameters                                  input
- *
- * @return    rcl_interfaces::msg::SetParametersResult    output
- */
 rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallback(
-  const std::vector<rclcpp::Parameter> &parameters) {
+  const std::vector<rclcpp::Parameter>& parameters) {
 
   // update timer with newly configured period parameter value
   rcl_interfaces::msg::SetParametersResult result;
-  for (const auto &param : parameters) {
+  for (const auto& param : parameters) {
     if (param.get_name() == kParam) {
       param_ = param.as_double();
     }
@@ -208,27 +122,69 @@ rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallba
 {% endif %}
 
 
-{% if has_subscriber %}
-/**
- * @brief This callback is invoked when the subscriber receives a message
- *
- * @param[in] msg   input
- */
-void {{ node_class_name }}::topicCallback(
-  const std_msgs::msg::Int32 &msg) {
+void {{ node_class_name }}::setup() {
+{% if has_params %}
 
-  RCLCPP_INFO(this->get_logger(), "I heard: '%d'", msg.data);
+  // callback for dynamic parameter configuration
+  parameters_callback_ = this->add_on_set_parameters_callback(
+    std::bind(&{{ node_class_name }}::parametersCallback, this, std::placeholders::_1));
+{% endif %}
+{% if has_subscriber %}
+
+  // subscriber for handling incoming messages
+  subscriber_ =
+    this->create_subscription<std_msgs::msg::Int32>(
+      kInputTopic, 10,
+      std::bind(&{{ node_class_name }}::topicCallback, this, std::placeholders::_1));
+  RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
+{% endif %}
+{% if has_publisher %}
+
+  // publisher for publishing outgoing messages
+  publisher_ = this->create_publisher<std_msgs::msg::Int32>(
+    kOutputTopic, 10);
+  RCLCPP_INFO(this->get_logger(), "Publishing to '%s'", publisher_->get_topic_name());
+{% endif %}
+{% if has_service_server %}
+
+  // service server for handling service calls
+  service_server_ =
+    this->create_service<std_srvs::srv::SetBool>(
+      "service", std::bind(&{{ node_class_name }}::serviceCallback, this,
+                           std::placeholders::_1, std::placeholders::_2));
+{% endif %}
+{% if has_action_server %}
+
+  // action server for handling action goal requests
+  action_server_ = rclcpp_action::create_server<
+    {{ package_name }}_interfaces::action::Fibonacci>(
+    this, "action",
+    std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1,
+              std::placeholders::_2),
+    std::bind(&{{ node_class_name }}::actionHandleCancel, this, std::placeholders::_1),
+    std::bind(&{{ node_class_name }}::actionHandleAccepted, this,
+              std::placeholders::_1));
+{% endif %}
+{% if has_timer and not is_lifecycle %}
+
+  // timer for repeatedly invoking a callback to publish messages
+  timer_ =
+    this->create_wall_timer(std::chrono::duration<double>(param_),
+                            std::bind(&{{ node_class_name }}::timerCallback,
+                            this));
+{% endif %}
+}
+{% if has_subscriber %}
+
+
+void {{ node_class_name }}::topicCallback(const std_msgs::msg::Int32& msg) {
+
+  RCLCPP_INFO(this->get_logger(), "Message received: '%d'", msg.data);
 }
 {% endif %}
-
-
 {% if has_service_server %}
-/**
- * @brief This callback is invoked when the service is called
- *
- * @param[in] request   input1
- * @param[in] response  input2
- */
+
+
 void {{ node_class_name }}::serviceCallback(
   const std_srvs::srv::SetBool::Request::SharedPtr
     request,
@@ -241,21 +197,12 @@ void {{ node_class_name }}::serviceCallback(
 
   response->success = true;
 }
-
 {% endif %}
-
-
 {% if has_action_server %}
-/**
- * @brief This callback is invoked when an action goal is requested
- *
- * @param[in] uuid                          input1
- * @param[in] goal                          input2
- *
- * @return    rclcpp_action::GoalResponse   output
- */
+
+
 rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
-  const rclcpp_action::GoalUUID &uuid,
+  const rclcpp_action::GoalUUID& uuid,
   {{ package_name }}_interfaces::action::Fibonacci::Goal::ConstSharedPtr
     goal) {
 
@@ -264,18 +211,10 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(
 
   RCLCPP_INFO(this->get_logger(), "Received action goal request");
 
-  // accept action goal request
   return rclcpp_action::GoalResponse::ACCEPT_AND_EXECUTE;
 }
 
 
-/**
- * @brief This callback is invoked when a running action is requested to cancel
- *
- * @param[in] goal_handle                     input
- *
- * @return    rclcpp_action::CancelResponse   output
- */
 rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     {{ package_name }}_interfaces::action::Fibonacci>>
@@ -285,22 +224,16 @@ rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(
 
   RCLCPP_INFO(this->get_logger(), "Received request to cancel action goal");
 
-  // accept action cancel request
   return rclcpp_action::CancelResponse::ACCEPT;
 }
 
 
-/**
- * @brief This callback is invoked when an action goal request is accepted
- *
- * @param[in] goal_handle     input
- */
 void {{ node_class_name }}::actionHandleAccepted(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     {{ package_name }}_interfaces::action::Fibonacci>>
     goal_handle) {
 
-  // execute the action in a separate thread to avoid blocking
+  // execute action in a separate thread to avoid blocking
   std::thread{
     std::bind(&{{ node_class_name }}::actionExecute, this, std::placeholders::_1),
     goal_handle}
@@ -308,11 +241,6 @@ void {{ node_class_name }}::actionHandleAccepted(
 }
 
 
-/**
- * @brief Execution of action
- *
- * @param[in] goal_handle     input
- */
 void {{ node_class_name }}::actionExecute(
   const std::shared_ptr<rclcpp_action::ServerGoalHandle<
     {{ package_name }}_interfaces::action::Fibonacci>>
@@ -331,7 +259,7 @@ void {{ node_class_name }}::actionExecute(
     std::make_shared<{{ package_name }}_interfaces::action::Fibonacci::Result>();
 
   // initialize the Fibonacci sequence
-  auto &partial_sequence = feedback->partial_sequence;
+  auto& partial_sequence = feedback->partial_sequence;
   partial_sequence.push_back(0);
   partial_sequence.push_back(1);
 
@@ -366,24 +294,69 @@ void {{ node_class_name }}::actionExecute(
   }
 }
 {% endif %}
-
-
 {% if has_timer %}
-/**
- * @brief This callback is invoked every period seconds by the timer
- *
- */
-void {{ node_class_name }}::publishTimerCallback() {
 
+
+void {{ node_class_name }}::timerCallback() {
+
+  RCLCPP_INFO(this->get_logger(), "Timer triggered");
 }
 {% endif %}
-
 {% if is_lifecycle %}
-/**
- * @brief Resets all unique or shared pointers to subcomponents, in particular
- * publisher/subscriber
- */
-void {{ node_class_name }}::cleanUp() {
+
+
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_configure(
+    const rclcpp_lifecycle::State& state) {
+
+  RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
+
+{% if has_params %}
+  loadParameters();
+{% endif %}
+  setup();
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_activate(
+    const rclcpp_lifecycle::State& state) {
+
+  RCLCPP_INFO(get_logger(), "Activating to enter 'active' state from '%s' state", state.label().c_str());
+
+{% if has_publisher %}
+  publisher_->on_activate();
+{% endif %}
+{% if has_timer %}
+  timer_ = this->create_wall_timer(std::chrono::duration<double>(param_),
+                                   std::bind(&{{ node_class_name }}::timerCallback, this));
+{% endif %}
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_deactivate(
+    const rclcpp_lifecycle::State& state) {
+
+  RCLCPP_INFO(get_logger(), "Deactivating to enter 'inactive' state from '%s' state", state.label().c_str());
+
+{% if has_timer %}
+  timer_.reset();
+{% endif %}
+{% if has_publisher %}
+  publisher_->on_deactivate();
+{% endif %}
+
+  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+}
+
+
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_cleanup(
+    const rclcpp_lifecycle::State& state) {
+
+  RCLCPP_INFO(get_logger(), "Cleaning up to enter 'unconfigured' state from '%s' state", state.label().c_str());
+
 {% if has_subscriber %}
   subscriber_.reset();
 {% endif %}
@@ -399,132 +372,32 @@ void {{ node_class_name }}::cleanUp() {
 {% if has_params %}
   parameters_callback_.reset();
 {% endif %}
-}
-
-/// Transition callback for state configuring
-/**
- * on_configure callback is being called when the lifecycle node
- * enters the "configuring" state.
- * Depending on the return value of this function, the state machine
- * either invokes a transition to the "inactive" state or stays
- * in "unconfigured".
- * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
- * TRANSITION_CALLBACK_FAILURE transitions to "unconfigured"
- * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
- */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_configure(
-    const rclcpp_lifecycle::State& state) {
-  RCLCPP_INFO(get_logger(), "on_configure() is called from state %s.", state.label().c_str());
-
-{% if has_params %}
-  loadParameters();
-{% endif %}
-  setup();
-
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-}
-
-/// Transition callback for state activating
-/**
- * on_activate callback is being called when the lifecycle node
- * enters the "activating" state.
- * Depending on the return value of this function, the state machine
- * either invokes a transition to the "active" state or stays
- * in "inactive".
- * TRANSITION_CALLBACK_SUCCESS transitions to "active"
- * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
- * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
- */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_activate(
-    const rclcpp_lifecycle::State& state) {
-  RCLCPP_INFO(get_logger(), "on_activate() is called from state %s.", state.label().c_str());
-
-{% if has_publisher %}
-  publisher_->on_activate();
-{% endif %}
 {% if has_timer %}
-  // create a timer for repeatedly invoking a callback to publish messages
-  publish_timer_ = this->create_wall_timer(std::chrono::duration<double>(param_),
-                                           std::bind(&{{ node_class_name }}::publishTimerCallback, this));
+  timer_.reset();
 {% endif %}
 
   return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
 }
 
-/// Transition callback for state deactivating
-/**
- * on_deactivate callback is being called when the lifecycle node
- * enters the "deactivating" state.
- * Depending on the return value of this function, the state machine
- * either invokes a transition to the "inactive" state or stays
- * in "active".
- * TRANSITION_CALLBACK_SUCCESS transitions to "inactive"
- * TRANSITION_CALLBACK_FAILURE transitions to "active"
- * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
- */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_deactivate(
-    const rclcpp_lifecycle::State& state) {
-  RCLCPP_INFO(get_logger(), "on_deactivate() is called from state %s.", state.label().c_str());
 
-{% if has_timer %}
-  publish_timer_.reset();
-{% endif %}
-{% if has_publisher %}
-  publisher_->on_deactivate();
-{% endif %}
-
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-}
-
-/// Transition callback for state cleaningup
-/**
- * on_cleanup callback is being called when the lifecycle node
- * enters the "cleaningup" state.
- * Depending on the return value of this function, the state machine
- * either invokes a transition to the "unconfigured" state or stays
- * in "inactive".
- * TRANSITION_CALLBACK_SUCCESS transitions to "unconfigured"
- * TRANSITION_CALLBACK_FAILURE transitions to "inactive"
- * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
- */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_cleanup(
-    const rclcpp_lifecycle::State& state) {
-  RCLCPP_INFO(get_logger(), "on cleanup is called from state %s.", state.label().c_str());
-
-  cleanUp();
-
-  return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-}
-
-/// Transition callback for state shutting down
-/**
- * on_shutdown callback is being called when the lifecycle node
- * enters the "shuttingdown" state.
- * Depending on the return value of this function, the state machine
- * either invokes a transition to the "finalized" state or stays
- * in its current state.
- * TRANSITION_CALLBACK_SUCCESS transitions to "finalized"
- * TRANSITION_CALLBACK_FAILURE transitions to current state
- * TRANSITION_CALLBACK_ERROR or any uncaught exceptions to "errorprocessing"
- */
 rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ node_class_name }}::on_shutdown(
     const rclcpp_lifecycle::State& state) {
-  RCLCPP_INFO(get_logger(), "on shutdown is called from state %s.", state.label().c_str());
 
-  if (state.id() == lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE) {
+  RCLCPP_INFO(get_logger(), "Shutting down to enter 'finalized' state from '%s' state", state.label().c_str());
+
+  if (state.id() >= lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE)
     on_deactivate(state);
-  }
-  if (state.id() >= lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE) {
+  if (state.id() >= lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
     on_cleanup(state);
-  }
 
   return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
 }
 {% endif %}
 
-}
 
+}
 {% if not is_component %}
+
 
 int main(int argc, char *argv[]) {
 
