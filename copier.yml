@@ -114,3 +114,9 @@ has_timer:
   help: Add a timer callback?
   type: bool
   default: false
+
+auto_shutdown:
+  help: Automatically shutdown the node after launch (useful in CI/CD)?
+  when: false
+  type: bool
+  default: false

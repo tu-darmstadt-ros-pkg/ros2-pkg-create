@@ -42,6 +42,8 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--no-has-action-server", dest="has-action-server", default=None, action="store_false")
     parser.add_argument("--has-timer", action="store_true", default=None, help="Add a timer callback?")
     parser.add_argument("--no-has-timer", dest="has-timer", default=None, action="store_false")
+    parser.add_argument("--auto-shutdown", action="store_true", default=None, help="Automatically shutdown the node after launch (useful in CI/CD)?")
+    parser.add_argument("--no-auto-shutdown", dest="auto-shutdown", default=None, action="store_false")
 
     parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 

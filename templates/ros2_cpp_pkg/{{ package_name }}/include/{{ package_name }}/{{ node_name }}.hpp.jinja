@@ -115,6 +115,10 @@ class {{ node_class_name }} : public rclcpp::Node {
 
   void timerCallback();
 {% endif %}
+{% if auto_shutdown %}
+
+  void autoShutdownTimerCallback();
+{% endif %}
 
  private:
 {% if has_params %}
@@ -148,6 +152,10 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% if has_params %}
 
   double param_ = 1.0;
+{% endif %}
+{% if auto_shutdown %}
+
+  rclcpp::TimerBase::SharedPtr auto_shutdown_timer_;
 {% endif %}
 };
 

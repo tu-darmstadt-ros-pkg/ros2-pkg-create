@@ -201,6 +201,13 @@ void {{ node_class_name }}::setup() {
                             std::bind(&{{ node_class_name }}::timerCallback,
                             this));
 {% endif %}
+{% if auto_shutdown and not is_lifecycle %}
+
+  auto_shutdown_timer_ =
+    this->create_wall_timer(std::chrono::duration<double>(3.0),
+                            std::bind(&{{ node_class_name }}::autoShutdownTimerCallback,
+                            this));
+{% endif %}
 }
 {% if has_subscriber %}
 
@@ -367,6 +374,18 @@ void {{ node_class_name }}::timerCallback() {
   RCLCPP_INFO(this->get_logger(), "Timer triggered");
 }
 {% endif %}
+{% if auto_shutdown %}
+
+
+/**
+ * @brief Processes timer triggers to auto-shutdown the node
+ */
+void {{ node_class_name }}::autoShutdownTimerCallback() {
+
+  RCLCPP_INFO(this->get_logger(), "Shutting down");
+  rclcpp::shutdown();
+}
+{% endif %}
 {% if is_lifecycle %}
 
 
@@ -407,6 +426,13 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 {% if has_timer %}
   timer_ = this->create_wall_timer(std::chrono::duration<double>(param_),
                                    std::bind(&{{ node_class_name }}::timerCallback, this));
+{% endif %}
+{% if auto_shutdown %}
+
+  auto_shutdown_timer_ =
+    this->create_wall_timer(std::chrono::duration<double>(3.0),
+                            std::bind(&{{ node_class_name }}::autoShutdownTimerCallback,
+                            this));
 {% endif %}
 
   return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
