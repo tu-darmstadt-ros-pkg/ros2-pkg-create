@@ -46,7 +46,9 @@ const std::string {{ node_class_name }}::kParam = "param";
 {{ node_class_name }}::{{ node_class_name }}() : Node("{{ node_name }}") {
 {% endif %}
 
+{% if has_params or is_lifecycle %}
   this->declareParameters();
+{% endif %}
 {% if is_lifecycle %}
   int startup_state = this->get_parameter("startup_state").as_int();
   if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
