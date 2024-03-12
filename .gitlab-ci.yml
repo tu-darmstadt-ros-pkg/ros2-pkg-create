@@ -34,52 +34,61 @@ pkg_default:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_default
+    - source install/setup.bash
     - ros2 launch pkg_default pkg_default.launch.xml
 
 pkg_component:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_component
+    - source install/setup.bash
     - ros2 launch pkg_component pkg_component.launch.xml
 
 pkg_lifecycle:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_lifecycle
+    - source install/setup.bash
     - ros2 launch pkg_lifecycle pkg_lifecycle.launch.xml
 
 pkg_service:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_service
+    - source install/setup.bash
     - ros2 launch pkg_service pkg_service.launch.xml
 
 pkg_action:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_action
+    - source install/setup.bash
     - ros2 launch pkg_action pkg_action.launch.xml
 
 pkg_timer:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_timer
+    - source install/setup.bash
     - ros2 launch pkg_timer pkg_timer.launch.xml
 
 pkg_no_params:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_no_params
+    - source install/setup.bash
     - ros2 launch pkg_no_params pkg_no_params.launch.xml
 
 pkg_no_launch_file:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_no_launch_file
+    - source install/setup.bash
     - ros2 run pkg_no_launch_file pkg_no_launch_file --ros-args -p param:=1.0
 
 pkg_all:
   extends: .build
   script:
     - colcon build --packages-up-to pkg_all
+    - source install/setup.bash
     - ros2 launch pkg_all pkg_all.launch.xml
