@@ -82,8 +82,8 @@ launch_file_type:
   help: Type of launch file
   when: "{{ has_launch_file }}"
   type: str
-  default: xml
-  choices: [xml, py, yml]
+  default: py
+  choices: [py, xml, yml]
 
 has_params:
   help: Add parameter loading?
