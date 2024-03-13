@@ -66,6 +66,14 @@ class {{ node_class_name }} : public rclcpp::Node {
 
   static const std::string kOutputTopic;
 {% endif %}
+{% if has_service_server %}
+
+  static const std::string kService;
+{% endif %}
+{% if has_action_server %}
+
+  static const std::string kAction;
+{% endif %}
 {% if has_params %}
 
   static const std::string kParam;
