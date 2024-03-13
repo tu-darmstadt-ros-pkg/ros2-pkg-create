@@ -135,7 +135,7 @@ interface_types:
   help: Interfaces types
   when: "{{ template == 'ros2_interfaces_pkg' }}"
   type: str
-  default: [msg]
+  default: [msg, srv, action]
   choices:
     Message: msg
     Service: srv
