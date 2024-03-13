@@ -13,7 +13,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("destination", type=str, help="Destination directory")
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
 
-    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg"], required=True, help="Template")
+    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg", "ros2_interfaces_pkg"], required=True, help="Template")
     parser.add_argument("--package_name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")
@@ -44,6 +44,10 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--no-has-timer", dest="has-timer", default=None, action="store_false")
     parser.add_argument("--auto-shutdown", action="store_true", default=None, help="Automatically shutdown the node after launch (useful in CI/CD)?")
     parser.add_argument("--no-auto-shutdown", dest="auto-shutdown", default=None, action="store_false")
+    parser.add_argument("--interface-types", type=str, default=None, choices=["Message", "Service", "Action"], help="Interfaces types")
+    parser.add_argument("--msg-name", type=str, default=None, help="Message name")
+    parser.add_argument("--srv-name", type=str, default=None, help="Service name")
+    parser.add_argument("--action-name", type=str, default=None, help="Action name")
 
     parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
