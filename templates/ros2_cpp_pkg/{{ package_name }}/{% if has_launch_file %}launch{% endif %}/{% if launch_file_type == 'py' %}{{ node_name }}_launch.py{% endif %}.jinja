@@ -18,10 +18,10 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    arg_name = DeclareLaunchArgument("name", default_value="{{ node_name }}")
-    arg_namespace = DeclareLaunchArgument("namespace", default_value="")
+    arg_name = DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name")
+    arg_namespace = DeclareLaunchArgument("namespace", default_value="", description="node namespace")
 {% if is_lifecycle %}
-    arg_startup_state = DeclareLaunchArgument("startup_state", default_value="None")
+    arg_startup_state = DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state")
 {% endif %}
 
 {% if is_lifecycle %}

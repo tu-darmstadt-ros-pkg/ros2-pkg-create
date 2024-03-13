@@ -1,7 +1,7 @@
 <launch>
 
-  <arg name="name" default="{{ node_name }}" />
-  <arg name="namespace" default="" />
+  <arg name="name" default="{{ node_name }}" description="node name" />
+  <arg name="namespace" default="" description="node namespace" />
 
   <node pkg="{{ package_name }}" exec="{{ node_name }}" namespace="$(var namespace)" name="$(var name)" output="screen">
 {% if has_params %}
