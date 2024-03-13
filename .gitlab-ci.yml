@@ -107,6 +107,7 @@ pkg_interfaces:
   extends: .build-ros2_interfaces_pkg
   script:
     - colcon build --packages-up-to pkg_interfaces
+    - source install/setup.bash
     - ros2 interface show pkg_interfaces/msg/Message
     - ros2 interface show pkg_interfaces/srv/Service
     - ros2 interface show pkg_interfaces/action/Action
