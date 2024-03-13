@@ -7,7 +7,7 @@ generate:
   stage: generate
   image: python:3.10
   before_script:
-    - pip install "copier~=8.3.0" "jinja2-strcase~=0.0.2"
+    - pip install "copier~=9.1.1" "jinja2-strcase~=0.0.2"
     - git config --global user.name "dummy"
     - git config --global user.email "dummy@dummy.com"
   script:
