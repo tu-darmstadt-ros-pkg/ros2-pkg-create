@@ -58,28 +58,6 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 
  private:
-{% if has_subscriber %}
-
-  static const std::string kInputTopic;
-{% endif %}
-{% if has_publisher %}
-
-  static const std::string kOutputTopic;
-{% endif %}
-{% if has_service_server %}
-
-  static const std::string kService;
-{% endif %}
-{% if has_action_server %}
-
-  static const std::string kAction;
-{% endif %}
-{% if has_params %}
-
-  static const std::string kParam;
-{% endif %}
-
- private:
 {% if has_params or is_lifecycle %}
 
   void declareParameters();

@@ -20,23 +20,6 @@ RCLCPP_COMPONENTS_REGISTER_NODE({{ package_name }}::{{ node_class_name }})
 namespace {{ package_name }} {
 
 
-{% if has_subscriber %}
-const std::string {{ node_class_name }}::kInputTopic = "~/input";
-{% endif %}
-{% if has_publisher %}
-const std::string {{ node_class_name }}::kOutputTopic = "~/output";
-{% endif %}
-{% if has_service_server %}
-const std::string {{ node_class_name }}::kService = "~/service";
-{% endif %}
-{% if has_action_server %}
-const std::string {{ node_class_name }}::kAction = "~/action";
-{% endif %}
-{% if has_params %}
-const std::string {{ node_class_name }}::kParam = "param";
-{% endif %}
-
-
 /**
  * @brief Constructor
  *
@@ -90,7 +73,7 @@ void {{ node_class_name }}::declareParameters() {
   rcl_interfaces::msg::FloatingPointRange param_range;
   param_range.set__from_value(0.1).set__to_value(10.0).set__step(0.1);
   param_desc.floating_point_range = {param_range};
-  this->declare_parameter(kParam, rclcpp::ParameterType::PARAMETER_DOUBLE, param_desc);
+  this->declare_parameter("param", rclcpp::ParameterType::PARAMETER_DOUBLE, param_desc);
 {% endif %}
 }
 {% endif %}
@@ -103,9 +86,9 @@ void {{ node_class_name }}::declareParameters() {
 void {{ node_class_name }}::loadParameters() {
 
   try {
-    param_ = this->get_parameter(kParam).as_double();
+    param_ = this->get_parameter("param").as_double();
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
-    RCLCPP_FATAL(this->get_logger(), "Parameter '%s' is required", kParam.c_str());
+    RCLCPP_FATAL(this->get_logger(), "Parameter '%s' is required", "param");
     exit(EXIT_FAILURE);
   }
 }
@@ -121,7 +104,7 @@ rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallba
 
   // update timer with newly configured period parameter value
   for (const auto& param : parameters) {
-    if (param.get_name() == kParam) {
+    if (param.get_name() == "param") {
       param_ = param.as_double();
     }
   }
@@ -148,26 +131,26 @@ void {{ node_class_name }}::setup() {
 {% if has_subscriber %}
 
   // subscriber for handling incoming messages
-  subscriber_ = this->create_subscription<std_msgs::msg::Int32>(kInputTopic, 10, std::bind(&{{ node_class_name }}::topicCallback, this, std::placeholders::_1));
+  subscriber_ = this->create_subscription<std_msgs::msg::Int32>("~/input", 10, std::bind(&{{ node_class_name }}::topicCallback, this, std::placeholders::_1));
   RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
 {% endif %}
 {% if has_publisher %}
 
   // publisher for publishing outgoing messages
-  publisher_ = this->create_publisher<std_msgs::msg::Int32>(kOutputTopic, 10);
+  publisher_ = this->create_publisher<std_msgs::msg::Int32>("~/output", 10);
   RCLCPP_INFO(this->get_logger(), "Publishing to '%s'", publisher_->get_topic_name());
 {% endif %}
 {% if has_service_server %}
 
   // service server for handling service calls
-  service_server_ = this->create_service<std_srvs::srv::SetBool>(kService, std::bind(&{{ node_class_name }}::serviceCallback, this, std::placeholders::_1, std::placeholders::_2));
+  service_server_ = this->create_service<std_srvs::srv::SetBool>("~/service", std::bind(&{{ node_class_name }}::serviceCallback, this, std::placeholders::_1, std::placeholders::_2));
 {% endif %}
 {% if has_action_server %}
 
   // action server for handling action goal requests
   action_server_ = rclcpp_action::create_server<{{ package_name }}_actions::action::Fibonacci>(
     this,
-    kAction,
+    "~/action",
     std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1, std::placeholders::_2),
     std::bind(&{{ node_class_name }}::actionHandleCancel, this, std::placeholders::_1),
     std::bind(&{{ node_class_name }}::actionHandleAccepted, this, std::placeholders::_1)
