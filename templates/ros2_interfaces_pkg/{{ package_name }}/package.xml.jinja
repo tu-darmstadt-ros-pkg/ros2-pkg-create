@@ -12,24 +12,10 @@
   <license>{{ license }}</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
+  <build_depend>rosidl_default_generators</build_depend>
+  <exec_depend>rosidl_default_runtime</exec_depend>
 
-  <depend>rclcpp</depend>
-{% if has_action_server %}
-  <depend>rclcpp_action</depend>
-{% endif %}
-{% if is_component %}
-  <depend>rclcpp_components</depend>
-{% endif %}
-{% if is_lifecycle %}
-  <depend>rclcpp_lifecycle</depend>
-{% endif %}
-  <depend>std_msgs</depend>
-{% if has_service_server %}
-  <depend>std_srvs</depend>
-{% endif %}
-{% if has_action_server %}
-  <depend>{{ package_name }}_actions</depend>
-{% endif %}
+  <member_of_group>rosidl_interface_packages</member_of_group>
 
   <export>
     <build_type>ament_cmake</build_type>

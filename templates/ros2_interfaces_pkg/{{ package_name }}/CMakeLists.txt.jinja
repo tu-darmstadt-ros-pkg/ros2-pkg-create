@@ -1,0 +1,21 @@
+cmake_minimum_required(VERSION 3.8)
+project({{ package_name }})
+
+find_package(rosidl_default_generators REQUIRED)
+
+rosidl_generate_interfaces(${PROJECT_NAME}
+{% if 'msg' in interface_types %}
+  msg/{{ msg_name }}.msg
+{% endif %}
+{% if 'srv' in interface_types %}
+  srv/{{ srv_name }}.srv
+{% endif %}
+{% if 'action' in interface_types %}
+  action/{{ action_name }}.action
+{% endif %}
+  DEPENDENCIES
+)
+
+ament_export_dependencies(rosidl_default_runtime)
+
+ament_package()

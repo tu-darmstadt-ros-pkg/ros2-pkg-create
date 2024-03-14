@@ -7,8 +7,15 @@ endif()
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
+{% if has_action_server %}
+find_package(rclcpp_action REQUIRED)
+find_package({{ package_name }}_actions REQUIRED)
+{% endif %}
 {% if is_component %}
 find_package(rclcpp_components REQUIRED)
+{% endif %}
+{% if is_lifecycle %}
+find_package(rclcpp_lifecycle REQUIRED)
 {% endif %}
 find_package(std_msgs REQUIRED)
 {% if has_service_server %}
@@ -22,7 +29,7 @@ set(TARGET_NAME {{ node_name }})
 {% endif %}
 
 {% if is_component %}
-add_library(${TARGET_NAME} src/{{ node_name }}.cpp)
+add_library(${TARGET_NAME} SHARED src/{{ node_name }}.cpp)
 
 rclcpp_components_register_node(${TARGET_NAME}
   PLUGIN "{{ package_name }}::{{ node_class_name }}"
@@ -40,8 +47,15 @@ target_compile_features(${TARGET_NAME} PUBLIC c_std_99 cxx_std_17)
 
 ament_target_dependencies(${TARGET_NAME}
   rclcpp
+{% if has_action_server %}
+  rclcpp_action
+  {{ package_name }}_actions
+{% endif %}
 {% if is_component %}
   rclcpp_components
+{% endif %}
+{% if is_lifecycle %}
+  rclcpp_lifecycle
 {% endif %}
   std_msgs
 {% if has_service_server %}

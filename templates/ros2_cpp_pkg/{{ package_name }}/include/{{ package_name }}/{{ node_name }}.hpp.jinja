@@ -1,19 +1,39 @@
 #pragma once
 
+#include <memory>
+#include <string>
+#include <vector>
+
+{% if is_lifecycle %}
+#include <lifecycle_msgs/msg/state.hpp>
+#include <lifecycle_msgs/msg/transition.hpp>
+{% endif %}
 #include <rclcpp/rclcpp.hpp>
 {% if has_action_server %}
 #include <rclcpp_action/rclcpp_action.hpp>
 {% endif %}
+{% if is_lifecycle %}
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
+#include <rclcpp_lifecycle/lifecycle_publisher.hpp>
+{% endif %}
 #include <std_msgs/msg/int32.hpp>
 {% if has_service_server %}
-#include <std_msgs/srv/set_bool.hpp>
+#include <std_srvs/srv/set_bool.hpp>
+{% endif %}
+{% if has_action_server %}
+
+#include <{{ package_name }}_actions/action/fibonacci.hpp>
 {% endif %}
 
 
 namespace {{ package_name }} {
 
 
+{% if is_lifecycle %}
+class {{ node_class_name }} : public rclcpp_lifecycle::LifecycleNode {
+{% else %}
 class {{ node_class_name }} : public rclcpp::Node {
+{% endif %}
 
  public:
 
@@ -22,82 +42,102 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% else %}
   {{ node_class_name }}();
 {% endif %}
+{% if is_lifecycle %}
+
+ protected:
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_configure(const rclcpp_lifecycle::State& state) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_activate(const rclcpp_lifecycle::State& state) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_deactivate(const rclcpp_lifecycle::State& state) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_cleanup(const rclcpp_lifecycle::State& state) override;
+
+  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn on_shutdown(const rclcpp_lifecycle::State& state) override;
+{% endif %}
 
  private:
+{% if has_params or is_lifecycle %}
 
-{% if has_subscriber %}
-  static const std::string kInputTopic;
-{% endif %}
-{% if has_publisher %}
-  static const std::string kOutputTopic;
+  void declareParameters();
 {% endif %}
 {% if has_params %}
-  static const std::string kParam;
-{% endif %}
 
- private:
-
-{% if has_params %}
   void loadParameters();
 
-{% endif %}
-  void setup();
-
-{% if has_params %}
   rcl_interfaces::msg::SetParametersResult parametersCallback(const std::vector<rclcpp::Parameter>& parameters);
+{% endif %}
 
+  void setup();
+{% if is_lifecycle %}
+
+  void cleanUp();
 {% endif %}
 {% if has_subscriber %}
-  void topicCallback(const std_msgs::msg::Int32& msg);
 
+  void topicCallback(const std_msgs::msg::Int32& msg);
 {% endif %}
 {% if has_service_server %}
-  void serviceCallback(const std::shared_ptr<std_srvs::srv::SetBool::Request>request, std::shared_ptr<std_srvs::srv::SetBool::Response> response);
 
+  void serviceCallback(const std::shared_ptr<std_srvs::srv::SetBool::Request>request, std::shared_ptr<std_srvs::srv::SetBool::Response> response);
 {% endif %}
 {% if has_action_server %}
-  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid,std::shared_ptr<const template_interfaces_pkg::action::TemplateAction::Goal> goal);
-  rclcpp_action::CancelResponse actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<template_interfaces_pkg::action::TemplateAction>> goal_handle);
-  void actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<template_interfaces_pkg::action::TemplateAction>> goal_handle);
-  void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<template_interfaces_pkg::action::TemplateAction>> goal_handle);
 
+  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid, std::shared_ptr<const {{ package_name }}_actions::action::Fibonacci::Goal> goal);
+
+  rclcpp_action::CancelResponse actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
+
+  void actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
+
+  void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
 {% endif %}
 {% if has_timer %}
-  void publishTimerCallback();
 
+  void timerCallback();
 {% endif %}
+{% if auto_shutdown %}
+
+  void autoShutdownTimerCallback();
+{% endif %}
+
  private:
-
 {% if has_params %}
-  OnSetParametersCallbackHandle::SharedPtr parameters_callback_;
 
+  OnSetParametersCallbackHandle::SharedPtr parameters_callback_;
 {% endif %}
 {% if has_subscriber %}
-  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subscriber_;
 
+  rclcpp::Subscription<std_msgs::msg::Int32>::SharedPtr subscriber_;
 {% endif %}
 {% if has_publisher %}
-  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
 
+{% if is_lifecycle %}
+  rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::Int32>::SharedPtr publisher_;
+{% else %}
+  rclcpp::Publisher<std_msgs::msg::Int32>::SharedPtr publisher_;
+{% endif %}
 {% endif %}
 {% if has_service_server %}
-  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_server_;
 
+  rclcpp::Service<std_srvs::srv::SetBool>::SharedPtr service_server_;
 {% endif %}
 {% if has_action_server %}
-  rclcpp_action::Server<template_interfaces_pkg::action::TemplateAction>::SharedPtr action_server_;
 
+  rclcpp_action::Server<{{ package_name }}_actions::action::Fibonacci>::SharedPtr action_server_;
 {% endif %}
 {% if has_timer %}
-  rclcpp::TimerBase::SharedPtr publish_timer_;
 
+  rclcpp::TimerBase::SharedPtr timer_;
 {% endif %}
 {% if has_params %}
+
   double param_ = 1.0;
-
 {% endif %}
+{% if auto_shutdown %}
 
-  int count_ = 0;
+  rclcpp::TimerBase::SharedPtr auto_shutdown_timer_;
+{% endif %}
 };
 
 
