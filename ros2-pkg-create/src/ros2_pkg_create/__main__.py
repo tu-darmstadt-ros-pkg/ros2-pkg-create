@@ -1,3 +1,4 @@
+import argcomplete
 import argparse
 import os
 
@@ -51,6 +52,7 @@ def parseArguments() -> argparse.Namespace:
 
     parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
+    argcomplete.autocomplete(parser)
     return parser.parse_args()
 
 

@@ -4,6 +4,10 @@
 
 ```bash
 pip install --extra-index-url https://test.pypi.org/simple/ ros2-pkg-create
+
+# bash-completion
+activate-global-python-argcomplete
+eval "$(register-python-argcomplete ros2-pkg-create)"
 ```
 
 ### Usage
