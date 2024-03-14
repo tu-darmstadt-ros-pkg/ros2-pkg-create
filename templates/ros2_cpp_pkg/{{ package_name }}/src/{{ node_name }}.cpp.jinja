@@ -68,28 +68,6 @@ const std::string {{ node_class_name }}::kParam = "param";
   this->setup();
 {% endif %}
 }
-{% if is_lifecycle %}
-
-
-/**
- * @brief Declares a parameter if it is not already declared
- *
- * @tparam T anything convertible to either rclcpp::ParameterValue or rclcpp::ParameterType
- * @param name parameter name
- * @param type_or_default default value or rclcpp::ParameterType
- * @param desc parameter description
- */
-template <typename T>
-void {{ node_class_name }}::declareParameterIfNotExists(const std::string& name, const T& type_or_default, const std::string& desc) {
-
-  auto params = this->list_parameters({name}, 1);
-  if (std::find(params.names.begin(), params.names.end(), name) == params.names.end()) {
-    rcl_interfaces::msg::ParameterDescriptor descriptor;
-    descriptor.description = desc;
-    declare_parameter(name, type_or_default, descriptor);
-  }
-}
-{% endif %}
 {% if has_params or is_lifecycle %}
 
 
@@ -97,13 +75,17 @@ void {{ node_class_name }}::declareParameterIfNotExists(const std::string& name,
  * @brief Declares parameters
  */
 void {{ node_class_name }}::declareParameters() {
+
+  rcl_interfaces::msg::ParameterDescriptor param_desc;
 {% if is_lifecycle %}
 
-  this->declareParameterIfNotExists("startup_state", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE, "Initial lifecycle state");
+  param_desc = rcl_interfaces::msg::ParameterDescriptor();
+  param_desc.description = "Initial lifecycle state";
+  this->declare_parameter("startup_state", lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE, param_desc);
 {% endif %}
 {% if has_params %}
 
-  rcl_interfaces::msg::ParameterDescriptor param_desc;
+  param_desc = rcl_interfaces::msg::ParameterDescriptor();
   param_desc.description = "TODO";
   rcl_interfaces::msg::FloatingPointRange param_range;
   param_range.set__from_value(0.1).set__to_value(10.0).set__step(0.1);

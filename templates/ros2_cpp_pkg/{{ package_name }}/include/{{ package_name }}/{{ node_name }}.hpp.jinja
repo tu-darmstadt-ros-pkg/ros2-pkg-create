@@ -84,11 +84,6 @@ class {{ node_class_name }} : public rclcpp::Node {
 
   void declareParameters();
 {% endif %}
-{% if is_lifecycle %}
-
-  template <typename T>
-  void declareParameterIfNotExists(const std::string& name, const T& type_or_default, const std::string& desc);
-{% endif %}
 {% if has_params %}
 
   void loadParameters();
