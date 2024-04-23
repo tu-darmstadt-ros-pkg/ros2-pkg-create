@@ -2,35 +2,21 @@
 
 {{ description }}
 
-- [Nodes](#nodes)
-  - [{{ package_name }}/{{ node_name }}](#{{ package_name }}{{ node_name }})
-- [Usage of docker-ros Images](#usage-of-docker-ros-images)
-  - [Available Images](#available-images)
-  - [Default Command](#default-command)
-  - [Environment Variables](#environment-variables)
-  - [Launch Files](#launch-files)
-  - [Configuration Files](#configuration-files)
-  - [Additional Remarks](#additional-remarks)
+- [Container Images](#container-images)
+- [{{ node_name }}](#{{ node_name }})
 - [Official Documentation](#official-documentation)
 
 
-## Nodes
+## Container Images
 
-| Package | Node | Description |
-| --- | --- | --- |
-| `{{ package_name }}` | `{{ node_name }}` | TODO |
+| Description | Image | Command |
+| --- | --- | -- |
+| <TODO> | `<IMAGE_NAME:TAG` | `ros2 run {{ package_name }} {{ node_name }}` |
 
-### {{ package_name }}/{{ node_name }}
 
-#### Subscribed Topics
+## `{{ node_name }}`
 
-<LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
-
-| Topic | Type | Description |
-| --- | --- | --- |
-| `<TOPIC/NAME>` | `<PACKAGE>/msg/<MESSAGE_TYPE>` | \<DESCRIPTION\> |
-
-#### Published Topics
+### Subscribed Topics
 
 <LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
 
@@ -38,7 +24,15 @@
 | --- | --- | --- |
 | `<TOPIC/NAME>` | `<PACKAGE>/msg/<MESSAGE_TYPE>` | \<DESCRIPTION\> |
 
-#### Services
+### Published Topics
+
+<LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
+
+| Topic | Type | Description |
+| --- | --- | --- |
+| `<TOPIC/NAME>` | `<PACKAGE>/msg/<MESSAGE_TYPE>` | \<DESCRIPTION\> |
+
+### Services
 
 <LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
 
@@ -46,7 +40,7 @@
 | --- | --- | --- |
 | `<SERVICE/NAME>` | `<PACKAGE>/srv/<SERVICE_TYPE>` | \<DESCRIPTION\> |
 
-#### Actions
+### Actions
 
 <LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
 
@@ -54,7 +48,7 @@
 | --- | --- | --- |
 | `<ACTION/NAME>` | `<PACKAGE>/action/<ACTION_TYPE>` | \<DESCRIPTION\> |
 
-#### Parameters
+### Parameters
 
 <LINK_TO_PUBLIC_DOCUMENTATION_OR_TABLE_BELOW>
 
@@ -63,43 +57,6 @@
 | `<PARAMETER/NAME>` | `<PARAMETER_TYPE>` | \<DESCRIPTION\> |
 
 
-## Usage of docker-ros Images
-
-### Available Images
-
-| Tag | Description |
-| --- | --- |
-| `latest` | latest version |
-
-### Default Command
-
-```bash
-<DEFAULT_DOCKER_COMMAND_IN_RUN_IMAGE>
-```
-
-### Environment Variables
-
-| Variable | Description |
-| --- | --- |
-| `<VARIABLE>` | \<DESCRIPTION\> |
-
-### Launch Files
-
-| Package | File | Path | Description |
-| --- | --- | --- | --- |
-| `<PACKAGE>` | `<LAUNCH_FILE>.<XYZ>` | `<PATH/TO/FILE/IN/RUN/IMAGE>` | \<DESCRIPTION\> |
-
-### Configuration Files
-
-| Package | File | Path | Description |
-| --- | --- | --- | --- |
-| `<PACKAGE>` | `<CONFIG_FILE>.<XYZ>` | `<PATH/TO/FILE/IN/RUN/IMAGE>` | \<DESCRIPTION\> |
-
-### Additional Remarks
-
-\-
-
-
 ## Official Documentation
 
-- \<LINK_TO_PUBLIC_DOCUMENTATION>
+\<LINK_TO_PUBLIC_DOCUMENTATION>
