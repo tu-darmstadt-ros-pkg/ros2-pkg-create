@@ -65,6 +65,7 @@ def main():
 
     # run copier
     try:
+        # local use:    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir),
         copier.run_copy("https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git",
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,
