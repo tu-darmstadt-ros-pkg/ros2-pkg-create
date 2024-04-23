@@ -49,6 +49,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--msg-name", type=str, default=None, help="Message name")
     parser.add_argument("--srv-name", type=str, default=None, help="Service name")
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
+    parser.add_argument("--has-docker-ros", action="store_true", default=None, help="Add the docker-ros CI integration?")
 
     parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
