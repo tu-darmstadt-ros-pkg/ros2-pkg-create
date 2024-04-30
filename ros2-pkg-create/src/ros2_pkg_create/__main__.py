@@ -49,6 +49,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--msg-name", type=str, default=None, help="Message name")
     parser.add_argument("--srv-name", type=str, default=None, help="Service name")
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
+    parser.add_argument("--has-docker-ros", action="store_true", default=None, help="Add the docker-ros CI integration?")
 
     parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
@@ -64,6 +65,7 @@ def main():
 
     # run copier
     try:
+        # local use:    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir),
         copier.run_copy("https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git",
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,

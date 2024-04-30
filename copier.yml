@@ -159,3 +159,8 @@ action_name:
   when: "{{ template == 'ros2_interfaces_pkg' and 'action' in interface_types }}"
   type: str
   default: Action
+
+has_docker_ros:
+  help: Add the docker-ros CI integration?
+  type: bool
+  default: false
