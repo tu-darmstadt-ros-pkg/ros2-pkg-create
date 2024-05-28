@@ -103,8 +103,6 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
 
   this->declare_parameter(name, type, param_desc);
 
-  // TODO: === support more types ===
-
   try {
     if constexpr (std::is_same_v<T, std::string>) {
       param = this->get_parameter(name).as_string();
@@ -114,15 +112,31 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
       param = this->get_parameter(name).as_bool();
     } else if constexpr (std::is_same_v<T, int>) {
       param = this->get_parameter(name).as_int();
+    } else if constexpr (std::is_same_v<T, std::vector<double>>) {
+      param = this->get_parameter(name).as_double_array();
+    } else if constexpr (std::is_same_v<T, std::vector<long int>>) {
+      param = this->get_parameter(name).as_integer_array();
     } else {
       RCLCPP_ERROR(this->get_logger(), "Parameter type of parameter '%s' not supported", name.c_str());
-    }
+}
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
     if (is_required) {
       RCLCPP_FATAL_STREAM(this->get_logger(), "Missing required parameter '" << name << "', exiting");
       exit(EXIT_FAILURE);
     } else {
-      RCLCPP_WARN_STREAM(this->get_logger(), "Missing parameter '" << name << "', using default value: '" << param << "'");
+      std::stringstream ss;
+      ss << "Missing parameter '" << name << "', using default value: ";
+      if constexpr (std::is_same_v<T, std::vector<double>> || std::is_same_v<T, std::vector<long int>>) {
+        ss << "[";
+        for (const auto& element : param) {
+          ss << element;
+          if (&element != &param.back()) ss << ", ";
+        }
+        ss << "]";
+      } else {
+        ss << param;
+      }
+      RCLCPP_WARN_STREAM(this->get_logger(), ss.str());
     }
   }
 
@@ -157,6 +171,10 @@ rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallba
           *static_cast<bool*>(member_param_ptr) = param.as_bool();
         } else if (paramType == rclcpp::ParameterType::PARAMETER_INTEGER) {
           *static_cast<int*>(member_param_ptr) = param.as_int();
+        } else if (paramType == rclcpp::ParameterType::PARAMETER_DOUBLE_ARRAY) {
+          *static_cast<std::vector<double>*>(member_param_ptr) = param.as_double_array();
+        } else if (paramType == rclcpp::ParameterType::PARAMETER_INTEGER_ARRAY) {
+          *static_cast<std::vector<long int>*>(member_param_ptr) = param.as_integer_array();
         } else {
           RCLCPP_ERROR(this->get_logger(), "Parameter type of parameter '%s' not supported", param.get_name().c_str());
         }
