@@ -60,11 +60,20 @@ class {{ node_class_name }} : public rclcpp::Node {
  private:
 {% if has_params or is_lifecycle %}
 
-  void declareParameters();
+  template <typename T>
+  void declareAndLoadParameter(const std::string& name,
+                               T& param,
+                               const rclcpp::ParameterType& type,
+                               const std::string& description,
+                               const bool add_to_auto_reconfigurable_params = true,
+                               const bool is_required = false,
+                               const bool read_only = false,
+                               const std::optional<double>& from_value = std::nullopt,
+                               const std::optional<double>& to_value = std::nullopt,
+                               const std::optional<double>& step_value = std::nullopt,
+                               const std::string& additional_constraints = "");
 {% endif %}
 {% if has_params %}
-
-  void loadParameters();
 
   rcl_interfaces::msg::SetParametersResult parametersCallback(const std::vector<rclcpp::Parameter>& parameters);
 {% endif %}
@@ -102,6 +111,10 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 
  private:
+{% if has_params or is_lifecycle %}
+
+  std::vector<std::tuple<std::string, void*, rclcpp::ParameterType, std::string>> auto_reconfigurable_params_;
+{% endif %}
 {% if has_params %}
 
   OnSetParametersCallbackHandle::SharedPtr parameters_callback_;
