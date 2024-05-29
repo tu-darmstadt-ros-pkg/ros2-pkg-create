@@ -128,11 +128,7 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
       ss << "Missing parameter '" << name << "', using default value: ";
       if constexpr (std::is_same_v<T, std::vector<double>> || std::is_same_v<T, std::vector<int64_t>>) {
         ss << "[";
-        for (const auto& element : param) {
-          ss << element;
-          if (&element != &param.back()) ss << ", ";
-        }
-        ss << "]";
+        for (const auto& element : member_param) ss << element << (&element != &member_param.back() ? ", " : "]");
       } else {
         ss << param;
       }
