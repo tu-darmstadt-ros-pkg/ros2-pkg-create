@@ -36,7 +36,7 @@ namespace {{ package_name }} {
 {% endif %}
 
 {% if is_lifecycle %}
-  int startup_state;
+  int startup_state = lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE;
   this->declareAndLoadParameter("startup_state", startup_state, "Initial lifecycle state", false, false, false);
   if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
     this->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
