@@ -37,14 +37,14 @@ namespace {{ package_name }} {
 
 {% if is_lifecycle %}
   int startup_state;
-  this->declareAndLoadParameter("startup_state", startup_state, rclcpp::ParameterType::PARAMETER_INTEGER, "Initial lifecycle state", false, false, false);
+  this->declareAndLoadParameter("startup_state", startup_state, "Initial lifecycle state", false, false, false);
   if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
     this->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
   if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
     this->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
 {% else %}
 {% if has_params %}
-  this->declareAndLoadParameter("param", param_, rclcpp::ParameterType::PARAMETER_DOUBLE, "TODO", true, false, false, 0.0, 10.0, 1.0);
+  this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
 {% endif %}
   this->setup();
 {% endif %}
@@ -374,7 +374,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
   RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
 
 {% if has_params %}
-  this->declareAndLoadParameter("param", param_, rclcpp::ParameterType::PARAMETER_DOUBLE, "TODO", true, false, false, 0.0, 10.0, 1.0);
+  this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
 {% endif %}
   setup();
 
