@@ -73,9 +73,9 @@ class {{ node_class_name }} : public rclcpp::Node {
                                const bool add_to_auto_reconfigurable_params = true,
                                const bool is_required = false,
                                const bool read_only = false,
-                               const std::optional<T> &from_value = std::nullopt,
-                               const std::optional<T> &to_value = std::nullopt,
-                               const std::optional<T> &step_value = std::nullopt,
+                               const std::optional<double> &from_value = std::nullopt,
+                               const std::optional<double> &to_value = std::nullopt,
+                               const std::optional<double> &step_value = std::nullopt,
                                const std::string &additional_constraints = "");
 {% endif %}
 {% if has_params %}

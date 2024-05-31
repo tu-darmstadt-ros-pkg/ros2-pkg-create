@@ -44,7 +44,7 @@ namespace {{ package_name }} {
     this->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
 {% else %}
 {% if has_params %}
-  this->declareAndLoadParameter<double>("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
+  this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
 {% endif %}
   this->setup();
 {% endif %}
@@ -73,9 +73,9 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
                                                          const bool add_to_auto_reconfigurable_params,
                                                          const bool is_required,
                                                          const bool read_only,
-                                                         const std::optional<T>& from_value,
-                                                         const std::optional<T>& to_value,
-                                                         const std::optional<T>& step_value,
+                                                         const std::optional<double>& from_value,
+                                                         const std::optional<double>& to_value,
+                                                         const std::optional<double>& step_value,
                                                          const std::string& additional_constraints) {
 
   rcl_interfaces::msg::ParameterDescriptor param_desc;
@@ -88,13 +88,13 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
   if (from_value.has_value() && to_value.has_value()) {
     if constexpr (std::is_integral_v<T>) {
       rcl_interfaces::msg::IntegerRange range;
-      T step = step_value.has_value() ? step_value.value() : 0;
-      range.set__from_value(from_value.value()).set__to_value(to_value.value()).set__step(step);
+      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 0);
+      range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
       param_desc.integer_range = {range};
     } else if constexpr (std::is_floating_point_v<T>) {
       rcl_interfaces::msg::FloatingPointRange range;
-      T step = step_value.has_value() ? step_value.value() : 0.0;
-      range.set__from_value(from_value.value()).set__to_value(to_value.value()).set__step(step);
+      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 0.0);
+      range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
       param_desc.floating_point_range = {range};
     } else {
       RCLCPP_WARN(this->get_logger(), "Parameter type does not support specifying a range");
@@ -374,7 +374,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
   RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
 
 {% if has_params %}
-  this->declareAndLoadParameter<double>("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
+  this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
 {% endif %}
   setup();
 
