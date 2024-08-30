@@ -13,7 +13,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 ### Usage
 
 ```
-usage: ros2-pkg-create [-h] [--defaults] --template {ros2_cpp_pkg,ros2_interfaces_pkg} [--package_name PACKAGE_NAME] [--description DESCRIPTION] [--maintainer MAINTAINER]
+usage: ros2-pkg-create [-h] [--defaults] --template {ros2_cpp_pkg,ros2_interfaces_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION] [--maintainer MAINTAINER]
                        [--maintainer-email MAINTAINER_EMAIL] [--author AUTHOR] [--author-email AUTHOR_EMAIL]
                        [--license {Apache-2.0,BSL-1.0,BSD-2.0,BSD-2-Clause,BSD-3-Clause,GPL-3.0-only,LGPL-2.1-only,LGPL-3.0-only,MIT,MIT-0}] [--node-name NODE_NAME]
                        [--node-class-name NODE_CLASS_NAME] [--is-component] [--no-is-component] [--is-lifecycle] [--no-is-lifecycle] [--has-launch-file] [--no-has-launch-file]
@@ -33,7 +33,7 @@ options:
   --defaults            Use defaults for all options
   --template {ros2_cpp_pkg,ros2_interfaces_pkg}
                         Template
-  --package_name PACKAGE_NAME
+  --package-name PACKAGE_NAME
                         Package name
   --description DESCRIPTION
                         Description
