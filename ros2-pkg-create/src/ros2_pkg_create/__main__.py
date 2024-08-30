@@ -13,6 +13,7 @@ def parseArguments() -> argparse.Namespace:
 
     parser.add_argument("destination", type=str, help="Destination directory")
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
+    parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
 
     parser.add_argument("--template", type=str, default=None, choices=os.listdir(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir, "templates")), required=True, help="Template")
     parser.add_argument("--package-name", type=str, default=None, help="Package name")
@@ -65,8 +66,11 @@ def main():
 
     # run copier
     try:
-        # local use:    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir),
-        copier.run_copy("https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git",
+        if args.use_local_templates:
+            template_location = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
+        else:
+            template_location = "https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git"
+        copier.run_copy(template_location,
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,
                         defaults=args.defaults,
