@@ -1,16 +1,93 @@
-# ros2-pkg-create
+# *ros2-pkg-create* – Powerful ROS 2 Package Generator
 
-### Installation
+<p align="center">
+  <img src="https://img.shields.io/github/license/ika-rwth-aachen/ros2-pkg-create"/>
+  <a href="https://pypi.org/project/ros2-pkg-create/"><img src="https://img.shields.io/pypi/v/ros2-pkg-create?label=PyPI"/></a>
+  <a href="https://pypi.org/project/ros2-pkg-create/"><img src="https://img.shields.io/pypi/dm/ros2-pkg-create?color=blue&label=PyPI%20downloads"/></a>
+</p>
+
+*ros2-pkg-create* is an interactive CLI tool for quickly generating ROS 2 packages from basic pub/sub nodes to complex lifecycle components. It is meant to replace the official [`ros2 pkg create`](https://docs.ros.org/en/latest/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package) command.
+
+- [Quick Demo](#quick-demo)
+- [Templates \& Features](#templates-features)
+- [Installation](#installation)
+- [Usage](#usage)
+
+> [!IMPORTANT]  
+> This repository is open-sourced and maintained by the [**Institute for Automotive Engineering (ika) at RWTH Aachen University**](https://www.ika.rwth-aachen.de/).  
+> **ROS is the backbone** of many research topics within our [*Vehicle Intelligence & Automated Driving*](https://www.ika.rwth-aachen.de/en/competences/fields-of-research/vehicle-intelligence-automated-driving.html) domain.  
+> If you would like to learn more about how we can support your advanced driver assistance and automated driving efforts, feel free to reach out to us!  
+> :email: ***opensource@ika.rwth-aachen.de***
+
+
+## Quick Demo
 
 ```bash
-pip install --extra-index-url https://test.pypi.org/simple/ ros2-pkg-create
+ros2-pkg-create --template ros2_cpp_pkg .
+```
 
-# bash-completion
+<img src="./assets/cli.png" width=600>
+
+
+## Templates & Features
+
+*ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
+
+- [C++ Package](#c-package-template-ros2_cpp_pkg)
+- [Interfaces Package](#interfaces-package-template-ros2_interfaces_pkg)
+
+### C++ Package (`--template ros2_cpp_pkg`)
+
+- Package name
+- Description
+- Maintainer | Maintainer email
+- Author | Author email
+- License
+- Node name
+- Class name of node
+- Make it a component?
+- Make it a lifecycle node?
+- Add a launch file? | Type of launch file
+- Add parameter loading?
+- Add a subscriber?
+- Add a publisher?
+- Add a service server?
+- Add an action server?
+- Add a timer callback?
+- Add the docker-ros CI integration?
+
+### Interfaces Package (`--template ros2_interfaces_pkg`)
+
+- Package name
+- Description
+- Maintainer | Maintainer email
+- Author | Author email
+- License
+- Interfaces types
+- Message name
+- Service name
+- Action name
+- Add the docker-ros CI integration?
+
+## Installation
+
+```bash
+pip install ros2-pkg-create
+
+# (optional) bash auto-completion
 activate-global-python-argcomplete
 eval "$(register-python-argcomplete ros2-pkg-create)"
 ```
 
-### Usage
+> **Warning**  
+> Outside of a virtual environment, *pip* may default to a user-site installation of executables to `~/.local/bin`, which may not be present in your shell's `PATH`.  If running `ros2-pkg-create` errors with `ros2-pkg-create: command not found`, add the directory to your path. [*(More information)*](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-to-the-user-site)
+> ```bash
+> echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
+> source ~/.bashrc
+> ```
+
+
+## Usage
 
 ```
 usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_cpp_pkg,ros2_interfaces_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION] [--maintainer MAINTAINER] [--maintainer-email MAINTAINER_EMAIL]
