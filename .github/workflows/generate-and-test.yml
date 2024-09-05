@@ -83,8 +83,8 @@ jobs:
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: packages
-          path: packages/
+          name: ${{ matrix.package_name }}
+          path: packages/${{ matrix.package_name }}
 
   build:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
@@ -124,7 +124,7 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          name: packages
+          name: ${{ matrix.package }}
       - name: Build
         shell: bash
         run: |
