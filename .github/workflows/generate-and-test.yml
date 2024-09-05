@@ -62,9 +62,13 @@ jobs:
       - name: Install dependencies
         run: |
           pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
+      - name: Configure git to run copier
+        run: |
+          git config --global user.name "dummy"
+          git config --global user.email "dummy@dummy.com"
       - name: Generate packages
         run: |
-          copier copy --trust --use-local-templates --defaults \
+          copier copy --trust --defaults \
             -d template=${{ matrix.template }} \
             -d auto_shutdown=${{ matrix.auto_shutdown }} \
             -d package_name=${{ matrix.package_name }} \
