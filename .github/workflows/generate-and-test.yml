@@ -34,19 +34,17 @@ jobs:
           copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_no_launch_file -d has_launch_file=false . packages
           copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_all -d is_component=true -d is_lifecycle=true -d has_service_server=true -d has_action_server=true -d has_timer=true . packages
           copier copy --trust --defaults -d template=ros2_interfaces_pkg -d package_name=pkg_interfaces . packages
-
-      - name: Upload artifact
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
           name: packages
           path: packages/
 
-  build-and-test:
+  build:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     container:
       image: rwthika/ros2:latest
-      options: --rm
     needs: generate
     strategy:
       matrix:
@@ -77,13 +75,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Download packages
+      - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
           name: packages
-      - name: Build and test package ${{ matrix.package }}
+      - name: Build
         run: |
-          set -e
-          colcon build --packages-up-to ${{ matrix.package }}
           source install/setup.bash
+          colcon build --packages-up-to ${{ matrix.package }}
+      - name: Run
+        run: |
           ${{ matrix.command }}
