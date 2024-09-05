@@ -67,18 +67,7 @@ jobs:
           git config --global user.name "dummy"
           git config --global user.email "dummy@dummy.com"
       - name: Generate packages
-        run: >
-          copier copy --trust --defaults  -d template={{ matrix.template }}
-                                          -d auto_shutdown={{ matrix.auto_shutdown }}
-                                          -d package_name={{ matrix.package_name }}
-                                          {% if matrix.is_component %} -d is_component=true{% endif %}
-                                          {% if matrix.is_lifecycle %} -d is_lifecycle=true{% endif %}
-                                          {% if matrix.has_service_server %} -d has_service_server=true{% endif %}
-                                          {% if matrix.has_action_server %} -d has_action_server=true{% endif %}
-                                          {% if matrix.has_timer %} -d has_timer=true{% endif %}
-                                          {% if matrix.has_params %} -d has_params=true{% endif %}
-                                          {% if matrix.has_launch_file %} -d has_launch_file=true{% endif %}
-                                            . packages
+        run: copier copy --trust --defaults -d template={{ matrix.template }} . packages
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
