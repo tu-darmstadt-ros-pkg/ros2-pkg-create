@@ -1,29 +1,23 @@
 name: Generate and test packages
 
-on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches:
-      - main
+# avoiding duplicate jobs on push with open pull_request: https://github.com/orgs/community/discussions/26940#discussioncomment-6656489
+on: [push, pull_request]
 
 jobs:
+
   generate:
+    if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
           python-version: 3.10
-
       - name: Install dependencies
         run: |
           pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
-
       - name: Generate packages
         run: |
           copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_default . packages
@@ -44,6 +38,7 @@ jobs:
           path: packages/
 
   build-and-test:
+    if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     container:
       image: rwthika/ros2:latest
@@ -78,12 +73,10 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Download packages
         uses: actions/download-artifact@v4
         with:
           name: packages
-
       - name: Build and test package ${{ matrix.package }}
         run: |
           set -e
