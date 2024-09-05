@@ -8,6 +8,50 @@ jobs:
   generate:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - package_name: pkg_default
+            template: ros2_cpp_pkg
+            auto_shutdown: true
+          - package_name: pkg_component
+            template: ros2_cpp_pkg
+            is_component: true
+            auto_shutdown: true
+          - package_name: pkg_lifecycle
+            template: ros2_cpp_pkg
+            is_lifecycle: true
+            auto_shutdown: true
+          - package_name: pkg_service
+            template: ros2_cpp_pkg
+            has_service_server: true
+            auto_shutdown: true
+          - package_name: pkg_action
+            template: ros2_cpp_pkg
+            has_action_server: true
+            auto_shutdown: true
+          - package_name: pkg_timer
+            template: ros2_cpp_pkg
+            has_timer: true
+            auto_shutdown: true
+          - package_name: pkg_no_params
+            template: ros2_cpp_pkg
+            has_params: false
+            auto_shutdown: true
+          - package_name: pkg_no_launch_file
+            template: ros2_cpp_pkg
+            has_launch_file: false
+            auto_shutdown: true
+          - package_name: pkg_all
+            template: ros2_cpp_pkg
+            is_component: true
+            is_lifecycle: true
+            has_service_server: true
+            has_action_server: true
+            has_timer: true
+            auto_shutdown: true
+          - package_name: pkg_interfaces
+            template: ros2_interfaces_pkg
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,17 +67,18 @@ jobs:
           git config --global user.name "dummy"
           git config --global user.email "dummy@dummy.com"
       - name: Generate packages
-        run: |
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_default . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_component -d is_component=true . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_lifecycle -d is_lifecycle=true . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_service -d has_service_server=true . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_action -d has_action_server=true . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_timer -d has_timer=true . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_no_params -d has_params=false . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_no_launch_file -d has_launch_file=false . packages
-          copier copy --trust --defaults -d template=ros2_cpp_pkg -d auto_shutdown=true -d package_name=pkg_all -d is_component=true -d is_lifecycle=true -d has_service_server=true -d has_action_server=true -d has_timer=true . packages
-          copier copy --trust --defaults -d template=ros2_interfaces_pkg -d package_name=pkg_interfaces . packages
+        run: >
+          copier copy --trust --defaults  -d template={{ matrix.template }}
+                                          -d auto_shutdown={{ matrix.auto_shutdown }}
+                                          -d package_name={{ matrix.package_name }}
+                                          {% if matrix.is_component %} -d is_component=true{% endif %}
+                                          {% if matrix.is_lifecycle %} -d is_lifecycle=true{% endif %}
+                                          {% if matrix.has_service_server %} -d has_service_server=true{% endif %}
+                                          {% if matrix.has_action_server %} -d has_action_server=true{% endif %}
+                                          {% if matrix.has_timer %} -d has_timer=true{% endif %}
+                                          {% if matrix.has_params %} -d has_params=true{% endif %}
+                                          {% if matrix.has_launch_file %} -d has_launch_file=true{% endif %}
+                                            . packages
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
