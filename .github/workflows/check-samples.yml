@@ -83,8 +83,8 @@ jobs:
             . packages
       - name: Check for repository changes
         run: |
-          rm -rf samples
-          mv packages samples
+          rm -rf samples/${{ matrix.package_name }}
+          mv packages/${{ matrix.package_name }} samples/
           if [[ ! -z "$(git status --porcelain)" ]]; then
             echo "Sample generation resulted in changes to the repository"
             git diff
