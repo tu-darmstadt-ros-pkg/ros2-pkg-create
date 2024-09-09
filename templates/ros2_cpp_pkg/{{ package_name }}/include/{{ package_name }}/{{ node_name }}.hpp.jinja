@@ -22,7 +22,7 @@
 {% endif %}
 {% if has_action_server %}
 
-#include <{{ package_name }}_actions/action/fibonacci.hpp>
+#include <{{ package_name }}_interfaces/action/fibonacci.hpp>
 {% endif %}
 
 
@@ -98,13 +98,13 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 {% if has_action_server %}
 
-  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid, std::shared_ptr<const {{ package_name }}_actions::action::Fibonacci::Goal> goal);
+  rclcpp_action::GoalResponse actionHandleGoal(const rclcpp_action::GoalUUID& uuid, std::shared_ptr<const {{ package_name }}_interfaces::action::Fibonacci::Goal> goal);
 
-  rclcpp_action::CancelResponse actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
+  rclcpp_action::CancelResponse actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle);
 
-  void actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
+  void actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle);
 
-  void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle);
+  void actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle);
 {% endif %}
 {% if has_timer %}
 
@@ -142,7 +142,7 @@ class {{ node_class_name }} : public rclcpp::Node {
 {% endif %}
 {% if has_action_server %}
 
-  rclcpp_action::Server<{{ package_name }}_actions::action::Fibonacci>::SharedPtr action_server_;
+  rclcpp_action::Server<{{ package_name }}_interfaces::action::Fibonacci>::SharedPtr action_server_;
 {% endif %}
 {% if has_timer %}
 
