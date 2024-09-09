@@ -13,6 +13,7 @@ jobs:
         include:
           - package_name: ros2_cpp_pkg
             template: ros2_cpp_pkg
+            node_name: ros2_cpp_node
             is_component: false
             is_lifecycle: false
             has_launch_file: true
@@ -24,6 +25,7 @@ jobs:
             has_timer: false
           - package_name: ros2_cpp_component_pkg
             template: ros2_cpp_pkg
+            node_name: ros2_cpp_node
             is_component: true
             is_lifecycle: false
             has_launch_file: true
@@ -35,6 +37,7 @@ jobs:
             has_timer: false
           - package_name: ros2_cpp_lifecycle_pkg
             template: ros2_cpp_pkg
+            node_name: ros2_cpp_node
             is_component: false
             is_lifecycle: true
             has_launch_file: true
@@ -66,6 +69,7 @@ jobs:
           copier copy --trust --defaults \
             -d template=${{ matrix.template }} \
             -d package_name=${{ matrix.package_name }} \
+            -d node_name=${{ matrix.node_name }} \
             -d is_component=${{ matrix.is_component }} \
             -d is_lifecycle=${{ matrix.is_lifecycle }} \
             -d has_launch_file=${{ matrix.has_launch_file }} \
