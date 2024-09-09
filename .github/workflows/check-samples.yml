@@ -37,7 +37,7 @@ jobs:
             has_timer: false
           - package_name: ros2_cpp_lifecycle_pkg
             template: ros2_cpp_pkg
-            node_name: ros2_cpp_node
+            node_name: ros2_cpp_lifecycle_node
             is_component: false
             is_lifecycle: true
             has_launch_file: true
@@ -49,7 +49,6 @@ jobs:
             has_timer: false
           - package_name: ros2_interfaces_pkg
             template: ros2_interfaces_pkg
-            interface_types: Message,Service,Action
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -79,7 +78,6 @@ jobs:
             -d has_service_server=${{ matrix.has_service_server }} \
             -d has_action_server=${{ matrix.has_action_server }} \
             -d has_timer=${{ matrix.has_timer }} \
-            -d interface_types=${{ matrix.interface_types }} \
             . packages
       - name: Check for repository changes
         run: |
