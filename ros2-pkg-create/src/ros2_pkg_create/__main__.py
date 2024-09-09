@@ -69,7 +69,7 @@ def main():
         if args.use_local_templates:
             template_location = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
         else:
-            template_location = "https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git"
+            template_location = "https://github.com/ika-rwth-aachen/ros2-pkg-create.git"
         copier.run_copy(template_location,
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,
