@@ -1,0 +1,42 @@
+#!/usr/bin/env python3
+
+import os
+
+from ament_index_python import get_package_share_directory
+from launch import LaunchDescription
+{% if is_lifecycle %}
+from launch.actions import DeclareLaunchArgument, GroupAction
+from launch.conditions import LaunchConfigurationNotEquals
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import LifecycleNode, SetParameter
+{% else %}
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
+from launch_ros.actions import Node
+{% endif %}
+
+
+def generate_launch_description():
+
+    arg_name = DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name")
+    arg_namespace = DeclareLaunchArgument("namespace", default_value="", description="node namespace")
+
+    node = Node(
+        package="{{ package_name }}",
+        executable="{{ node_name }}",
+        namespace=LaunchConfiguration("namespace"),
+        name=LaunchConfiguration("name"),
+{% if has_params %}
+        parameters=[
+            os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"),
+        ],
+{% endif %}
+        output="screen",
+        emulate_tty=True,
+    )
+
+    return LaunchDescription([
+        arg_name,
+        arg_namespace,
+        node
+    ])

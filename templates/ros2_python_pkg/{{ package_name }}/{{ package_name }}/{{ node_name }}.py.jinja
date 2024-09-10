@@ -1,0 +1,19 @@
+import rclpy
+
+from rclpy import Node
+
+
+class {{ node_class_name }}(Node):
+    def __init__(self):
+       pass
+
+
+def main():
+
+    rclpy.init()
+    rclpy.spin({{ node_class_name }}())
+    rclpy.shutdown()
+
+
+if __name__ == "__main__":
+    main()

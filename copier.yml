@@ -12,12 +12,12 @@ template:
   help: Template
   type: str
   default: ros2_cpp_pkg
-  choices: [ros2_cpp_pkg, ros2_interfaces_pkg]
+  choices: [ros2_cpp_pkg, ros2_interfaces_pkg, ros2_python_pkg]
 
 package_name:
   help: Package name
   type: str
-  placeholder: ros2_cpp_pkg
+  placeholder: "{{ template }}"
   validator: "{% if not package_name %}Package name is required{% endif %}"
 
 description:
@@ -53,13 +53,13 @@ license:
 
 node_name:
   help: Node name
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: str
   default: "{{ package_name }}"
 
 node_class_name:
   help: Class name of node
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: str
   default: "{{ node_name | to_camel }}"
 
@@ -77,56 +77,56 @@ is_lifecycle:
 
 has_launch_file:
   help: Add a launch file?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: true
 
 launch_file_type:
   help: Type of launch file
-  when: "{{ template == 'ros2_cpp_pkg' and has_launch_file }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: str
   default: py
   choices: [py, xml, yml]
 
 has_params:
   help: Add parameter loading?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: true
 
 has_subscriber:
   help: Add a subscriber?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: true
 
 has_publisher:
   help: Add a publisher?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: true
 
 has_service_server:
   help: Add a service server?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: false
 
 has_action_server:
   help: Add an action server?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: false
 
 has_timer:
   help: Add a timer callback?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   type: bool
   default: false
 
 auto_shutdown:
   help: Automatically shutdown the node after launch (useful in CI/CD)?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
   when: false
   type: bool
   default: false
