@@ -11,38 +11,38 @@ jobs:
     strategy:
       matrix:
         include:
-          - package_name: pkg_default
+          - package_name: default_cpp_pkg
             template: ros2_cpp_pkg
             auto_shutdown: true
-          - package_name: pkg_component
+          - package_name: component_cpp_pkg
             template: ros2_cpp_pkg
             is_component: true
             auto_shutdown: true
-          - package_name: pkg_lifecycle
+          - package_name: lifecycle_cpp_pkg
             template: ros2_cpp_pkg
             is_lifecycle: true
             auto_shutdown: true
-          - package_name: pkg_service
+          - package_name: service_cpp_pkg
             template: ros2_cpp_pkg
             has_service_server: true
             auto_shutdown: true
-          - package_name: pkg_action
+          - package_name: action_cpp_pkg
             template: ros2_cpp_pkg
             has_action_server: true
             auto_shutdown: true
-          - package_name: pkg_timer
+          - package_name: timer_cpp_pkg
             template: ros2_cpp_pkg
             has_timer: true
             auto_shutdown: true
-          - package_name: pkg_no_params
+          - package_name: no_params_cpp_pkg
             template: ros2_cpp_pkg
             has_params: false
             auto_shutdown: true
-          - package_name: pkg_no_launch_file
+          - package_name: no_launch_file_cpp_pkg
             template: ros2_cpp_pkg
             has_launch_file: false
             auto_shutdown: true
-          - package_name: pkg_all
+          - package_name: all_cpp_pkg
             template: ros2_cpp_pkg
             is_component: true
             is_lifecycle: true
@@ -50,7 +50,41 @@ jobs:
             has_action_server: true
             has_timer: true
             auto_shutdown: true
-          - package_name: pkg_interfaces
+          - package_name: default_python_pkg
+            template: ros2_python_pkg
+            auto_shutdown: true
+          - package_name: lifecycle_python_pkg
+            template: ros2_python_pkg
+            is_lifecycle: true
+            auto_shutdown: true
+          - package_name: service_python_pkg
+            template: ros2_python_pkg
+            has_service_server: true
+            auto_shutdown: true
+          - package_name: action_python_pkg
+            template: ros2_python_pkg
+            has_action_server: true
+            auto_shutdown: true
+          - package_name: timer_python_pkg
+            template: ros2_python_pkg
+            has_timer: true
+            auto_shutdown: true
+          - package_name: no_params_python_pkg
+            template: ros2_python_pkg
+            has_params: false
+            auto_shutdown: true
+          - package_name: no_launch_file_python_pkg
+            template: ros2_python_pkg
+            has_launch_file: false
+            auto_shutdown: true
+          - package_name: all_python_pkg
+            template: ros2_python_pkg
+            is_lifecycle: true
+            has_service_server: true
+            has_action_server: true
+            has_timer: true
+            auto_shutdown: true
+          - package_name: interfaces_pkg
             template: ros2_interfaces_pkg
     steps:
       - name: Checkout code
@@ -95,29 +129,45 @@ jobs:
     strategy:
       matrix:
         include:
-          - package: pkg_default
-            command: ros2 launch pkg_default pkg_default_launch.py
-          - package: pkg_component
-            command: ros2 launch pkg_component pkg_component_launch.py
-          - package: pkg_lifecycle
-            command: ros2 launch pkg_lifecycle pkg_lifecycle_launch.py
-          - package: pkg_service
-            command: ros2 launch pkg_service pkg_service_launch.py
-          - package: pkg_action
-            command: ros2 launch pkg_action pkg_action_launch.py
-          - package: pkg_timer
-            command: ros2 launch pkg_timer pkg_timer_launch.py
-          - package: pkg_no_params
-            command: ros2 launch pkg_no_params pkg_no_params_launch.py
-          - package: pkg_no_launch_file
-            command: ros2 run pkg_no_launch_file pkg_no_launch_file --ros-args -p param:=1.0
-          - package: pkg_all
-            command: ros2 launch pkg_all pkg_all_launch.py
-          - package: pkg_interfaces
+          - package: default_cpp_pkg
+            command: ros2 launch default_cpp_pkg default_cpp_pkg_launch.py
+          - package: component_cpp_pkg
+            command: ros2 launch component_cpp_pkg component_cpp_pkg_launch.py
+          - package: lifecycle_cpp_pkg
+            command: ros2 launch lifecycle_cpp_pkg lifecycle_cpp_pkg_launch.py
+          - package: service_cpp_pkg
+            command: ros2 launch service_cpp_pkg service_cpp_pkg_launch.py
+          - package: action_cpp_pkg
+            command: ros2 launch action_cpp_pkg action_cpp_pkg_launch.py
+          - package: timer_cpp_pkg
+            command: ros2 launch timer_cpp_pkg timer_cpp_pkg_launch.py
+          - package: no_params_cpp_pkg
+            command: ros2 launch no_params_cpp_pkg no_params_cpp_pkg_launch.py
+          - package: no_launch_file_cpp_pkg
+            command: ros2 run no_launch_file_cpp_pkg no_launch_file_cpp_pkg --ros-args -p param:=1.0
+          - package: all_cpp_pkg
+            command: ros2 launch all_cpp_pkg all_cpp_pkg_launch.py
+          - package: default_python_pkg
+            command: ros2 launch default_python_pkg default_python_pkg_launch.py
+          - package: lifecycle_python_pkg
+            command: ros2 launch lifecycle_python_pkg lifecycle_python_pkg_launch.py
+          - package: service_python_pkg
+            command: ros2 launch service_python_pkg service_python_pkg_launch.py
+          - package: action_python_pkg
+            command: ros2 launch action_python_pkg action_python_pkg_launch.py
+          - package: timer_python_pkg
+            command: ros2 launch timer_python_pkg timer_python_pkg_launch.py
+          - package: no_params_python_pkg
+            command: ros2 launch no_params_python_pkg no_params_python_pkg_launch.py
+          - package: no_launch_file_python_pkg
+            command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
+          - package: all_python_pkg
+            command: ros2 launch all_python_pkg all_python_pkg_launch.py
+          - package: interfaces_pkg
             command: |
-              ros2 interface show pkg_interfaces/msg/Message && \
-              ros2 interface show pkg_interfaces/srv/Service && \
-              ros2 interface show pkg_interfaces/action/Action
+              ros2 interface show interfaces_pkg/msg/Message && \
+              ros2 interface show interfaces_pkg/srv/Service && \
+              ros2 interface show interfaces_pkg/action/Action
     steps:
       - name: Checkout code
         uses: actions/checkout@v4

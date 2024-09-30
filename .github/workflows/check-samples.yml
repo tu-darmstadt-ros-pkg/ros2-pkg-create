@@ -47,6 +47,17 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+          - package_name: ros2_python_pkg
+            template: ros2_python_pkg
+            node_name: ros2_python_node
+            is_lifecycle: false
+            has_launch_file: true
+            has_params: true
+            has_subscriber: true
+            has_publisher: true
+            has_service_server: false
+            has_action_server: false
+            has_timer: false
           - package_name: ros2_interfaces_pkg
             template: ros2_interfaces_pkg
     steps:
