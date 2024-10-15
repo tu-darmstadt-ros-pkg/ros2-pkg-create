@@ -2,6 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/github/license/ika-rwth-aachen/ros2-pkg-create"/>
+  <a href="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml"><img src="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml/badge.svg"/></a>
   <a href="https://pypi.org/project/ros2-pkg-create/"><img src="https://img.shields.io/pypi/v/ros2-pkg-create?label=PyPI"/></a>
   <a href="https://pypi.org/project/ros2-pkg-create/"><img src="https://img.shields.io/pypi/dm/ros2-pkg-create?color=blue&label=PyPI%20downloads"/></a>
 </p>
