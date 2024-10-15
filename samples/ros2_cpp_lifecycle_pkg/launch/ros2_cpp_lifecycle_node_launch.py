@@ -12,36 +12,35 @@ from launch_ros.actions import LifecycleNode, SetParameter
 
 def generate_launch_description():
 
-    arg_name = DeclareLaunchArgument("name", default_value="ros2_cpp_lifecycle_node", description="node name")
-    arg_namespace = DeclareLaunchArgument("namespace", default_value="", description="node namespace")
-    arg_startup_state = DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state")
+    args = [
+        DeclareLaunchArgument("name", default_value="ros2_cpp_lifecycle_node", description="node name"),
+        DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
+        DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("event_detector"), "config", "params.yml"), description="path to parameter file"),
+        DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state"),
+    ]
 
-    node = LifecycleNode(
-        package="ros2_cpp_lifecycle_pkg",
-        executable="ros2_cpp_lifecycle_node",
-        namespace=LaunchConfiguration("namespace"),
-        name=LaunchConfiguration("name"),
-        parameters=[
-            os.path.join(get_package_share_directory("ros2_cpp_lifecycle_pkg"), "config", "params.yml"),
-        ],
-        output="screen",
-        emulate_tty=True,
-    )
-
-    node_with_startup_state = GroupAction(
-        actions=[
-            SetParameter(
-                name="startup_state",
-                value=LaunchConfiguration("startup_state"),
-                condition=LaunchConfigurationNotEquals("startup_state", "None")
-            ),
-            node
-        ]
-    )
+    nodes = [
+        GroupAction(
+            actions=[
+                SetParameter(
+                    name="startup_state",
+                    value=LaunchConfiguration("startup_state"),
+                    condition=LaunchConfigurationNotEquals("startup_state", "None")
+                ),
+                LifecycleNode(
+                    package="event_detector",
+                    executable="event_detector",
+                    namespace=LaunchConfiguration("namespace"),
+                    name=LaunchConfiguration("name"),
+                    parameters=[LaunchConfiguration("params")],
+                    output="screen",
+                    emulate_tty=True,
+                )
+            ]
+        )
+    ]
 
     return LaunchDescription([
-        arg_name,
-        arg_namespace,
-        arg_startup_state,
-        node_with_startup_state,
+        *args,
+        *nodes,
     ])

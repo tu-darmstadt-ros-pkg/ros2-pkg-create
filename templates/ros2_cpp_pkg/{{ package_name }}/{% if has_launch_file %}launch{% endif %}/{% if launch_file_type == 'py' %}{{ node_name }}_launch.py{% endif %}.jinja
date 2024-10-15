@@ -18,52 +18,59 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
-    arg_name = DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name")
-    arg_namespace = DeclareLaunchArgument("namespace", default_value="", description="node namespace")
+    args = [
+        DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name"),
+        DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
+        DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("event_detector"), "config", "params.yml"), description="path to parameter file"),
 {% if is_lifecycle %}
-    arg_startup_state = DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state")
+        DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state"),
 {% endif %}
+    ]
 
 {% if is_lifecycle %}
-    node = LifecycleNode(
-{% else %}
-    node = Node(
-{% endif %}
-        package="{{ package_name }}",
-        executable="{{ node_name }}",
-        namespace=LaunchConfiguration("namespace"),
-        name=LaunchConfiguration("name"),
+    nodes = [
+        GroupAction(
+            actions=[
+                SetParameter(
+                    name="startup_state",
+                    value=LaunchConfiguration("startup_state"),
+                    condition=LaunchConfigurationNotEquals("startup_state", "None")
+                ),
+                LifecycleNode(
+                    package="event_detector",
+                    executable="event_detector",
+                    namespace=LaunchConfiguration("namespace"),
+                    name=LaunchConfiguration("name"),
 {% if has_params %}
-        parameters=[
-            os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"),
-        ],
+                    parameters=[LaunchConfiguration("params")],
+{% else %}
+                    parameters=[],
 {% endif %}
-        output="screen",
-        emulate_tty=True,
-    )
-{% if is_lifecycle %}
-
-    node_with_startup_state = GroupAction(
-        actions=[
-            SetParameter(
-                name="startup_state",
-                value=LaunchConfiguration("startup_state"),
-                condition=LaunchConfigurationNotEquals("startup_state", "None")
-            ),
-            node
-        ]
-    )
+                    output="screen",
+                    emulate_tty=True,
+                )
+            ]
+        )
+    ]
+{% else %}
+    nodes = [
+        Node(
+            package="{{ package_name }}",
+            executable="{{ node_name }}",
+            namespace=LaunchConfiguration("namespace"),
+            name=LaunchConfiguration("name"),
+{% if has_params %}
+            parameters=[LaunchConfiguration("params")],
+{% else %}
+            parameters=[],
+{% endif %}
+            output="screen",
+            emulate_tty=True,
+        )
+    ]
 {% endif %}
 
     return LaunchDescription([
-        arg_name,
-        arg_namespace,
-{% if is_lifecycle %}
-        arg_startup_state,
-{% endif %}
-{% if is_lifecycle %}
-        node_with_startup_state,
-{% else %}
-        node
-{% endif %}
+        *args,
+        *nodes,
     ])
