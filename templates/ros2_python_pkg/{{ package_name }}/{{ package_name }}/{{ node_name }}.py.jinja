@@ -169,6 +169,7 @@ class {{ node_class_name }}(Node):
 
         # timer for repeatedly invoking a callback to publish messages
         self.timer = self.create_timer(1.0, self.timerCallback)
+{% endif %}
 {% if auto_shutdown %}
 
         self.auto_shutdown_timer = self.create_timer(3.0, self.autoShutdownTimerCallback)
