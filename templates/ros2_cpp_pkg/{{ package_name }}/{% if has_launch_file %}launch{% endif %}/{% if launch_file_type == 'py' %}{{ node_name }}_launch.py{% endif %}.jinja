@@ -21,7 +21,7 @@ def generate_launch_description():
     args = [
         DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name"),
         DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
-        DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("event_detector"), "config", "params.yml"), description="path to parameter file"),
+        DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"), description="path to parameter file"),
 {% if is_lifecycle %}
         DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state"),
 {% endif %}
@@ -37,8 +37,8 @@ def generate_launch_description():
                     condition=LaunchConfigurationNotEquals("startup_state", "None")
                 ),
                 LifecycleNode(
-                    package="event_detector",
-                    executable="event_detector",
+                    package="{{ package_name }}",
+                    executable="{{ node_name }}",
                     namespace=LaunchConfiguration("namespace"),
                     name=LaunchConfiguration("name"),
 {% if has_params %}
