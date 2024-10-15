@@ -13,7 +13,7 @@ from launch_ros.actions import LifecycleNode, SetParameter
 def generate_launch_description():
 
     args = [
-        DeclareLaunchArgument("name", default_value="ros2_cpp_lifecycle_node", description="node name"),
+        DeclareLaunchArgument("name", default_value="ros2_cpp_node", description="node name"),
         DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
         DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("event_detector"), "config", "params.yml"), description="path to parameter file"),
         DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state"),

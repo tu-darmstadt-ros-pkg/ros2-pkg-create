@@ -19,11 +19,11 @@ template <typename T,typename A> struct is_vector< std::vector<T,A> > : std::tru
 template <typename C> inline constexpr bool is_vector_v = is_vector<C>::value;
 
 
-class Ros2CppLifecycleNode : public rclcpp_lifecycle::LifecycleNode {
+class Ros2CppNode : public rclcpp_lifecycle::LifecycleNode {
 
  public:
 
-  Ros2CppLifecycleNode();
+  Ros2CppNode();
 
  protected:
 

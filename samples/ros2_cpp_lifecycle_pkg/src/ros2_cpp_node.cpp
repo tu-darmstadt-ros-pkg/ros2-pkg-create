@@ -1,7 +1,7 @@
 #include <algorithm>
 #include <functional>
 
-#include <ros2_cpp_lifecycle_pkg/ros2_cpp_lifecycle_node.hpp>
+#include <ros2_cpp_lifecycle_pkg/ros2_cpp_node.hpp>
 
 
 namespace ros2_cpp_lifecycle_pkg {
@@ -12,7 +12,7 @@ namespace ros2_cpp_lifecycle_pkg {
  *
  * @param options node options
  */
-Ros2CppLifecycleNode::Ros2CppLifecycleNode() : rclcpp_lifecycle::LifecycleNode("ros2_cpp_lifecycle_node") {
+Ros2CppNode::Ros2CppNode() : rclcpp_lifecycle::LifecycleNode("ros2_cpp_node") {
 
   int startup_state = lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE;
   this->declareAndLoadParameter("startup_state", startup_state, "Initial lifecycle state", false, false, false);
@@ -38,7 +38,7 @@ Ros2CppLifecycleNode::Ros2CppLifecycleNode() : rclcpp_lifecycle::LifecycleNode("
  * @param additional_constraints additional constraints description
  */
 template <typename T>
-void Ros2CppLifecycleNode::declareAndLoadParameter(const std::string& name,
+void Ros2CppNode::declareAndLoadParameter(const std::string& name,
                                                          T& param,
                                                          const std::string& description,
                                                          const bool add_to_auto_reconfigurable_params,
@@ -109,7 +109,7 @@ void Ros2CppLifecycleNode::declareAndLoadParameter(const std::string& name,
  * @param parameters parameters
  * @return parameter change result
  */
-rcl_interfaces::msg::SetParametersResult Ros2CppLifecycleNode::parametersCallback(const std::vector<rclcpp::Parameter>& parameters) {
+rcl_interfaces::msg::SetParametersResult Ros2CppNode::parametersCallback(const std::vector<rclcpp::Parameter>& parameters) {
 
   for (const auto& param : parameters) {
     for (auto& auto_reconfigurable_param : auto_reconfigurable_params_) {
@@ -130,13 +130,13 @@ rcl_interfaces::msg::SetParametersResult Ros2CppLifecycleNode::parametersCallbac
 /**
  * @brief Sets up subscribers, publishers, etc. to configure the node
  */
-void Ros2CppLifecycleNode::setup() {
+void Ros2CppNode::setup() {
 
   // callback for dynamic parameter configuration
-  parameters_callback_ = this->add_on_set_parameters_callback(std::bind(&Ros2CppLifecycleNode::parametersCallback, this, std::placeholders::_1));
+  parameters_callback_ = this->add_on_set_parameters_callback(std::bind(&Ros2CppNode::parametersCallback, this, std::placeholders::_1));
 
   // subscriber for handling incoming messages
-  subscriber_ = this->create_subscription<std_msgs::msg::Int32>("~/input", 10, std::bind(&Ros2CppLifecycleNode::topicCallback, this, std::placeholders::_1));
+  subscriber_ = this->create_subscription<std_msgs::msg::Int32>("~/input", 10, std::bind(&Ros2CppNode::topicCallback, this, std::placeholders::_1));
   RCLCPP_INFO(this->get_logger(), "Subscribed to '%s'", subscriber_->get_topic_name());
 
   // publisher for publishing outgoing messages
@@ -150,7 +150,7 @@ void Ros2CppLifecycleNode::setup() {
  *
  * @param msg message
  */
-void Ros2CppLifecycleNode::topicCallback(const std_msgs::msg::Int32& msg) {
+void Ros2CppNode::topicCallback(const std_msgs::msg::Int32& msg) {
 
   RCLCPP_INFO(this->get_logger(), "Message received: '%d'", msg.data);
 }
@@ -162,7 +162,7 @@ void Ros2CppLifecycleNode::topicCallback(const std_msgs::msg::Int32& msg) {
  * @param state previous state
  * @return transition result
  */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppLifecycleNode::on_configure(const rclcpp_lifecycle::State& state) {
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppNode::on_configure(const rclcpp_lifecycle::State& state) {
 
   RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
 
@@ -179,7 +179,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2Cp
  * @param state previous state
  * @return transition result
  */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppLifecycleNode::on_activate(const rclcpp_lifecycle::State& state) {
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppNode::on_activate(const rclcpp_lifecycle::State& state) {
 
   RCLCPP_INFO(get_logger(), "Activating to enter 'active' state from '%s' state", state.label().c_str());
 
@@ -195,7 +195,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2Cp
  * @param state previous state
  * @return transition result
  */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppLifecycleNode::on_deactivate(const rclcpp_lifecycle::State& state) {
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppNode::on_deactivate(const rclcpp_lifecycle::State& state) {
 
   RCLCPP_INFO(get_logger(), "Deactivating to enter 'inactive' state from '%s' state", state.label().c_str());
 
@@ -211,7 +211,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2Cp
  * @param state previous state
  * @return transition result
  */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppLifecycleNode::on_cleanup(const rclcpp_lifecycle::State& state) {
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppNode::on_cleanup(const rclcpp_lifecycle::State& state) {
 
   RCLCPP_INFO(get_logger(), "Cleaning up to enter 'unconfigured' state from '%s' state", state.label().c_str());
 
@@ -229,7 +229,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2Cp
  * @param state previous state
  * @return transition result
  */
-rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppLifecycleNode::on_shutdown(const rclcpp_lifecycle::State& state) {
+rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2CppNode::on_shutdown(const rclcpp_lifecycle::State& state) {
 
   RCLCPP_INFO(get_logger(), "Shutting down to enter 'finalized' state from '%s' state", state.label().c_str());
 
@@ -248,7 +248,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn Ros2Cp
 int main(int argc, char *argv[]) {
 
   rclcpp::init(argc, argv);
-  rclcpp::spin(std::make_shared<ros2_cpp_lifecycle_pkg::Ros2CppLifecycleNode>()->get_node_base_interface());
+  rclcpp::spin(std::make_shared<ros2_cpp_lifecycle_pkg::Ros2CppNode>()->get_node_base_interface());
   rclcpp::shutdown();
 
   return 0;

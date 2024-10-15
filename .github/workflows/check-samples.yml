@@ -37,7 +37,7 @@ jobs:
             has_timer: false
           - package_name: ros2_cpp_lifecycle_pkg
             template: ros2_cpp_pkg
-            node_name: ros2_cpp_lifecycle_node
+            node_name: ros2_cpp_node
             is_component: false
             is_lifecycle: true
             has_launch_file: true
@@ -47,6 +47,18 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+          - package_name: ros2_cpp_all_pkg
+            template: ros2_cpp_pkg
+            node_name: ros2_cpp_node
+            is_component: true
+            is_lifecycle: true
+            has_launch_file: true
+            has_params: true
+            has_subscriber: true
+            has_publisher: true
+            has_service_server: true
+            has_action_server: true
+            has_timer: true
           - package_name: ros2_python_pkg
             template: ros2_python_pkg
             node_name: ros2_python_node
@@ -58,6 +70,17 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+          - package_name: ros2_python_all_pkg
+            template: ros2_python_pkg
+            node_name: ros2_python_node
+            is_lifecycle: false
+            has_launch_file: true
+            has_params: true
+            has_subscriber: true
+            has_publisher: true
+            has_service_server: true
+            has_action_server: true
+            has_timer: true
           - package_name: ros2_interfaces_pkg
             template: ros2_interfaces_pkg
     steps:

@@ -1,4 +1,4 @@
-# ros2_cpp_lifecycle_pkg
+# ros2_cpp_all_pkg
 
 TODO
 
@@ -11,7 +11,7 @@ TODO
 
 | Description | Image | Command |
 | --- | --- | -- |
-| <TODO> | `<IMAGE_NAME:TAG` | `ros2 run ros2_cpp_lifecycle_pkg ros2_cpp_node` |
+| <TODO> | `<IMAGE_NAME:TAG` | `ros2 run ros2_cpp_all_pkg ros2_cpp_node` |
 
 
 ## `ros2_cpp_node`

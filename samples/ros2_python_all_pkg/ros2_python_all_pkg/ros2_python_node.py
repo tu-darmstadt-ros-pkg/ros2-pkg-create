@@ -5,6 +5,8 @@ import rclpy
 from rclpy.node import Node
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 from std_msgs.msg import Int32
+from std_srvs.srv import SetBool
+from ros2_python_all_pkg_interfaces.action import Fibonacci
 
 
 class Ros2PythonNode(Node):
@@ -126,6 +128,23 @@ class Ros2PythonNode(Node):
                                                qos_profile=10)
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 
+        # service server for handling service calls
+        self.service_server = self.create_service(SetBool, "~/service", self.serviceCallback)
+
+        # action server for handling action goal requests
+        self.action_server = rclpy.action.ActionServer(
+            self,
+            Fibonacci,
+            "~/action",
+            execute_callback=self.actionExecute,
+            goal_callback=self.actionHandleGoal,
+            cancel_callback=self.actionHandleCancel,
+            handle_accepted_callback=self.actionHandleAccepted
+        )
+
+        # timer for repeatedly invoking a callback to publish messages
+        self.timer = self.create_timer(1.0, self.timerCallback)
+
     def topicCallback(self, msg: Int32):
         """Processes messages received by a subscriber
 
@@ -134,6 +153,118 @@ class Ros2PythonNode(Node):
         """
 
         rclpy.get_logger().info(f"Message received: '{msg.data}'")
+
+    def serviceCallback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
+        """Processes service requests
+
+        Args:
+            request (SetBool.Request): service request
+            response (SetBool.Response): service response
+
+        Returns:
+            SetBool.Response: service response
+        """
+
+        rclpy.get_logger().info("Received service request")
+        response.success = True
+
+        return response
+
+    def actionHandleGoal(self, goal: Fibonacci.Goal) -> rclpy.action.server.GoalResponse:
+        """Processes action goal requests
+
+        Args:
+            goal (Fibonacci.Goal): action goal
+
+        Returns:
+            rclpy.action.server.GoalResponse: goal response
+        """
+
+        self.get_logger().info("Received action goal request")
+
+        return rclpy.action.server.GoalResponse.ACCEPT
+
+    def actionHandleCancel(self, goal_handle: Fibonacci.GoalHandle) -> rclpy.action.server.CancelResponse:
+        """Processes action cancel requests
+
+        Args:
+            goal_handle (Fibonacci.GoalHandle): action goal handle
+
+        Returns:
+            rclpy.action.server.CancelResponse: cancel response
+        """
+
+        self.get_logger().info("Received request to cancel action goal")
+
+        return rclpy.action.server.CancelResponse.ACCEPT
+
+    def actionHandleAccepted(self, goal_handle: Fibonacci.GoalHandle):
+        """Processes accepted action goal requests
+
+        Args:
+            goal_handle (Fibonacci.Goal): action goal handle
+        """
+
+        # execute action in a separate thread to avoid blocking
+        goal_handle.execute()
+
+    async def actionExecute(self, goal_handle: Fibonacci.Goal) -> Fibonacci.Result:
+        """Executes an action
+
+        Args:
+            goal_handle (Fibonacci.Goal): action goal handle
+
+        Returns:
+            Fibonacci.Result: action goal result
+        """
+
+        self.get_logger().info("Executing action goal")
+
+        # define a sleeping rate between computing individual Fibonacci numbers
+        loop_rate = 1
+
+        # create the action feedback and result
+        feedback = SampleAction.Feedback()
+        result = SampleAction.Result()
+
+        # initialize the Fibonacci sequence
+        feedback.partial_fibonacci = [0, 1]
+
+        # compute the Fibonacci sequence up to the requested order n
+        for i in range(1, goal_handle.request.n):
+
+            # cancel, if requested
+            if goal_handle.is_cancel_requested:
+                result.fibonacci = feedback.partial_fibonacci
+                goal_handle.canceled()
+                self.get_logger().info("Action goal canceled")
+                return result
+
+            # compute the next Fibonacci number
+            feedback.partial_fibonacci.append(feedback.partial_fibonacci[i] +
+                                              feedback.partial_fibonacci[i -
+                                                                         1])
+
+            # publish the current sequence as action feedback
+            goal_handle.publish_feedback(feedback)
+            self.get_logger().info("Publishing action feedback")
+
+            # sleep before computing the next Fibonacci number
+            time.sleep(loop_rate)
+
+        # finish by publishing the action result
+        if rclpy.ok():
+            result.fibonacci = feedback.partial_fibonacci
+            goal_handle.succeed()
+            self.get_logger().info("Goal succeeded")
+
+        return result
+
+    def timerCallback(self):
+        """Processes timer triggers
+        """
+
+        rclpy.get_logger().info("Timer triggered")
 
 
 def main():
