@@ -1,5 +1,4 @@
 # TODO: is_lifecycle
-# TODO: has_service_server
 # TODO: has_action_server
 # TODO: auto_shutdown
 import sys
@@ -7,8 +6,15 @@ from typing import Any, Optional, Union
 
 import rclpy
 from rclpy.node import Node
+{% if has_params %}
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
+{% endif %}
+{% if has_subscriber or has_publisher %}
 from std_msgs.msg import Int32
+{% endif %}
+{% if has_service_server %}
+from std_srvs.srv import SetBool
+{% endif %}
 
 
 class {{ node_class_name }}(Node):
@@ -141,6 +147,11 @@ class {{ node_class_name }}(Node):
                                                qos_profile=10)
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 {% endif %}
+{% if has_service_server %}
+
+        # service server for handling service calls
+        self.service_server = self.create_service(SetBool, "~/service", self.serviceCallback)
+{% endif %}
 {% if has_timer %}
 
         # timer for repeatedly invoking a callback to publish messages
@@ -155,6 +166,24 @@ class {{ node_class_name }}(Node):
         """
 
         rclpy.get_logger().info(f"Message received: '{msg.data}'")
+{% endif %}
+{% if has_service_server %}
+
+    def serviceCallback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
+        """Processes service requests
+
+        Args:
+            request (SetBool.Request): service request
+            response (SetBool.Response): service response
+
+        Returns:
+            SetBool.Response: service response
+        """
+
+        rclpy.get_logger().info("Received service request")
+        response.success = True
+
+        return response
 {% endif %}
 {% if has_timer %}
 
