@@ -119,6 +119,7 @@ jobs:
           mv packages/${{ matrix.package_name }} samples/
           if [[ ! -z "$(git status --porcelain)" ]]; then
             echo "Sample generation resulted in changes to the repository"
+            git status
             git diff
             exit 1
           fi
