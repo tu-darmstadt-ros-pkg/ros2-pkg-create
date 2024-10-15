@@ -34,6 +34,7 @@ ros2-pkg-create --template ros2_cpp_pkg .
 *ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
 
 - [C++ Package](#c-package-template-ros2_cpp_pkg)
+- [Python Package](#python-package---template-ros2_python_pkg)
 - [Interfaces Package](#interfaces-package-template-ros2_interfaces_pkg)
 
 ### C++ Package (`--template ros2_cpp_pkg`)
@@ -47,6 +48,24 @@ ros2-pkg-create --template ros2_cpp_pkg .
 - Class name of node
 - Make it a component?
 - Make it a lifecycle node?
+- Add a launch file? | Type of launch file
+- Add parameter loading?
+- Add a subscriber?
+- Add a publisher?
+- Add a service server?
+- Add an action server?
+- Add a timer callback?
+- Add the docker-ros CI integration?
+
+### Python Package (`--template ros2_python_pkg`)
+
+- Package name
+- Description
+- Maintainer | Maintainer email
+- Author | Author email
+- License
+- Node name
+- Class name of node
 - Add a launch file? | Type of launch file
 - Add parameter loading?
 - Add a subscriber?
@@ -90,11 +109,14 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 ## Usage
 
 ```
-usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_cpp_pkg,ros2_interfaces_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION] [--maintainer MAINTAINER] [--maintainer-email MAINTAINER_EMAIL]
-                       [--author AUTHOR] [--author-email AUTHOR_EMAIL] [--license {Apache-2.0,BSL-1.0,BSD-2.0,BSD-2-Clause,BSD-3-Clause,GPL-3.0-only,LGPL-2.1-only,LGPL-3.0-only,MIT,MIT-0}] [--node-name NODE_NAME]
-                       [--node-class-name NODE_CLASS_NAME] [--is-component] [--no-is-component] [--is-lifecycle] [--no-is-lifecycle] [--has-launch-file] [--no-has-launch-file] [--launch-file-type {xml,py,yml}] [--has-params]
-                       [--no-has-params] [--has-subscriber] [--no-has-subscriber] [--has-publisher] [--no-has-publisher] [--has-service-server] [--no-has-service-server] [--has-action-server] [--no-has-action-server] [--has-timer]
-                       [--no-has-timer] [--auto-shutdown] [--no-auto-shutdown] [--interface-types {Message,Service,Action}] [--msg-name MSG_NAME] [--srv-name SRV_NAME] [--action-name ACTION_NAME] [--has-docker-ros] [--version]
+usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_interfaces_pkg,ros2_python_pkg,ros2_cpp_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION]
+                       [--maintainer MAINTAINER] [--maintainer-email MAINTAINER_EMAIL] [--author AUTHOR] [--author-email AUTHOR_EMAIL]
+                       [--license {Apache-2.0,BSL-1.0,BSD-2.0,BSD-2-Clause,BSD-3-Clause,GPL-3.0-only,LGPL-2.1-only,LGPL-3.0-only,MIT,MIT-0}] [--node-name NODE_NAME]
+                       [--node-class-name NODE_CLASS_NAME] [--is-component] [--no-is-component] [--is-lifecycle] [--no-is-lifecycle] [--has-launch-file] [--no-has-launch-file]
+                       [--launch-file-type {xml,py,yml}] [--has-params] [--no-has-params] [--has-subscriber] [--no-has-subscriber] [--has-publisher] [--no-has-publisher]
+                       [--has-service-server] [--no-has-service-server] [--has-action-server] [--no-has-action-server] [--has-timer] [--no-has-timer] [--auto-shutdown]
+                       [--no-auto-shutdown] [--interface-types {Message,Service,Action}] [--msg-name MSG_NAME] [--srv-name SRV_NAME] [--action-name ACTION_NAME] [--has-docker-ros]
+                       [--version]
                        destination
 
 Creates a ROS 2 package from templates
@@ -107,7 +129,7 @@ options:
   --defaults            Use defaults for all options
   --use-local-templates
                         Use locally installed templates instead of remotely pulling most recent ones
-  --template {ros2_cpp_pkg,ros2_interfaces_pkg}
+  --template {ros2_interfaces_pkg,ros2_python_pkg,ros2_cpp_pkg}
                         Template
   --package-name PACKAGE_NAME
                         Package name
