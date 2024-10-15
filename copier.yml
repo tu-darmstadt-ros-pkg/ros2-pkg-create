@@ -83,7 +83,7 @@ has_launch_file:
 
 launch_file_type:
   help: Type of launch file
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ (template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg') and has_launch_file }}"
   type: str
   default: py
   choices: [py, xml, yml]
