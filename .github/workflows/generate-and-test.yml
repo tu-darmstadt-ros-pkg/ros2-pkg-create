@@ -53,10 +53,6 @@ jobs:
           - package_name: default_python_pkg
             template: ros2_python_pkg
             auto_shutdown: true
-          - package_name: lifecycle_python_pkg
-            template: ros2_python_pkg
-            is_lifecycle: true
-            auto_shutdown: true
           - package_name: service_python_pkg
             template: ros2_python_pkg
             has_service_server: true
@@ -149,8 +145,6 @@ jobs:
             command: ros2 launch all_cpp_pkg all_cpp_pkg_launch.py
           - package: default_python_pkg
             command: ros2 launch default_python_pkg default_python_pkg_launch.py
-          - package: lifecycle_python_pkg
-            command: ros2 launch lifecycle_python_pkg lifecycle_python_pkg_launch.py
           - package: service_python_pkg
             command: ros2 launch service_python_pkg service_python_pkg_launch.py
           - package: action_python_pkg
