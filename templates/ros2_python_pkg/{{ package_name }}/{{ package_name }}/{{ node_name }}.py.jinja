@@ -183,7 +183,7 @@ class {{ node_class_name }}(Node):
             msg (Int32): message
         """
 
-        rclpy.get_logger().info(f"Message received: '{msg.data}'")
+        self.get_logger().info(f"Message received: '{msg.data}'")
 {% endif %}
 {% if has_service_server %}
 
@@ -198,7 +198,7 @@ class {{ node_class_name }}(Node):
             SetBool.Response: service response
         """
 
-        rclpy.get_logger().info("Received service request")
+        self.get_logger().info("Received service request")
         response.success = True
 
         return response
@@ -301,7 +301,7 @@ class {{ node_class_name }}(Node):
         """Processes timer triggers
         """
 
-        rclpy.get_logger().info("Timer triggered")
+        self.get_logger().info("Timer triggered")
 {% endif %}
 {% if auto_shutdown %}
 
@@ -309,7 +309,7 @@ class {{ node_class_name }}(Node):
         """Processes timer triggers to auto-shutdown the node
         """
 
-        rclpy.get_logger().info("Shutting down")
+        self.get_logger().info("Shutting down")
         rclpy.shutdown()
 {% endif %}
 

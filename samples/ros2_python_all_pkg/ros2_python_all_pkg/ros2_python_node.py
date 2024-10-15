@@ -152,7 +152,7 @@ class Ros2PythonNode(Node):
             msg (Int32): message
         """
 
-        rclpy.get_logger().info(f"Message received: '{msg.data}'")
+        self.get_logger().info(f"Message received: '{msg.data}'")
 
     def serviceCallback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
         """Processes service requests
@@ -165,7 +165,7 @@ class Ros2PythonNode(Node):
             SetBool.Response: service response
         """
 
-        rclpy.get_logger().info("Received service request")
+        self.get_logger().info("Received service request")
         response.success = True
 
         return response
@@ -264,7 +264,7 @@ class Ros2PythonNode(Node):
         """Processes timer triggers
         """
 
-        rclpy.get_logger().info("Timer triggered")
+        self.get_logger().info("Timer triggered")
 
 
 def main():

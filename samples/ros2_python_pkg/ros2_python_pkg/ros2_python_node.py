@@ -133,7 +133,7 @@ class Ros2PythonNode(Node):
             msg (Int32): message
         """
 
-        rclpy.get_logger().info(f"Message received: '{msg.data}'")
+        self.get_logger().info(f"Message received: '{msg.data}'")
 
 
 def main():
