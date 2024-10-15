@@ -1,7 +1,6 @@
 # TODO: is_lifecycle
 # TODO: has_service_server
 # TODO: has_action_server
-# TODO: has_timer
 # TODO: auto_shutdown
 import sys
 from typing import Any, Optional, Union
@@ -37,7 +36,7 @@ class {{ node_class_name }}(Node):
                                                   to_value=10.0,
                                                   step_value=0.1)
 {% endif %}
-        self.setup() 
+        self.setup()
 
 {% if has_params %}
     def declareAndLoadParameter(self, name: str, param_type: rclpy.Parameter.Type, description: str, default: Optional[Any] = None, add_to_auto_reconfigurable_params: bool = True, is_required: bool = False , read_only: bool = False, from_value: Optional[Union[int, float]] = None, to_value: Optional[Union[int, float]] = None, step_value: Optional[Union[int, float]] = None, additional_constraints: str = "") -> Any:
@@ -55,7 +54,7 @@ class {{ node_class_name }}(Node):
             to_value (Optional[Union[int, float]], optional): parameter range maximum
             step_value (Optional[Union[int, float]], optional): parameter range step
             additional_constraints (str, optional): additional constraints description
-        
+
         Returns:
             Any: parameter value
         """
@@ -86,7 +85,7 @@ class {{ node_class_name }}(Node):
             else:
                 self.get_logger().warn(f"Missing parameter '{name}', using default value: {default}")
                 param = default
-        
+
         if add_to_auto_reconfigurable_params:
             # TODO: this probably doesn't work
             self.auto_reconfigurable_params.append((name, param))
@@ -136,12 +135,16 @@ class {{ node_class_name }}(Node):
 {% endif %}
 {% if has_publisher %}
 
-        # publisher for publishing messages
+        # publisher for publishing outgoing messages
         self.publisher = self.create_publisher(Int32,
                                                "~/output",
                                                qos_profile=10)
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 {% endif %}
+{% if has_timer %}
+
+        # timer for repeatedly invoking a callback to publish messages
+        self.timer = self.create_timer(1.0, self.timerCallback)
 {% if has_subscriber %}
 
     def topicCallback(self, msg: Int32):
@@ -152,6 +155,14 @@ class {{ node_class_name }}(Node):
         """
 
         rclpy.get_logger().info(f"Message received: '{msg.data}'")
+{% endif %}
+{% if has_timer %}
+
+    def timerCallback(self):
+        """Processes timer triggers
+        """
+
+        rclpy.get_logger().info("Timer triggered")
 {% endif %}
 
 

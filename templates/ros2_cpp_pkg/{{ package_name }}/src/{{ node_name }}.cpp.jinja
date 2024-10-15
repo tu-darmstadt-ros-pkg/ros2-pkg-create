@@ -199,7 +199,7 @@ void {{ node_class_name }}::setup() {
 {% if has_timer and not is_lifecycle %}
 
   // timer for repeatedly invoking a callback to publish messages
-  timer_ = this->create_wall_timer(std::chrono::duration<double>(param_), std::bind(&{{ node_class_name }}::timerCallback, this));
+  timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0), std::bind(&{{ node_class_name }}::timerCallback, this));
 {% endif %}
 {% if auto_shutdown and not is_lifecycle %}
 
