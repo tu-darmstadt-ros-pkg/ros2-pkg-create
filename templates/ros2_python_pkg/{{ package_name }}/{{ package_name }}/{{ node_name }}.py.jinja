@@ -1,4 +1,3 @@
-# TODO: auto_shutdown
 import sys
 from typing import Any, Optional, Union
 
@@ -170,6 +169,10 @@ class {{ node_class_name }}(Node):
 
         # timer for repeatedly invoking a callback to publish messages
         self.timer = self.create_timer(1.0, self.timerCallback)
+{% if auto_shutdown %}
+
+        self.auto_shutdown_timer = self.create_timer(3.0, self.autoShutdownTimerCallback)
+{% endif %}
 {% if has_subscriber %}
 
     def topicCallback(self, msg: Int32):
@@ -298,6 +301,15 @@ class {{ node_class_name }}(Node):
         """
 
         rclpy.get_logger().info("Timer triggered")
+{% endif %}
+{% if auto_shutdown %}
+
+    def autoShutdownTimerCallback(self):
+        """Processes timer triggers to auto-shutdown the node
+        """
+
+        rclpy.get_logger().info("Shutting down")
+        rclpy.shutdown()
 {% endif %}
 
 
