@@ -103,7 +103,6 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
   }
 
   if (add_to_auto_reconfigurable_params) {
-    // TODO: why so complicated, storing lambda functions? / why vector, not map?
     std::function<void(const rclcpp::Parameter&)> setter = [&param](const rclcpp::Parameter& p) {
       param = p.get_value<T>();
     };
