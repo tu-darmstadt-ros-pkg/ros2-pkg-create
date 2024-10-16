@@ -1,4 +1,3 @@
-import sys
 from typing import Any, Optional, Union
 
 import rclpy
@@ -86,7 +85,7 @@ class Ros2PythonNode(Node):
         except rclpy.exceptions.ParameterUninitializedException:
             if is_required:
                 self.get_logger().fatal(f"Missing required parameter '{name}', exiting")
-                sys.exit(1) # TODO: rclpy shutdown?
+                raise SystemExit(1)
             else:
                 self.get_logger().warn(f"Missing parameter '{name}', using default value: {default}")
                 param = default
@@ -283,8 +282,14 @@ class Ros2PythonNode(Node):
 def main():
 
     rclpy.init()
-    rclpy.spin(Ros2PythonNode())
-    rclpy.shutdown()
+    node = Ros2PythonNode()
+    try:
+        rclpy.spin(node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        node.destroy_node()
+        rclpy.try_shutdown()
 
 
 if __name__ == '__main__':
