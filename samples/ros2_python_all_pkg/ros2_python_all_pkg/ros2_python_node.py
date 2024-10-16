@@ -94,8 +94,7 @@ class Ros2PythonNode(Node):
 
         # add parameter to auto-reconfigurable parameters
         if add_to_auto_reconfigurable_params:
-            # TODO: this probably doesn't work
-            self.auto_reconfigurable_params.append((name, param))
+            self.auto_reconfigurable_params.append(name)
 
         return param
 
@@ -111,11 +110,9 @@ class Ros2PythonNode(Node):
         """
 
         for param in parameters:
-            for auto_reconfigurable_param in self.auto_reconfigurable_params:
-                if param.name == auto_reconfigurable_param[0]:
-                    # TODO: this probably doesn't work
-                    auto_reconfigurable_param[1] = param.value
-                    break
+            if param.name in self.auto_reconfigurable_params:
+                setattr(self, param.name, param.value)
+                self.get_logger().info(f"Reconfigured parameter '{param.name}' to: {param.value}")
 
         result = SetParametersResult()
         result.successful = True

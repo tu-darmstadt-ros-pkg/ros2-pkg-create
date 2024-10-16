@@ -52,12 +52,12 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
   auto type = rclcpp::ParameterValue(param).get_type();
 
   if (from_value.has_value() && to_value.has_value()) {
-    if constexpr (std::is_integral_v<T>) {
+    if constexpr(std::is_integral_v<T>) {
       rcl_interfaces::msg::IntegerRange range;
       T step = static_cast<T>(step_value.has_value() ? step_value.value() : 1);
       range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
       param_desc.integer_range = {range};
-    } else if constexpr (std::is_floating_point_v<T>) {
+    } else if constexpr(std::is_floating_point_v<T>) {
       rcl_interfaces::msg::FloatingPointRange range;
       T step = static_cast<T>(step_value.has_value() ? step_value.value() : 1.0);
       range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
@@ -73,7 +73,7 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
     param = this->get_parameter(name).get_value<T>();
     std::stringstream ss;
     ss << "Loaded parameter '" << name << "': ";
-    if constexpr (is_vector_v<T>) {
+    if constexpr(is_vector_v<T>) {
       ss << "[";
       for (const auto& element : param) ss << element << (&element != &param.back() ? ", " : "]");
     } else {
@@ -83,11 +83,11 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
     if (is_required) {
       RCLCPP_FATAL_STREAM(this->get_logger(), "Missing required parameter '" << name << "', exiting");
-      exit(EXIT_FAILURE); // TODO: rclpy shutdown?
+      exit(EXIT_FAILURE);
     } else {
       std::stringstream ss;
       ss << "Missing parameter '" << name << "', using default value: ";
-      if constexpr (is_vector_v<T>) {
+      if constexpr(is_vector_v<T>) {
         ss << "[";
         for (const auto& element : param) ss << element << (&element != &param.back() ? ", " : "]");
       } else {
@@ -119,6 +119,7 @@ rcl_interfaces::msg::SetParametersResult Ros2CppNode::parametersCallback(const s
     for (auto& auto_reconfigurable_param : auto_reconfigurable_params_) {
       if (param.get_name() == std::get<0>(auto_reconfigurable_param)) {
         std::get<1>(auto_reconfigurable_param)(param);
+        RCLCPP_INFO(this->get_logger(), "Reconfigured parameter '%s'", param.get_name().c_str());
         break;
       }
     }
