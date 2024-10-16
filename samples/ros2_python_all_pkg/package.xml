@@ -11,11 +11,8 @@
 
   <license>TODO</license>
 
-  <buildtool_depend>ament_python</buildtool_depend>
-
   <depend>rclpy</depend>
-  <depend>rclcpp_action</depend>
-<depend>std_msgs</depend>
+  <depend>std_msgs</depend>
   <depend>std_srvs</depend>
   <depend>ros2_python_all_pkg_interfaces</depend>
 

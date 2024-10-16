@@ -138,8 +138,6 @@ class Ros2PythonNode(Node):
                                                qos_profile=10)
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 
-        self.auto_shutdown_timer = self.create_timer(3.0, self.autoShutdownTimerCallback)
-
     def topicCallback(self, msg: Int32):
         """Processes messages received by a subscriber
 
@@ -148,13 +146,6 @@ class Ros2PythonNode(Node):
         """
 
         self.get_logger().info(f"Message received: '{msg.data}'")
-
-    def autoShutdownTimerCallback(self):
-        """Processes timer triggers to auto-shutdown the node
-        """
-
-        self.get_logger().info("Shutting down")
-        raise SystemExit(0)
 
 
 def main():

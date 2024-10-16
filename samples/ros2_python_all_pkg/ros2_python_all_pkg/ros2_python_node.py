@@ -1,6 +1,8 @@
+import time
 from typing import Any, Optional, Union
 
 import rclpy
+from rclpy.action import ActionServer, CancelResponse, GoalResponse
 from rclpy.node import Node
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 from std_msgs.msg import Int32
@@ -144,7 +146,7 @@ class Ros2PythonNode(Node):
         self.service_server = self.create_service(SetBool, "~/service", self.serviceCallback)
 
         # action server for handling action goal requests
-        self.action_server = rclpy.action.ActionServer(
+        self.action_server = ActionServer(
             self,
             Fibonacci,
             "~/action",
@@ -182,49 +184,49 @@ class Ros2PythonNode(Node):
 
         return response
 
-    def actionHandleGoal(self, goal: Fibonacci.Goal) -> rclpy.action.server.GoalResponse:
+    def actionHandleGoal(self, goal: Fibonacci.Goal) -> GoalResponse:
         """Processes action goal requests
 
         Args:
             goal (Fibonacci.Goal): action goal
 
         Returns:
-            rclpy.action.server.GoalResponse: goal response
+            GoalResponse: goal response
         """
 
         self.get_logger().info("Received action goal request")
 
-        return rclpy.action.server.GoalResponse.ACCEPT
+        return GoalResponse.ACCEPT
 
-    def actionHandleCancel(self, goal_handle: Fibonacci.GoalHandle) -> rclpy.action.server.CancelResponse:
+    def actionHandleCancel(self, goal: Fibonacci.Goal) -> CancelResponse:
         """Processes action cancel requests
 
         Args:
-            goal_handle (Fibonacci.GoalHandle): action goal handle
+            goal (Fibonacci.Goal): action goal
 
         Returns:
-            rclpy.action.server.CancelResponse: cancel response
+            CancelResponse: cancel response
         """
 
         self.get_logger().info("Received request to cancel action goal")
 
-        return rclpy.action.server.CancelResponse.ACCEPT
+        return CancelResponse.ACCEPT
 
-    def actionHandleAccepted(self, goal_handle: Fibonacci.GoalHandle):
+    def actionHandleAccepted(self, goal: Fibonacci.Goal):
         """Processes accepted action goal requests
 
         Args:
-            goal_handle (Fibonacci.Goal): action goal handle
+            goal (Fibonacci.Goal): action goal
         """
 
         # execute action in a separate thread to avoid blocking
-        goal_handle.execute()
+        goal.execute()
 
-    async def actionExecute(self, goal_handle: Fibonacci.Goal) -> Fibonacci.Result:
+    async def actionExecute(self, goal: Fibonacci.Goal) -> Fibonacci.Result:
         """Executes an action
 
         Args:
-            goal_handle (Fibonacci.Goal): action goal handle
+            goal (Fibonacci.Goal): action goal
 
         Returns:
             Fibonacci.Result: action goal result
@@ -240,25 +242,23 @@ class Ros2PythonNode(Node):
         result = Fibonacci.Result()
 
         # initialize the Fibonacci sequence
-        feedback.partial_fibonacci = [0, 1]
+        feedback.partial_sequence = [0, 1]
 
         # compute the Fibonacci sequence up to the requested order n
-        for i in range(1, goal_handle.request.n):
+        for i in range(1, goal.request.order):
 
             # cancel, if requested
-            if goal_handle.is_cancel_requested:
-                result.fibonacci = feedback.partial_fibonacci
-                goal_handle.canceled()
+            if goal.is_cancel_requested:
+                result.sequence = feedback.partial_sequence
+                goal.canceled()
                 self.get_logger().info("Action goal canceled")
                 return result
 
             # compute the next Fibonacci number
-            feedback.partial_fibonacci.append(feedback.partial_fibonacci[i] +
-                                              feedback.partial_fibonacci[i -
-                                                                         1])
+            feedback.partial_sequence.append(feedback.partial_sequence[i] + feedback.partial_sequence[i-1])
 
             # publish the current sequence as action feedback
-            goal_handle.publish_feedback(feedback)
+            goal.publish_feedback(feedback)
             self.get_logger().info("Publishing action feedback")
 
             # sleep before computing the next Fibonacci number
@@ -266,8 +266,8 @@ class Ros2PythonNode(Node):
 
         # finish by publishing the action result
         if rclpy.ok():
-            result.fibonacci = feedback.partial_fibonacci
-            goal_handle.succeed()
+            result.sequence = feedback.partial_sequence
+            goal.succeed()
             self.get_logger().info("Goal succeeded")
 
         return result

@@ -11,13 +11,8 @@
 
   <license>{{ license }}</license>
 
-  <buildtool_depend>ament_python</buildtool_depend>
-
   <depend>rclpy</depend>
-{% if has_action_server %}
-  <depend>rclcpp_action</depend>
-{% endif %}
-<depend>std_msgs</depend>
+  <depend>std_msgs</depend>
 {% if has_service_server %}
   <depend>std_srvs</depend>
 {% endif %}
