@@ -74,6 +74,15 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
 
   try {
     param = this->get_parameter(name).get_value<T>();
+    std::stringstream ss;
+    ss << "Loaded parameter '" << name << "': ";
+    if constexpr (is_vector_v<T>) {
+      ss << "[";
+      for (const auto& element : param) ss << element << (&element != &param.back() ? ", " : "]");
+    } else {
+      ss << param;
+    }
+    RCLCPP_INFO_STREAM(this->get_logger(), ss.str());
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
     if (is_required) {
       RCLCPP_FATAL_STREAM(this->get_logger(), "Missing required parameter '" << name << "', exiting");
@@ -92,7 +101,7 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
   }
 
   if (add_to_auto_reconfigurable_params) {
-    // why so complicated, storing lambda functions? / why vector, not map?
+    // TODO: why so complicated, storing lambda functions? / why vector, not map?
     std::function<void(const rclcpp::Parameter&)> setter = [&param](const rclcpp::Parameter& p) {
       param = p.get_value<T>();
     };

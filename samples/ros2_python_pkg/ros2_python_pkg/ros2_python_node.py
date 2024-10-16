@@ -80,6 +80,7 @@ class Ros2PythonNode(Node):
         # load parameter
         try:
             param = self.get_parameter(name).value
+            self.get_logger().info(f"Loaded parameter '{name}': {param}")
         except rclpy.exceptions.ParameterUninitializedException:
             if is_required:
                 self.get_logger().fatal(f"Missing required parameter '{name}', exiting")
