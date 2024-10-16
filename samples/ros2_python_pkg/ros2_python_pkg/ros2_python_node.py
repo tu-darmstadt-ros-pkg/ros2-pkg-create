@@ -20,7 +20,6 @@ class Ros2PythonNode(Node):
         self.publisher = None
 
         self.param = 1.0
-
         self.param = self.declareAndLoadParameter(name="param",
                                                   param_type=rclpy.Parameter.Type.DOUBLE,
                                                   description="TODO",
@@ -28,9 +27,21 @@ class Ros2PythonNode(Node):
                                                   from_value=0.0,
                                                   to_value=10.0,
                                                   step_value=0.1)
+
         self.setup()
 
-    def declareAndLoadParameter(self, name: str, param_type: rclpy.Parameter.Type, description: str, default: Optional[Any] = None, add_to_auto_reconfigurable_params: bool = True, is_required: bool = False , read_only: bool = False, from_value: Optional[Union[int, float]] = None, to_value: Optional[Union[int, float]] = None, step_value: Optional[Union[int, float]] = None, additional_constraints: str = "") -> Any:
+    def declareAndLoadParameter(self,
+        name: str,
+        param_type: rclpy.Parameter.Type,
+        description: str,
+        default: Optional[Any] = None,
+        add_to_auto_reconfigurable_params: bool = True,
+        is_required: bool = False,
+        read_only: bool = False,
+        from_value: Optional[Union[int, float]] = None,
+        to_value: Optional[Union[int, float]] = None,
+        step_value: Optional[Union[int, float]] = None,
+        additional_constraints: str = "") -> Any:
         """Declares and loads a ROS parameter
 
         Args:
@@ -50,11 +61,11 @@ class Ros2PythonNode(Node):
             Any: parameter value
         """
 
+        # declare parameter
         param_desc = ParameterDescriptor()
         param_desc.description = description
         param_desc.additional_constraints = additional_constraints
         param_desc.read_only = read_only
-
         if from_value is not None and to_value is not None:
             if param_type == rclpy.Parameter.Type.INTEGER:
                 step_value = step_value if step_value is not None else 1
@@ -64,9 +75,9 @@ class Ros2PythonNode(Node):
                 param_desc.floating_point_range = [FloatingPointRange(from_value=from_value, to_value=to_value, step=step_value)]
             else:
                 self.get_logger().warn(f"Parameter type of parameter '{name}' does not support specifying a range")
-
         self.declare_parameter(name, param_type, param_desc)
 
+        # load parameter
         try:
             param = self.get_parameter(name).value
         except rclpy.exceptions.ParameterUninitializedException:
@@ -77,6 +88,7 @@ class Ros2PythonNode(Node):
                 self.get_logger().warn(f"Missing parameter '{name}', using default value: {default}")
                 param = default
 
+        # add parameter to auto-reconfigurable parameters
         if add_to_auto_reconfigurable_params:
             # TODO: this probably doesn't work
             self.auto_reconfigurable_params.append((name, param))
