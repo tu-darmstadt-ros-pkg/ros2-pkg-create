@@ -1,9 +1,9 @@
-# ros2_cpp_pkg
+# ros2_python_pkg
 
 TODO
 
 - [Container Images](#container-images)
-- [ros2_cpp_node](#ros2_cpp_node)
+- [ros2_python_node](#ros2_python_node)
 
 
 ### Container Images
@@ -13,7 +13,7 @@ TODO
 |  |  |  |
 
 
-## `ros2_cpp_node`
+## `ros2_python_node`
 
 ### Subscribed Topics
 
