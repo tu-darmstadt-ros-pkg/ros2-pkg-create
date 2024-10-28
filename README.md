@@ -10,9 +10,10 @@
 *ros2-pkg-create* is an interactive CLI tool for quickly generating ROS 2 packages from basic pub/sub nodes to complex lifecycle components. It is meant to replace the official [`ros2 pkg create`](https://docs.ros.org/en/latest/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package) command.
 
 - [Quick Demo](#quick-demo)
-- [Templates \& Features](#templates-features)
+- [Templates \& Features](#templates--features)
 - [Installation](#installation)
 - [Usage](#usage)
+- [Acknowledgements](#acknowledgements)
 
 > [!IMPORTANT]  
 > This repository is open-sourced and maintained by the [**Institute for Automotive Engineering (ika) at RWTH Aachen University**](https://www.ika.rwth-aachen.de/).  
@@ -24,6 +25,7 @@
 ## Quick Demo
 
 ```bash
+pip install ros2-pkg-create
 ros2-pkg-create --template ros2_cpp_pkg .
 ```
 
@@ -34,9 +36,9 @@ ros2-pkg-create --template ros2_cpp_pkg .
 
 *ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
 
-- [C++ Package](#c-package-template-ros2_cpp_pkg)
+- [C++ Package](#c-package---template-ros2_cpp_pkg)
 - [Python Package](#python-package---template-ros2_python_pkg)
-- [Interfaces Package](#interfaces-package-template-ros2_interfaces_pkg)
+- [Interfaces Package](#interfaces-package---template-ros2_interfaces_pkg)
 
 ### C++ Package (`--template ros2_cpp_pkg`)
 
@@ -180,3 +182,7 @@ options:
   --has-docker-ros      Add the docker-ros CI integration?
   --version             show program's version number and exit
 ```
+
+## Acknowledgements
+
+This work is accomplished within the projects [6GEM](https://6gem.de/en/) (FKZ 16KISK036K) and [autotech.agil](https://www.autotechagil.de/) (FKZ 01IS22088A). We acknowledge the financial support for the projects by the *Federal Ministry of Education and Research of Germany (BMBF)*.
