@@ -10,9 +10,11 @@ license = {file = "LICENSE"}
 readme = "README.md"
 authors = [
     {name = "Lennart Reiher", email = "lennart.reiher@rwth-aachen.de"},
+    {name = "Jean-Pierre Busch", email = "jean-pierre.busch@rwth-aachen.de"},
 ]
 maintainers = [
     {name = "Lennart Reiher", email = "lennart.reiher@rwth-aachen.de"},
+    {name = "Jean-Pierre Busch", email = "jean-pierre.busch@rwth-aachen.de"},
 ]
 classifiers = [
     "License :: OSI Approved :: MIT License",
