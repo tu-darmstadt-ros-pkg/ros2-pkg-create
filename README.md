@@ -10,8 +10,8 @@
 *ros2-pkg-create* is an interactive CLI tool for quickly generating ROS 2 packages from basic pub/sub nodes to complex lifecycle components. It is meant to replace the official [`ros2 pkg create`](https://docs.ros.org/en/latest/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package) command.
 
 - [Quick Demo](#quick-demo)
-- [Templates \& Features](#templates--features)
 - [Installation](#installation)
+- [Templates \& Features](#templates--features)
 - [Usage](#usage)
 - [Acknowledgements](#acknowledgements)
 
@@ -32,15 +32,38 @@ ros2-pkg-create --template ros2_cpp_pkg .
 <img src="./assets/cli.png" width=600>
 
 
+## Installation
+
+```bash
+pip install ros2-pkg-create
+
+# (optional) bash auto-completion
+activate-global-python-argcomplete
+eval "$(register-python-argcomplete ros2-pkg-create)"
+```
+
+> [!WARNING]  
+> Outside of a virtual environment, *pip* may default to a user-site installation of executables to `~/.local/bin`, which may not be present in your shell's `PATH`.  If running `ros2-pkg-create` errors with `ros2-pkg-create: command not found`, add the directory to your path. [*(More information)*](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-to-the-user-site)
+> ```bash
+> echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
+> source ~/.bashrc
+> ```
+
+
 ## Templates & Features
 
-*ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
+*ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of supported features and questionnarie options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
 
 - [C++ Package](#c-package---template-ros2_cpp_pkg)
 - [Python Package](#python-package---template-ros2_python_pkg)
 - [Interfaces Package](#interfaces-package---template-ros2_interfaces_pkg)
 
 ### C++ Package (`--template ros2_cpp_pkg`)
+
+**Supported Features:** publisher, subscriber, parameter loading, launch file, service server, action server, timer callback, component, lifecycle node, docker-ros
+
+<details>
+<summary>Questionnaire</summary>
 
 - Package name
 - Description
@@ -59,8 +82,14 @@ ros2-pkg-create --template ros2_cpp_pkg .
 - Add an action server?
 - Add a timer callback?
 - Add the docker-ros CI integration?
+</details>
 
 ### Python Package (`--template ros2_python_pkg`)
+
+**Supported Features:** publisher, subscriber, parameter loading, launch file, service server, action server, timer callback, docker-ros
+
+<details>
+<summary>Questionnaire</summary>
 
 - Package name
 - Description
@@ -77,8 +106,14 @@ ros2-pkg-create --template ros2_cpp_pkg .
 - Add an action server?
 - Add a timer callback?
 - Add the docker-ros CI integration?
+</details>
 
 ### Interfaces Package (`--template ros2_interfaces_pkg`)
+
+**Supported Features:** message, service, action
+
+<details>
+<summary>Questionnaire</summary>
 
 - Package name
 - Description
@@ -90,23 +125,7 @@ ros2-pkg-create --template ros2_cpp_pkg .
 - Service name
 - Action name
 - Add the docker-ros CI integration?
-
-## Installation
-
-```bash
-pip install ros2-pkg-create
-
-# (optional) bash auto-completion
-activate-global-python-argcomplete
-eval "$(register-python-argcomplete ros2-pkg-create)"
-```
-
-> [!WARNING]  
-> Outside of a virtual environment, *pip* may default to a user-site installation of executables to `~/.local/bin`, which may not be present in your shell's `PATH`.  If running `ros2-pkg-create` errors with `ros2-pkg-create: command not found`, add the directory to your path. [*(More information)*](https://packaging.python.org/en/latest/tutorials/installing-packages/#installing-to-the-user-site)
-> ```bash
-> echo "export PATH=\$HOME/.local/bin:\$PATH" >> ~/.bashrc
-> source ~/.bashrc
-> ```
+</details>
 
 
 ## Usage
