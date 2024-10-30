@@ -23,6 +23,7 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+            has_docker_ros: true
           - package_name: ros2_cpp_component_pkg
             template: ros2_cpp_pkg
             node_name: ros2_cpp_node
@@ -35,6 +36,7 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+            has_docker_ros: true
           - package_name: ros2_cpp_lifecycle_pkg
             template: ros2_cpp_pkg
             node_name: ros2_cpp_node
@@ -47,6 +49,7 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+            has_docker_ros: true
           - package_name: ros2_cpp_all_pkg
             template: ros2_cpp_pkg
             node_name: ros2_cpp_node
@@ -59,6 +62,7 @@ jobs:
             has_service_server: true
             has_action_server: true
             has_timer: true
+            has_docker_ros: true
           - package_name: ros2_python_pkg
             template: ros2_python_pkg
             node_name: ros2_python_node
@@ -70,6 +74,7 @@ jobs:
             has_service_server: false
             has_action_server: false
             has_timer: false
+            has_docker_ros: true
           - package_name: ros2_python_all_pkg
             template: ros2_python_pkg
             node_name: ros2_python_node
@@ -81,6 +86,7 @@ jobs:
             has_service_server: true
             has_action_server: true
             has_timer: true
+            has_docker_ros: true
           - package_name: ros2_interfaces_pkg
             template: ros2_interfaces_pkg
     steps:
@@ -112,6 +118,7 @@ jobs:
             -d has_service_server=${{ matrix.has_service_server }} \
             -d has_action_server=${{ matrix.has_action_server }} \
             -d has_timer=${{ matrix.has_timer }} \
+            -d has_docker_ros=${{ matrix.has_docker_ros }} \
             . packages
       - name: Check for repository changes
         run: |

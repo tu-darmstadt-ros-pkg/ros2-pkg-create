@@ -15,6 +15,7 @@ copier copy --trust --defaults \
             -d has_service_server=false \
             -d has_action_server=false \
             -d has_timer=false \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
@@ -30,6 +31,7 @@ copier copy --trust --defaults \
             -d has_service_server=false \
             -d has_action_server=false \
             -d has_timer=false \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
@@ -45,6 +47,7 @@ copier copy --trust --defaults \
             -d has_service_server=false \
             -d has_action_server=false \
             -d has_timer=false \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
@@ -60,6 +63,7 @@ copier copy --trust --defaults \
             -d has_service_server=true \
             -d has_action_server=true \
             -d has_timer=true \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
@@ -73,6 +77,7 @@ copier copy --trust --defaults \
             -d has_service_server=false \
             -d has_action_server=false \
             -d has_timer=false \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
@@ -86,6 +91,7 @@ copier copy --trust --defaults \
             -d has_service_server=true \
             -d has_action_server=true \
             -d has_timer=true \
+            -d has_docker_ros=true \
             . $script_dir
 
 copier copy --trust --defaults \
