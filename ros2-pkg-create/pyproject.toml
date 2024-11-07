@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "ros2-pkg-create"
 version = "1.0.0"
-description = "TODO"
+description = "Powerful ROS 2 Package Generator"
 license = {file = "LICENSE"}
 readme = "README.md"
 authors = [
