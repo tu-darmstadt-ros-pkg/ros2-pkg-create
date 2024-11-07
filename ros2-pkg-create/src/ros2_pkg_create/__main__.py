@@ -9,13 +9,14 @@ import ros2_pkg_create
 
 def parseArguments() -> argparse.Namespace:
 
-    parser = argparse.ArgumentParser(description="Creates a ROS2 package from templates")
+    parser = argparse.ArgumentParser(description="Creates a ROS 2 package from templates")
 
     parser.add_argument("destination", type=str, help="Destination directory")
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
+    parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
 
-    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg", "ros2_interfaces_pkg"], required=True, help="Template")
-    parser.add_argument("--package_name", type=str, default=None, help="Package name")
+    parser.add_argument("--template", type=str, default=None, choices=os.listdir(os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir, "templates")), required=True, help="Template")
+    parser.add_argument("--package-name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")
     parser.add_argument("--maintainer-email", type=str, default=None, help="Maintainer email")
@@ -65,8 +66,11 @@ def main():
 
     # run copier
     try:
-        # local use:    os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir),
-        copier.run_copy("https://gitlab.ika.rwth-aachen.de/fb-fi/ops/templates/ros2/ros2-pkg-create.git",
+        if args.use_local_templates:
+            template_location = os.path.join(os.path.dirname(__file__), os.pardir, os.pardir, os.pardir)
+        else:
+            template_location = "https://github.com/ika-rwth-aachen/ros2-pkg-create.git"
+        copier.run_copy(template_location,
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,
                         defaults=args.defaults,

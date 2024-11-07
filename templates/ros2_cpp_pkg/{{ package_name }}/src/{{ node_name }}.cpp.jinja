@@ -86,18 +86,18 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
   auto type = rclcpp::ParameterValue(param).get_type();
 
   if (from_value.has_value() && to_value.has_value()) {
-    if constexpr (std::is_integral_v<T>) {
+    if constexpr(std::is_integral_v<T>) {
       rcl_interfaces::msg::IntegerRange range;
-      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 0);
+      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 1);
       range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
       param_desc.integer_range = {range};
-    } else if constexpr (std::is_floating_point_v<T>) {
+    } else if constexpr(std::is_floating_point_v<T>) {
       rcl_interfaces::msg::FloatingPointRange range;
-      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 0.0);
+      T step = static_cast<T>(step_value.has_value() ? step_value.value() : 1.0);
       range.set__from_value(static_cast<T>(from_value.value())).set__to_value(static_cast<T>(to_value.value())).set__step(step);
       param_desc.floating_point_range = {range};
     } else {
-      RCLCPP_WARN(this->get_logger(), "Parameter type does not support specifying a range");
+      RCLCPP_WARN(this->get_logger(), "Parameter type of parameter '%s' does not support specifying a range", name.c_str());
     }
   }
 
@@ -105,6 +105,15 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
 
   try {
     param = this->get_parameter(name).get_value<T>();
+    std::stringstream ss;
+    ss << "Loaded parameter '" << name << "': ";
+    if constexpr(is_vector_v<T>) {
+      ss << "[";
+      for (const auto& element : param) ss << element << (&element != &param.back() ? ", " : "]");
+    } else {
+      ss << param;
+    }
+    RCLCPP_INFO_STREAM(this->get_logger(), ss.str());
   } catch (rclcpp::exceptions::ParameterUninitializedException&) {
     if (is_required) {
       RCLCPP_FATAL_STREAM(this->get_logger(), "Missing required parameter '" << name << "', exiting");
@@ -112,7 +121,7 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
     } else {
       std::stringstream ss;
       ss << "Missing parameter '" << name << "', using default value: ";
-      if constexpr (is_vector_v<T>) {
+      if constexpr(is_vector_v<T>) {
         ss << "[";
         for (const auto& element : param) ss << element << (&element != &param.back() ? ", " : "]");
       } else {
@@ -145,11 +154,12 @@ rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallba
     for (auto& auto_reconfigurable_param : auto_reconfigurable_params_) {
       if (param.get_name() == std::get<0>(auto_reconfigurable_param)) {
         std::get<1>(auto_reconfigurable_param)(param);
+        RCLCPP_INFO(this->get_logger(), "Reconfigured parameter '%s'", param.get_name().c_str());
+        break;
       }
     }
   }
 
-  // mark parameter change successful
   rcl_interfaces::msg::SetParametersResult result;
   result.successful = true;
 
@@ -187,7 +197,7 @@ void {{ node_class_name }}::setup() {
 {% if has_action_server %}
 
   // action server for handling action goal requests
-  action_server_ = rclcpp_action::create_server<{{ package_name }}_actions::action::Fibonacci>(
+  action_server_ = rclcpp_action::create_server<{{ package_name }}_interfaces::action::Fibonacci>(
     this,
     "~/action",
     std::bind(&{{ node_class_name }}::actionHandleGoal, this, std::placeholders::_1, std::placeholders::_2),
@@ -198,7 +208,7 @@ void {{ node_class_name }}::setup() {
 {% if has_timer and not is_lifecycle %}
 
   // timer for repeatedly invoking a callback to publish messages
-  timer_ = this->create_wall_timer(std::chrono::duration<double>(param_), std::bind(&{{ node_class_name }}::timerCallback, this));
+  timer_ = this->create_wall_timer(std::chrono::duration<double>(1.0), std::bind(&{{ node_class_name }}::timerCallback, this));
 {% endif %}
 {% if auto_shutdown and not is_lifecycle %}
 
@@ -246,7 +256,7 @@ void {{ node_class_name }}::serviceCallback(const std_srvs::srv::SetBool::Reques
  * @param goal action goal
  * @return goal response
  */
-rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(const rclcpp_action::GoalUUID& uuid, {{ package_name }}_actions::action::Fibonacci::Goal::ConstSharedPtr goal) {
+rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(const rclcpp_action::GoalUUID& uuid, {{ package_name }}_interfaces::action::Fibonacci::Goal::ConstSharedPtr goal) {
 
   (void)uuid;
   (void)goal;
@@ -263,7 +273,7 @@ rclcpp_action::GoalResponse {{ node_class_name }}::actionHandleGoal(const rclcpp
  * @param goal_handle action goal handle
  * @return cancel response
  */
-rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle) {
+rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle) {
 
   (void)goal_handle;
 
@@ -278,7 +288,7 @@ rclcpp_action::CancelResponse {{ node_class_name }}::actionHandleCancel(const st
  *
  * @param goal_handle action goal handle
  */
-void {{ node_class_name }}::actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle) {
+void {{ node_class_name }}::actionHandleAccepted(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle) {
 
   // execute action in a separate thread to avoid blocking
   std::thread{std::bind(&{{ node_class_name }}::actionExecute, this, std::placeholders::_1), goal_handle}.detach();
@@ -290,7 +300,7 @@ void {{ node_class_name }}::actionHandleAccepted(const std::shared_ptr<rclcpp_ac
  *
  * @param goal_handle action goal handle
  */
-void {{ node_class_name }}::actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_actions::action::Fibonacci>> goal_handle) {
+void {{ node_class_name }}::actionExecute(const std::shared_ptr<rclcpp_action::ServerGoalHandle<{{ package_name }}_interfaces::action::Fibonacci>> goal_handle) {
 
   RCLCPP_INFO(this->get_logger(), "Executing action goal");
 
@@ -299,8 +309,8 @@ void {{ node_class_name }}::actionExecute(const std::shared_ptr<rclcpp_action::S
 
   // create handy accessors for the action goal, feedback, and result
   const auto goal = goal_handle->get_goal();
-  auto feedback = std::make_shared<{{ package_name }}_actions::action::Fibonacci::Feedback>();
-  auto result = std::make_shared<{{ package_name }}_actions::action::Fibonacci::Result>();
+  auto feedback = std::make_shared<{{ package_name }}_interfaces::action::Fibonacci::Feedback>();
+  auto result = std::make_shared<{{ package_name }}_interfaces::action::Fibonacci::Result>();
 
   // initialize the Fibonacci sequence
   auto& partial_sequence = feedback->partial_sequence;
