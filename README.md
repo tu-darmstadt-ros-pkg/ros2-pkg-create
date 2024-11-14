@@ -29,7 +29,7 @@ pip install ros2-pkg-create
 ros2-pkg-create --template ros2_cpp_pkg .
 ```
 
-<img src="./assets/cli.png" width=600>
+<img src="https://github.com/ika-rwth-aachen/ros2-pkg-create/raw/main/assets/cli.png" width=600>
 
 
 ## Installation
