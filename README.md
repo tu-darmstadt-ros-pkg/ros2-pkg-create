@@ -7,7 +7,7 @@
   <a href="https://pypi.org/project/ros2-pkg-create/"><img src="https://img.shields.io/pypi/dm/ros2-pkg-create?color=blue&label=PyPI%20downloads"/></a>
 </p>
 
-*ros2-pkg-create* is an interactive CLI tool for quickly generating ROS 2 packages from basic pub/sub nodes to complex lifecycle components. It is meant to replace the official [`ros2 pkg create`](https://docs.ros.org/en/latest/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package) command.
+*ros2-pkg-create* is an interactive CLI tool for quickly generating ROS 2 packages from basic pub/sub nodes to complex lifecycle components. It is meant to replace the official [`ros2 pkg create`](https://docs.ros.org/en/jazzy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package) command.
 
 - [Quick Demo](#quick-demo)
 - [Installation](#installation)
