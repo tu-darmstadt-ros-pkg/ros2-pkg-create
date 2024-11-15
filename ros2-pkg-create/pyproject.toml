@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ros2-pkg-create"
-version = "1.0.1"
+version = "1.0.2"
 description = "Powerful ROS 2 Package Generator"
 license = {file = "LICENSE"}
 readme = "README.md"
@@ -35,3 +35,6 @@ dev = ["build", "twine"]
 
 [project.scripts]
 ros2-pkg-create = "ros2_pkg_create.__main__:main"
+
+[tool.setuptools.package-data]
+ros2_pkg_create = ["copier.yml", "templates/**"]
