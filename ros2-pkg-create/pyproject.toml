@@ -35,3 +35,6 @@ dev = ["build", "twine"]
 
 [project.scripts]
 ros2-pkg-create = "ros2_pkg_create.__main__:main"
+
+[tool.setuptools.package-data]
+ros2_pkg_create = ["copier.yml", "templates/**"]
