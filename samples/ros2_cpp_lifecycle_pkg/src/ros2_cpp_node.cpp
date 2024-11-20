@@ -99,6 +99,7 @@ void Ros2CppNode::declareAndLoadParameter(const std::string& name,
         ss << param;
       }
       RCLCPP_WARN_STREAM(this->get_logger(), ss.str());
+      this->set_parameters({rclcpp::Parameter(name, rclcpp::ParameterValue(param))});
     }
   }
 
