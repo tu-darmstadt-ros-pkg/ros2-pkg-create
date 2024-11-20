@@ -87,6 +87,7 @@ class Ros2PythonNode(Node):
             else:
                 self.get_logger().warn(f"Missing parameter '{name}', using default value: {default}")
                 param = default
+                self.set_parameters([rclpy.Parameter(name=name, value=param)])
 
         # add parameter to auto-reconfigurable parameters
         if add_to_auto_reconfigurable_params:
