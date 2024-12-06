@@ -11,11 +11,21 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
+    remappable_topics = [
+{% if has_subscriber %}
+        DeclareLaunchArgument("input_topic", default_value="~/input"),
+{% endif %}
+{% if has_publisher %}
+        DeclareLaunchArgument("output_topic", default_value="~/output"),
+{% endif %}
+    ]
+
     args = [
         DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name"),
         DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
         DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"), description="path to parameter file"),
         DeclareLaunchArgument("log_level", default_value="info", description="ROS logging level (debug, info, warn, error, fatal)"),
+        *remappable_topics,
     ]
 
     nodes = [
@@ -30,6 +40,7 @@ def generate_launch_description():
             parameters=[],
 {% endif %}
             arguments=["--ros-args", "--log-level", LaunchConfiguration("log_level")],
+            remappings=[(la.default_value[0].text, LaunchConfiguration(la.name)) for la in remappable_topics],
             output="screen",
             emulate_tty=True,
         )

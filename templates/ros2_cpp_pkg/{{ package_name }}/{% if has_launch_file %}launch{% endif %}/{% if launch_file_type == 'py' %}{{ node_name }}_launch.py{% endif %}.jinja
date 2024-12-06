@@ -18,6 +18,15 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
 
+    remappable_topics = [
+{% if has_subscriber %}
+        DeclareLaunchArgument("input_topic", default_value="~/input"),
+{% endif %}
+{% if has_publisher %}
+        DeclareLaunchArgument("output_topic", default_value="~/output"),
+{% endif %}
+    ]
+
     args = [
         DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name"),
         DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
@@ -26,6 +35,7 @@ def generate_launch_description():
 {% if is_lifecycle %}
         DeclareLaunchArgument("startup_state", default_value="None", description="initial lifecycle state"),
 {% endif %}
+        *remappable_topics,
     ]
 
 {% if is_lifecycle %}
@@ -48,6 +58,7 @@ def generate_launch_description():
                     parameters=[],
 {% endif %}
                     arguments=["--ros-args", "--log-level", LaunchConfiguration("log_level")],
+                    remappings=[(la.default_value[0].text, LaunchConfiguration(la.name)) for la in remappable_topics],
                     output="screen",
                     emulate_tty=True,
                 )
@@ -67,6 +78,7 @@ def generate_launch_description():
             parameters=[],
 {% endif %}
             arguments=["--ros-args", "--log-level", LaunchConfiguration("log_level")],
+            remappings=[(la.default_value[0].text, LaunchConfiguration(la.name)) for la in remappable_topics],
             output="screen",
             emulate_tty=True,
         )
