@@ -105,7 +105,7 @@ jobs:
           git config --global user.email "dummy@dummy.com"
       - name: Generate packages
         run: |
-          copier copy --trust --defaults \
+          copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=${{ matrix.template }} \
             -d package_name=${{ matrix.package_name }} \
             -d node_name=${{ matrix.node_name }} \

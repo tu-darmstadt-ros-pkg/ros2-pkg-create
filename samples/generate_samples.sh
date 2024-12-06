@@ -1,8 +1,9 @@
 #!/bin/bash
 
 script_dir=$(dirname $0)
+template_dir="$script_dir/.."
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_cpp_pkg \
             -d package_name=ros2_cpp_pkg \
             -d node_name=ros2_cpp_node \
@@ -16,9 +17,9 @@ copier copy --trust --defaults \
             -d has_action_server=false \
             -d has_timer=false \
             -d has_docker_ros=true \
-            . $script_dir
+            /home/reiher/git/ops/templates/ros2/ros2-pkg-create $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_cpp_pkg \
             -d package_name=ros2_cpp_component_pkg \
             -d node_name=ros2_cpp_node \
@@ -32,9 +33,9 @@ copier copy --trust --defaults \
             -d has_action_server=false \
             -d has_timer=false \
             -d has_docker_ros=true \
-            . $script_dir
+            $template_dir $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_cpp_pkg \
             -d package_name=ros2_cpp_lifecycle_pkg \
             -d node_name=ros2_cpp_node \
@@ -48,9 +49,9 @@ copier copy --trust --defaults \
             -d has_action_server=false \
             -d has_timer=false \
             -d has_docker_ros=true \
-            . $script_dir
+            $template_dir $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_cpp_pkg \
             -d package_name=ros2_cpp_all_pkg \
             -d node_name=ros2_cpp_node \
@@ -64,9 +65,9 @@ copier copy --trust --defaults \
             -d has_action_server=true \
             -d has_timer=true \
             -d has_docker_ros=true \
-            . $script_dir
+            $template_dir $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_python_pkg \
             -d package_name=ros2_python_pkg \
             -d node_name=ros2_python_node \
@@ -78,9 +79,9 @@ copier copy --trust --defaults \
             -d has_action_server=false \
             -d has_timer=false \
             -d has_docker_ros=true \
-            . $script_dir
+            $template_dir $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_python_pkg \
             -d package_name=ros2_python_all_pkg \
             -d node_name=ros2_python_node \
@@ -92,9 +93,9 @@ copier copy --trust --defaults \
             -d has_action_server=true \
             -d has_timer=true \
             -d has_docker_ros=true \
-            . $script_dir
+            $template_dir $script_dir
 
-copier copy --trust --defaults \
+copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_interfaces_pkg \
             -d package_name=ros2_interfaces_pkg \
-            . $script_dir
+            $template_dir $script_dir
