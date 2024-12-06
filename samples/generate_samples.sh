@@ -17,7 +17,7 @@ copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d has_action_server=false \
             -d has_timer=false \
             -d has_docker_ros=true \
-            /home/reiher/git/ops/templates/ros2/ros2-pkg-create $script_dir
+            $template_dir $script_dir
 
 copier copy --trust --defaults --overwrite --vcs-ref=HEAD \
             -d template=ros2_cpp_pkg \
