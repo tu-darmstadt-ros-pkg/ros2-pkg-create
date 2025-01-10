@@ -5,6 +5,8 @@ _envops:
   trim_blocks: true
 
 _jinja_extensions:
+#  - copier_templates_extensions.TemplateExtensionLoader
+#  - extensions/context.py:ContextUpdater
   - jinja2_strcase.StrcaseExtension
 
 
@@ -28,12 +30,12 @@ description:
 maintainer:
   help: Maintainer
   type: str
-  default: TODO
+  default: "{{ user_name_git }}"
 
 maintainer_email:
   help: Maintainer email
   type: str
-  default: "{{ maintainer | lower | replace(' ', '.') }}@TODO.com"
+  default: "{{ user_email_git }}"
 
 author:
   help: Author
@@ -43,7 +45,7 @@ author:
 author_email:
   help: Author email
   type: str
-  default: "{{ author | lower | replace(' ', '.') }}@TODO.com"
+  default: "{% if maintainer == author %}{{ maintainer_email }}{% else %}{{ author | lower | replace(' ', '.') }}@TODO.com{% endif %}"
 
 license:
   help: License

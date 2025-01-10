@@ -1,10 +1,10 @@
 import argcomplete
 import argparse
 import os
-
+import git
 import copier
 
-import ros2_pkg_create
+#import ros2_pkg_create
 
 
 def parseArguments() -> argparse.Namespace:
@@ -52,11 +52,19 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
     parser.add_argument("--has-docker-ros", action="store_true", default=None, help="Add the docker-ros CI integration?")
 
-    parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
+    #parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
     argcomplete.autocomplete(parser)
     return parser.parse_args()
 
+def add_git_config_info(answers):
+    # add author and maintainer info from git config if not yet set
+    git_config = git.GitConfigParser()
+    git_config.read()
+    if not answers.get("author") or not answers.get("maintainer"):
+        answers["user_name_git"] = git_config.get_value("user", "name")
+    if not answers.get("author_email") or not answers.get("maintainer_email"):
+        answers["user_email_git"] = git_config.get_value("user", "email")
 
 def main():
 
@@ -64,17 +72,22 @@ def main():
     args = parseArguments()
     answers = {k: v for k, v in vars(args).items() if v is not None}
 
+    # add author and maintainer info from git config if not yet set
+    add_git_config_info(answers)
+
     # run copier
     try:
-        if args.use_local_templates:
-            template_location = os.path.join(os.path.dirname(__file__))
-        else:
-            template_location = "https://github.com/ika-rwth-aachen/ros2-pkg-create.git"
+        #if args.use_local_templates:
+        template_location = os.path.join(os.path.dirname(__file__))
+        #else:
+        #    template_location = "https://github.com/ika-rwth-aachen/ros2-pkg-create.git"
         copier.run_copy(template_location,
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,
                         defaults=args.defaults,
-                        unsafe=True)
+                        unsafe=True,
+                        vcs_ref="HEAD")
+                        
     except copier.CopierAnswersInterrupt:
         print("Aborted")
         return
