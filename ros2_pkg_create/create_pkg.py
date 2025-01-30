@@ -78,6 +78,9 @@ def add_git_config_info(answers):
     if not answers.get("author_email") or not answers.get("maintainer_email"):
         answers["user_email_git"] = git_config.get_value("user", "email")
 
+def add_ros_distro(answers):
+    answers["ros_distro"] = os.environ.get("ROS_DISTRO", "jazzy")
+
 def create():
 
     # pass specified arguments as data to copier
@@ -86,6 +89,8 @@ def create():
 
     # add author and maintainer info from git config if not yet set
     add_git_config_info(answers)
+
+    add_ros_distro(answers)
 
     # get pkg template location if installed as ros pkg
     package_name = 'ros2-pkg-create'

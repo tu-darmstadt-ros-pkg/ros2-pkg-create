@@ -46,7 +46,7 @@ jobs:
     needs: Linting
     runs-on: ubuntu-latest
     container:
-      image: ros:jazzy-ros-base
+      image: ros:{{ ros_distro }}-ros-base
     steps:
       - name: install build tools
         run: |
@@ -57,14 +57,14 @@ jobs:
           path: src/e_stop_manager
       - name: rosdep
         run: |
-          rosdep update --rosdistro jazzy --include-eol-distros
-          rosdep install -y --from-paths src --ignore-src --rosdistro jazzy
+          rosdep update --rosdistro {{ ros_distro }} --include-eol-distros
+          rosdep install -y --from-paths src --ignore-src --rosdistro {{ ros_distro }}
       - name: build
         run: |
-          source /opt/ros/jazzy/setup.bash
+          source /opt/ros/{{ ros_distro }}/setup.bash
           colcon build
       - name: test
         run: |
-          source /opt/ros/jazzy/setup.bash
+          source /opt/ros/{{ ros_distro }}/setup.bash
           colcon test --packages-select e_stop_manager
           colcon test-result --verbose

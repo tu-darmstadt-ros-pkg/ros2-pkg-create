@@ -18,7 +18,7 @@ from std_msgs.msg import Int32
 from std_srvs.srv import SetBool
 {% endif %}
 {% if has_action_server %}
-from {{ package_name }}_interfaces.action import Fibonacci
+from {{ package_name }}_msgs.action import Fibonacci
 {% endif %}
 
 

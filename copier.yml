@@ -5,8 +5,6 @@ _envops:
   trim_blocks: true
 
 _jinja_extensions:
-#  - copier_templates_extensions.TemplateExtensionLoader
-#  - extensions/context.py:ContextUpdater
   - jinja2_strcase.StrcaseExtension
 
 
