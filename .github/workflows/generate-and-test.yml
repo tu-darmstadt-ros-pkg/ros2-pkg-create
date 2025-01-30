@@ -16,38 +16,38 @@ jobs:
       matrix:
         include:
           - package_name: default_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             auto_shutdown: true
           - package_name: component_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             is_component: true
             auto_shutdown: true
           - package_name: lifecycle_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             is_lifecycle: true
             auto_shutdown: true
           - package_name: service_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             has_service_server: true
             auto_shutdown: true
           - package_name: action_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             has_action_server: true
             auto_shutdown: true
           - package_name: timer_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             has_timer: true
             auto_shutdown: true
           - package_name: no_params_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             has_params: false
             auto_shutdown: true
           - package_name: no_launch_file_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             has_launch_file: false
             auto_shutdown: true
           - package_name: all_cpp_pkg
-            template: ros2_cpp_pkg
+            template: cpp_pkg
             is_component: true
             is_lifecycle: true
             has_service_server: true
@@ -55,37 +55,37 @@ jobs:
             has_timer: true
             auto_shutdown: true
           - package_name: default_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             auto_shutdown: true
           - package_name: service_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             has_service_server: true
             auto_shutdown: true
           - package_name: action_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             has_action_server: true
             auto_shutdown: true
           - package_name: timer_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             has_timer: true
             auto_shutdown: true
           - package_name: no_params_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             has_params: false
             auto_shutdown: true
           - package_name: no_launch_file_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             has_launch_file: false
             auto_shutdown: true
           - package_name: all_python_pkg
-            template: ros2_python_pkg
+            template: python_pkg
             is_lifecycle: true
             has_service_server: true
             has_action_server: true
             has_timer: true
             auto_shutdown: true
-          - package_name: interfaces_pkg
-            template: ros2_interfaces_pkg
+          - package_name: msgs_pkg
+            template: msgs_pkg
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -161,11 +161,11 @@ jobs:
             command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
           - package: all_python_pkg
             command: ros2 launch all_python_pkg all_python_pkg_launch.py
-          - package: interfaces_pkg
+          - package: msgs_pkg
             command: |
-              ros2 interface show interfaces_pkg/msg/Message && \
-              ros2 interface show interfaces_pkg/srv/Service && \
-              ros2 interface show interfaces_pkg/action/Action
+              ros2 interface show msgs_pkg/msg/Message && \
+              ros2 interface show msgs_pkg/srv/Service && \
+              ros2 interface show msgs_pkg/action/Action
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
