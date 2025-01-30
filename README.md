@@ -29,7 +29,7 @@
 
 ```bash
 pip install ros2-pkg-create
-ros2-pkg-create --template ros2_cpp_pkg .
+ros2-pkg-create --template cpp_pkg .
 ```
 
 <img src="https://github.com/ika-rwth-aachen/ros2-pkg-create/raw/main/assets/cli.png" width=600>
@@ -57,11 +57,11 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 
 *ros2-pkg-create* provides multiple templates, each covering a different questionnaire for generating all the components you need. See below for the list of supported features and questionnarie options. Note that all options can also be passed directly to the command, bypassing the interactive questionnaire (see [Usage](#usage)).
 
-- [C++ Package](#c-package---template-ros2_cpp_pkg)
-- [Python Package](#python-package---template-ros2_python_pkg)
-- [Interfaces Package](#interfaces-package---template-ros2_msgs_pkg)
+- [C++ Package](#c-package---template-cpp_pkg)
+- [Python Package](#python-package---template-python_pkg)
+- [Interfaces Package](#interfaces-package---template-msgs_pkg)
 
-### C++ Package (`--template ros2_cpp_pkg`)
+### C++ Package (`--template cpp_pkg`)
 
 **Supported Features:** publisher, subscriber, parameter loading, launch file, service server, action server, timer callback, component, lifecycle node, docker-ros
 
@@ -87,7 +87,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 - Add the docker-ros CI integration?
 </details>
 
-### Python Package (`--template ros2_python_pkg`)
+### Python Package (`--template python_pkg`)
 
 **Supported Features:** publisher, subscriber, parameter loading, launch file, service server, action server, timer callback, docker-ros
 
@@ -111,7 +111,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 - Add the docker-ros CI integration?
 </details>
 
-### Interfaces Package (`--template ros2_msgs_pkg`)
+### Interfaces Package (`--template msgs_pkg`)
 
 **Supported Features:** message, service, action
 
@@ -134,7 +134,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 ## Usage
 
 ```
-usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_msgs_pkg,ros2_python_pkg,ros2_cpp_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION]
+usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {msgs_pkg,python_pkg,cpp_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION]
                        [--maintainer MAINTAINER] [--maintainer-email MAINTAINER_EMAIL] [--author AUTHOR] [--author-email AUTHOR_EMAIL]
                        [--license {Apache-2.0,BSL-1.0,BSD-2.0,BSD-2-Clause,BSD-3-Clause,GPL-3.0-only,LGPL-2.1-only,LGPL-3.0-only,MIT,MIT-0}] [--node-name NODE_NAME]
                        [--node-class-name NODE_CLASS_NAME] [--is-component] [--no-is-component] [--is-lifecycle] [--no-is-lifecycle] [--has-launch-file] [--no-has-launch-file]
@@ -154,7 +154,7 @@ options:
   --defaults            Use defaults for all options
   --use-local-templates
                         Use locally installed templates instead of remotely pulling most recent ones
-  --template {ros2_msgs_pkg,ros2_python_pkg,ros2_cpp_pkg}
+  --template {msgs_pkg,python_pkg,cpp_pkg}
                         Template
   --package-name PACKAGE_NAME
                         Package name

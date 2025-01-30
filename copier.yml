@@ -13,8 +13,8 @@ _jinja_extensions:
 template:
   help: Template
   type: str
-  default: ros2_cpp_pkg
-  choices: [ros2_cpp_pkg, ros2_msgs_pkg, ros2_python_pkg, ci]
+  default: cpp_pkg
+  choices: [cpp_pkg, msgs_pkg, python_pkg, ci]
 
 package_name:
   help: Package name
@@ -63,87 +63,87 @@ license:
 
 node_name:
   help: Node name
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: str
   default: "{{ package_name }}"
 
 node_class_name:
   help: Class name of node
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: str
   default: "{{ node_name | to_camel }}"
 
 is_component:
   help: Make it a component?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'cpp_pkg' }}"
   type: bool
   default: false
 
 is_lifecycle:
   help: Make it a lifecycle node?
-  when: "{{ template == 'ros2_cpp_pkg' }}"
+  when: "{{ template == 'cpp_pkg' }}"
   type: bool
   default: false
 
 has_launch_file:
   help: Add a launch file?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: true
 
 launch_file_type:
   help: Type of launch file
-  when: "{{ (template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg') and has_launch_file }}"
+  when: "{{ (template == 'cpp_pkg' or template == 'python_pkg') and has_launch_file }}"
   type: str
   default: py
   choices: [py, xml, yml]
 
 has_params:
   help: Add parameter loading?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: true
 
 has_subscriber:
   help: Add a subscriber?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: true
 
 has_publisher:
   help: Add a publisher?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: true
 
 has_service_server:
   help: Add a service server?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: false
 
 has_action_server:
   help: Add an action server?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: false
 
 has_timer:
   help: Add a timer callback?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: bool
   default: false
 
 auto_shutdown:
   help: Automatically shutdown the node after launch (useful in CI/CD)?
-  when: "{{ template == 'ros2_cpp_pkg' or template == 'ros2_python_pkg' }}"
+  when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   when: false
   type: bool
   default: false
 
 interface_types:
   help: Interfaces types
-  when: "{{ template == 'ros2_msgs_pkg' }}"
+  when: "{{ template == 'msgs_pkg' }}"
   type: str
   default: [msg, srv, action]
   choices:
@@ -154,19 +154,19 @@ interface_types:
 
 msg_name:
   help: Message name
-  when: "{{ template == 'ros2_msgs_pkg' and 'msg' in interface_types }}"
+  when: "{{ template == 'msgs_pkg' and 'msg' in interface_types }}"
   type: str
   default: Message
 
 srv_name:
   help: Service name
-  when: "{{ template == 'ros2_msgs_pkg' and 'srv' in interface_types }}"
+  when: "{{ template == 'msgs_pkg' and 'srv' in interface_types }}"
   type: str
   default: Service
 
 action_name:
   help: Action name
-  when: "{{ template == 'ros2_msgs_pkg' and 'action' in interface_types }}"
+  when: "{{ template == 'msgs_pkg' and 'action' in interface_types }}"
   type: str
   default: Action
 
