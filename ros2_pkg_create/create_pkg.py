@@ -1,10 +1,24 @@
 import argcomplete
 import argparse
 import os
-import git
 import copier
+from ament_index_python.packages import get_package_share_directory
 
-#import ros2_pkg_create
+try:
+    import git
+except ImportError:
+    print(
+        "GitPython is required! Install using 'pip3 install --user gitpython' or 'apt install python3-git'"
+    )
+    raise
+
+try:
+    import copier
+except ImportError:
+    print(
+        "GitPython is required! Install using 'pip3 install --user copier'"
+    )
+    raise
 
 
 def parseArguments() -> argparse.Namespace:
@@ -15,7 +29,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
     parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
 
-    parser.add_argument("--template", type=str, default=None, choices=os.listdir(os.path.join(os.path.dirname(__file__), "templates")), required=True, help="Template")
+    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg", "ros2_interfaces_pkg", "ros2_python_pkg"], required=True, help="Template") #TODO: 
     parser.add_argument("--package-name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")
@@ -52,7 +66,6 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
     parser.add_argument("--has-docker-ros", action="store_true", default=None, help="Add the docker-ros CI integration?")
 
-    #parser.add_argument("--version", action="version", version=f"%(prog)s v{ros2_pkg_create.__version__}")
 
     argcomplete.autocomplete(parser)
     return parser.parse_args()
@@ -66,7 +79,7 @@ def add_git_config_info(answers):
     if not answers.get("author_email") or not answers.get("maintainer_email"):
         answers["user_email_git"] = git_config.get_value("user", "email")
 
-def main():
+def create_pkg():
 
     # pass specified arguments as data to copier
     args = parseArguments()
@@ -75,12 +88,19 @@ def main():
     # add author and maintainer info from git config if not yet set
     add_git_config_info(answers)
 
+    # get pkg template location
+    package_name = 'ros2-pkg-create'
+    try:
+        template_location = get_package_share_directory(package_name)
+        print(f"The share directory for '{package_name}' is: {template_location}")
+    except KeyError:
+        print(f"Package '{package_name}' not found in the ament index.")
+        if not __file__.startswith("/opt"):
+            print(f"Trying to use local templates in ")    
+            template_location = os.path.join(os.path.dirname(__file__), "..")
+
     # run copier
     try:
-        #if args.use_local_templates:
-        template_location = os.path.join(os.path.dirname(__file__))
-        #else:
-        #    template_location = "https://github.com/ika-rwth-aachen/ros2-pkg-create.git"
         copier.run_copy(template_location,
                         os.path.join(os.getcwd(), args.destination),
                         data=answers,

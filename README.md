@@ -1,5 +1,8 @@
 # *ros2-pkg-create* – Powerful ROS 2 Package Generator
 
+
+->  pip install jinja2_strcase,  pip install copier
+
 <p align="center">
   <img src="https://img.shields.io/github/license/ika-rwth-aachen/ros2-pkg-create"/>
   <a href="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml"><img src="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml/badge.svg"/></a>
