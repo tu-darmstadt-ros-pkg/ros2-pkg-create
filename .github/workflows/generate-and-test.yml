@@ -167,8 +167,6 @@ jobs:
               ros2 interface show msgs_pkg/srv/Service && \
               ros2 interface show msgs_pkg/action/Action
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
       - name: Download artifacts
         uses: actions/download-artifact@v4
       - name: Build
