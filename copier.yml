@@ -38,7 +38,6 @@ maintainer_email:
   help: Maintainer email
   type: str
   default: "{% if user_email_git %}{{ user_email_git }}{% else %}{{ maintainer | lower | replace(' ', '.') }}@TODO.com{% endif %}"
-  default: "{{ user_email_git }}"
   when: "{{ 'pkg' in template }}"
 
 author:
