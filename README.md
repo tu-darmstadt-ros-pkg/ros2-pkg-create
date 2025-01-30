@@ -59,7 +59,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 
 - [C++ Package](#c-package---template-ros2_cpp_pkg)
 - [Python Package](#python-package---template-ros2_python_pkg)
-- [Interfaces Package](#interfaces-package---template-ros2_interfaces_pkg)
+- [Interfaces Package](#interfaces-package---template-ros2_msgs_pkg)
 
 ### C++ Package (`--template ros2_cpp_pkg`)
 
@@ -111,7 +111,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 - Add the docker-ros CI integration?
 </details>
 
-### Interfaces Package (`--template ros2_interfaces_pkg`)
+### Interfaces Package (`--template ros2_msgs_pkg`)
 
 **Supported Features:** message, service, action
 
@@ -134,7 +134,7 @@ eval "$(register-python-argcomplete ros2-pkg-create)"
 ## Usage
 
 ```
-usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_interfaces_pkg,ros2_python_pkg,ros2_cpp_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION]
+usage: ros2-pkg-create [-h] [--defaults] [--use-local-templates] --template {ros2_msgs_pkg,ros2_python_pkg,ros2_cpp_pkg} [--package-name PACKAGE_NAME] [--description DESCRIPTION]
                        [--maintainer MAINTAINER] [--maintainer-email MAINTAINER_EMAIL] [--author AUTHOR] [--author-email AUTHOR_EMAIL]
                        [--license {Apache-2.0,BSL-1.0,BSD-2.0,BSD-2-Clause,BSD-3-Clause,GPL-3.0-only,LGPL-2.1-only,LGPL-3.0-only,MIT,MIT-0}] [--node-name NODE_NAME]
                        [--node-class-name NODE_CLASS_NAME] [--is-component] [--no-is-component] [--is-lifecycle] [--no-is-lifecycle] [--has-launch-file] [--no-has-launch-file]
@@ -154,7 +154,7 @@ options:
   --defaults            Use defaults for all options
   --use-local-templates
                         Use locally installed templates instead of remotely pulling most recent ones
-  --template {ros2_interfaces_pkg,ros2_python_pkg,ros2_cpp_pkg}
+  --template {ros2_msgs_pkg,ros2_python_pkg,ros2_cpp_pkg}
                         Template
   --package-name PACKAGE_NAME
                         Package name

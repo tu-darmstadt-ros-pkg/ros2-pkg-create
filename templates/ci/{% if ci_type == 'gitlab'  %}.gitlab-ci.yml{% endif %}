@@ -1,0 +1,43 @@
+stages:
+  - linting
+  - build_and_test
+
+variables:
+  ROS_DISTRO: {{ rosdistro }}
+
+linting:
+  stage: linting
+  image: ubuntu:latest
+  before_script:
+    - apt-get update && apt-get install -y clang-format cppcheck libxml2-utils black
+  script:
+    - echo "Linting C++ code..."
+    - clang-format -Werror -n -style=file $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
+    - echo "Running cppcheck on C++ code..."
+    - cppcheck --force --quiet --error-exitcode=1 --language=c++ $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
+#    - echo "Validating package.xml..."
+#    - xmllint --noout --schema http://download.ros.org/schema/package_format3.xsd $(find . -name 'package.xml')
+    - echo "Linting Python files..."
+    - black --check .
+  only:
+    - main
+
+build-and-test:
+  stage: build_and_test
+  image: ros:${ROS_DISTRO}-ros-base
+  before_script:
+    - apt-get update && apt-get install -y python3-colcon-common-extensions python3-rosdep
+    - rosdep update --rosdistro ${ROS_DISTRO}
+  script:
+    - echo "Installing dependencies..."
+    - rosdep install --from-paths . --ignore-src -r -y
+    - echo "Building packages..."
+    - colcon build
+    - echo "Running tests..."
+    - colcon test  || FAILED=1
+    - colcon test-result --verbose
+    - if [ $FAILED ]; then exit 1; fi
+  needs:
+    - linting
+  only:
+    - main

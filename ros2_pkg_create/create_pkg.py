@@ -29,7 +29,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
     parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
 
-    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg", "ros2_interfaces_pkg", "ros2_python_pkg"], required=True, help="Template") #TODO: 
+    parser.add_argument("--template", type=str, default=None, choices=["ros2_cpp_pkg", "ros2_msgs_pkg", "ros2_python_pkg", "ci"], required=True, help="Template")
     parser.add_argument("--package-name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")
@@ -64,7 +64,6 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--msg-name", type=str, default=None, help="Message name")
     parser.add_argument("--srv-name", type=str, default=None, help="Service name")
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
-    parser.add_argument("--has-docker-ros", action="store_true", default=None, help="Add the docker-ros CI integration?")
 
 
     argcomplete.autocomplete(parser)
@@ -79,7 +78,7 @@ def add_git_config_info(answers):
     if not answers.get("author_email") or not answers.get("maintainer_email"):
         answers["user_email_git"] = git_config.get_value("user", "email")
 
-def create_pkg():
+def create():
 
     # pass specified arguments as data to copier
     args = parseArguments()
@@ -88,7 +87,7 @@ def create_pkg():
     # add author and maintainer info from git config if not yet set
     add_git_config_info(answers)
 
-    # get pkg template location
+    # get pkg template location if installed as ros pkg
     package_name = 'ros2-pkg-create'
     try:
         template_location = get_package_share_directory(package_name)
@@ -113,4 +112,4 @@ def create_pkg():
         return
 
 if __name__ == "__main__":
-    main()
+    create()

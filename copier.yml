@@ -14,44 +14,52 @@ template:
   help: Template
   type: str
   default: ros2_cpp_pkg
-  choices: [ros2_cpp_pkg, ros2_interfaces_pkg, ros2_python_pkg]
+  choices: [ros2_cpp_pkg, ros2_msgs_pkg, ros2_python_pkg, ci]
 
 package_name:
   help: Package name
   type: str
   placeholder: "{{ template }}"
   validator: "{% if not package_name %}Package name is required{% endif %}"
+  when: "{{ 'pkg' in template }}"
 
 description:
   help: Description
   type: str
   default: TODO
+  when: "{{ 'pkg' in template }}"
+
 
 maintainer:
   help: Maintainer
   type: str
   default: "{{ user_name_git }}"
+  when: "{{ 'pkg' in template }}"
 
 maintainer_email:
   help: Maintainer email
   type: str
   default: "{{ user_email_git }}"
+  when: "{{ 'pkg' in template }}"
 
 author:
   help: Author
   type: str
   default: "{{ maintainer }}"
+  when: "{{ 'pkg' in template }}"
 
 author_email:
   help: Author email
   type: str
   default: "{% if maintainer == author %}{{ maintainer_email }}{% else %}{{ author | lower | replace(' ', '.') }}@TODO.com{% endif %}"
+  when: "{{ 'pkg' in template }}"
 
 license:
   help: License
   type: str
   default: TODO
   choices: [TODO, Apache-2.0, BSL-1.0, BSD-2.0, BSD-2-Clause, BSD-3-Clause, GPL-3.0-only, LGPL-2.1-only, LGPL-3.0-only, MIT, MIT-0]
+  when: "{{ 'pkg' in template }}"
 
 node_name:
   help: Node name
@@ -135,7 +143,7 @@ auto_shutdown:
 
 interface_types:
   help: Interfaces types
-  when: "{{ template == 'ros2_interfaces_pkg' }}"
+  when: "{{ template == 'ros2_msgs_pkg' }}"
   type: str
   default: [msg, srv, action]
   choices:
@@ -146,23 +154,31 @@ interface_types:
 
 msg_name:
   help: Message name
-  when: "{{ template == 'ros2_interfaces_pkg' and 'msg' in interface_types }}"
+  when: "{{ template == 'ros2_msgs_pkg' and 'msg' in interface_types }}"
   type: str
   default: Message
 
 srv_name:
   help: Service name
-  when: "{{ template == 'ros2_interfaces_pkg' and 'srv' in interface_types }}"
+  when: "{{ template == 'ros2_msgs_pkg' and 'srv' in interface_types }}"
   type: str
   default: Service
 
 action_name:
   help: Action name
-  when: "{{ template == 'ros2_interfaces_pkg' and 'action' in interface_types }}"
+  when: "{{ template == 'ros2_msgs_pkg' and 'action' in interface_types }}"
   type: str
   default: Action
 
-has_docker_ros:
-  help: Add the docker-ros CI integration?
+ci_type:
+  help: CI type
+  type: str
+  default: github
+  choices: [github, gitlab]
+  when: "{{ 'ci' in template }}"
+
+add_pre_commit:
+  help: Add pre-commit hooks?
   type: bool
-  default: false
+  default: true
+  when: "{{ 'ci' in template }}"
