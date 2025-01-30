@@ -31,12 +31,13 @@ description:
 maintainer:
   help: Maintainer
   type: str
-  default: "{{ user_name_git }}"
+  default: "{% if user_name_git %}{{ user_name_git }}{% else %}Todo{% endif %}"
   when: "{{ 'pkg' in template }}"
 
 maintainer_email:
   help: Maintainer email
   type: str
+  default: "{% if user_email_git %}{{ user_email_git }}{% else %}{{ maintainer | lower | replace(' ', '.') }}@TODO.com{% endif %}"
   default: "{{ user_email_git }}"
   when: "{{ 'pkg' in template }}"
 
