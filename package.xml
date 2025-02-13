@@ -11,8 +11,10 @@
   <buildtool_depend>ament_cmake_python</buildtool_depend>
 
   <depend>python3-git</depend>
-  <depend>copier</depend>
-  <depend>jinja2_strcase</depend>
+  
+  <!-- TODO
+  <depend>python-copier-pip</depend>
+  -->
 
   <export>
     <build_type>ament_cmake</build_type>

@@ -4,10 +4,6 @@ _envops:
   lstrip_blocks: true
   trim_blocks: true
 
-_jinja_extensions:
-  - jinja2_strcase.StrcaseExtension
-
-
 template:
   help: Template
   type: str
@@ -69,7 +65,7 @@ node_class_name:
   help: Class name of node
   when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"
   type: str
-  default: "{{ node_name | to_camel }}"
+  default: "{{ node_name.replace('_', ' ').replace('-', ' ').title().replace(' ', '') }}"
 
 is_component:
   help: Make it a component?
