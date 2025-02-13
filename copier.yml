@@ -8,7 +8,7 @@ template:
   help: Template
   type: str
   default: cpp_pkg
-  choices: [cpp_pkg, msgs_pkg, python_pkg, ci]
+  choices: [cpp_pkg, msgs_pkg, python_pkg, launch_pkg, ci]
 
 package_name:
   help: Package name
@@ -87,7 +87,7 @@ has_launch_file:
 
 launch_file_type:
   help: Type of launch file
-  when: "{{ (template == 'cpp_pkg' or template == 'python_pkg') and has_launch_file }}"
+  when: "{{ ((template == 'cpp_pkg' or template == 'python_pkg') and has_launch_file) or template == 'launch_pkg' }}" 
   type: str
   default: py
   choices: [py, xml, yml]
@@ -183,3 +183,9 @@ ros_distro:
   default: "{{ ros_distro }}"
   choices: [galactic, foxy, humble, jazzy, rolling]
   when: "{{ not ros_distro }}"
+
+launch_name:
+  help: Launch file name
+  when: "{{ template == 'launch_pkg' }}"
+  type: str
+  default: launch

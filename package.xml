@@ -12,7 +12,7 @@
 
   <depend>python3-git</depend>
   
-  <!-- TODO
+  <!-- TODO: uncomment as soon as the pull request is merged https://github.com/ros/rosdistro/pull/44327#pullrequestreview-2586365756
   <depend>python-copier-pip</depend>
   -->
 

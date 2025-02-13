@@ -1,0 +1,21 @@
+<launch>
+
+  <!-- Declare arguments -->
+  <arg name="name" default="{{ node_name }}" description="Node name" />
+  <arg name="namespace" default="" description="Node namespace" />
+  <arg name="params" default="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yml" description="Path to parameter file" />
+
+  <group ns="$(var namespace)">
+    
+    <!-- TF Remappings -->
+    <remap from="/tf" to="tf" />
+    <remap from="/tf_static" to="tf_static" />
+
+    <!-- Node Definition -->
+    <node pkg="{{ package_name }}" exec="{{ node_name }}" name="$(var name)" output="screen">
+      <param from="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yaml" />
+    </node>
+
+  </group>
+
+</launch>

@@ -1,0 +1,24 @@
+launch:
+- arg:
+    name: namespace
+    default: ""
+- push_ros_namespace:
+    namespace: "$(var namespace)"
+
+- set_remap:
+    from: "/tf"
+    to: "tf"
+- set_remap:
+    from: "/tf_static"
+    to: "tf_static"
+
+# Spin up a node
+- node:
+    pkg: "<pkg_name>"
+    exec: "<executable>"
+    name: "<name>"
+    output: "screen"
+    respawn: "true"
+    param:
+        - from: $(find-pkg-share {{ package_name }})/config/<launch_name>.yaml
+          allow_substs: true
