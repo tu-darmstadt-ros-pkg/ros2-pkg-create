@@ -1,5 +1,10 @@
 # *ros2-pkg-create* – Powerful ROS 2 Package And CI Generator
 
+## Changes in This Fork
+- Refactored as a ROS package → Easily distributable as a Debian package
+- Added GitLab/GitHub CI for linting, building, and testing packages
+- Introduced a pure launch package template
+
 <p align="center">
   <img src="https://img.shields.io/github/license/ika-rwth-aachen/ros2-pkg-create"/>
   <a href="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml"><img src="https://github.com/ika-rwth-aachen/ros2-pkg-create/actions/workflows/generate-and-test.yml/badge.svg"/></a>
