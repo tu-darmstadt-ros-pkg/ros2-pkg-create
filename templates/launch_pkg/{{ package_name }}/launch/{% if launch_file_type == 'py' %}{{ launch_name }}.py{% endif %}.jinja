@@ -17,7 +17,6 @@ def generate_launch_description():
 
     args = [
         DeclareLaunchArgument("name", default_value="{{ node_name }}", description="node name"),
-        DeclareLaunchArgument("namespace", default_value="", description="node namespace"),
         DeclareLaunchArgument("params", default_value=os.path.join(get_package_share_directory("{{ package_name }}"), "config", "params.yml"), description="path to parameter file"),
         DeclareLaunchArgument("log_level", default_value="info", description="ROS logging level (debug, info, warn, error, fatal)"),
         DeclareLaunchArgument("use_sim_time", default_value="false", description="use simulation clock"),
@@ -35,7 +34,6 @@ def generate_launch_description():
         Node(
             package="{{ package_name }}",
             executable="{{ node_name }}",
-            namespace=LaunchConfiguration("namespace"),
             name=LaunchConfiguration("name"),
             parameters=[node_config],
             arguments=["--ros-args", "--log-level", LaunchConfiguration("log_level")],
@@ -47,7 +45,6 @@ def generate_launch_description():
 
     return LaunchDescription([
         *args,
-        PushRosNamespace(namespace=LaunchConfiguration("namespace")),
         SetRemap(src="/tf", dst="tf"),
         SetRemap(src="/tf_static", dst="tf_static"),
         SetParameter("use_sim_time", LaunchConfiguration("use_sim_time")),
