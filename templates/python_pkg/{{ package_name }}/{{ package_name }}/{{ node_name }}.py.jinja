@@ -8,7 +8,7 @@ import rclpy
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 {% endif %}
 from rclpy.node import Node
-{% if has_params %}
+{% if has_reconfigurable_params %}
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 {% endif %}
 {% if has_subscriber or has_publisher %}
@@ -28,14 +28,17 @@ class {{ node_class_name }}(Node):
         """Constructor"""
 
         super().__init__("{{ node_name }}")
-
-{% if has_params %}
+{% if has_startup_params %}
+        self.declare_parameter("param", rclpy.Parameter.Type.DOUBLE, 0.0)
+        self.startup_param = self.get_parameter(name).value
+{% endif %}        
+{% if has_reconfigurable_params %}
         self.auto_reconfigurable_params = []
         self.parameters_callback = None
 {% endif %}
         self.subscriber = None
         self.publisher = None
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
         self.param = 1.0
         self.param = self.declareAndLoadParameter(name="param",
@@ -48,7 +51,7 @@ class {{ node_class_name }}(Node):
 {% endif %}
 
         self.setup()
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
     def declareAndLoadParameter(self,
         name: str,
@@ -140,7 +143,7 @@ class {{ node_class_name }}(Node):
 
     def setup(self):
         """Sets up subscribers, publishers, etc. to configure the node"""
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
         # callback for dynamic parameter configuration
         self.parameters_callback = self.add_on_set_parameters_callback(
