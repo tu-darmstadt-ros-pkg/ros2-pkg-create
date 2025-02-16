@@ -98,6 +98,26 @@ has_params:
   type: bool
   default: false
 
+param_types:
+  type: str
+  help: Reconfigurable or startup parameters?
+  when: "{{ has_params }}"
+  default: []
+  choices:
+    - reconfigurable
+    - startup
+  multiselect: true
+
+has_reconfigurable_params:
+  when: "{{ false }}"
+  type: bool
+  default: "{{ 'reconfigurable' in param_types }}"
+
+has_startup_params:
+  when: "{{ false }}"
+  type: bool
+  default: "{{ 'startup' in param_types }}"
+
 has_subscriber:
   help: Add a subscriber?
   when: "{{ template == 'cpp_pkg' or template == 'python_pkg' }}"

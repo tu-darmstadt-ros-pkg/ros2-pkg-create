@@ -38,13 +38,17 @@ namespace {{ package_name }} {
   if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
     this->trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
 {% else %}
-{% if has_params %}
+{% if has_reconfigurable_params %}
   this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
+{% endif %}
+{% if has_startup_params %}
+  this->declare_parameter<double>("param_startup", 0.0);
+  param_ =  this->get_parameter("param_startup").as_double();
 {% endif %}
   this->setup();
 {% endif %}
 }
-{% if has_params or is_lifecycle %}
+{% if has_reconfigurable_params or is_lifecycle %}
 
 
 template <typename T>
@@ -121,7 +125,7 @@ void {{ node_class_name }}::declareAndLoadParameter(const std::string& name,
   }
 }
 {% endif %}
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
 
 rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallback(const std::vector<rclcpp::Parameter>& parameters) {
@@ -145,7 +149,7 @@ rcl_interfaces::msg::SetParametersResult {{ node_class_name }}::parametersCallba
 
 
 void {{ node_class_name }}::setup() {
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
   // callback for dynamic parameter configuration
   parameters_callback_ = this->add_on_set_parameters_callback(std::bind(&{{ node_class_name }}::parametersCallback, this, std::placeholders::_1));
@@ -310,7 +314,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 
   RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
 
-{% if has_params %}
+{% if has_reconfigurable_params %}
   this->declareAndLoadParameter("param", param_, "TODO", true, false, false, 0.0, 10.0, 1.0);
 {% endif %}
   setup();
@@ -369,7 +373,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 {% if has_action_server %}
   action_server_.reset();
 {% endif %}
-{% if has_params %}
+{% if has_reconfigurable_params %}
   parameters_callback_.reset();
 {% endif %}
 {% if has_timer %}
