@@ -19,43 +19,43 @@ jobs:
             template: cpp_pkg
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: component_cpp_pkg
             template: cpp_pkg
             is_component: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: lifecycle_cpp_pkg
             template: cpp_pkg
             is_lifecycle: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: service_cpp_pkg
             template: cpp_pkg
             has_service_server: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: action_cpp_pkg
             template: cpp_pkg
             has_action_server: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: timer_cpp_pkg
             template: cpp_pkg
             has_timer: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: no_params_cpp_pkg
             template: cpp_pkg
             has_params: false
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: startup_params_cpp_pkg
             template: cpp_pkg
             has_params: true
@@ -63,7 +63,7 @@ jobs:
             has_reconfigurable_params: false
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: reconfigurable_params_cpp_pkg
             template: cpp_pkg
             has_params: true
@@ -71,12 +71,12 @@ jobs:
             has_reconfigurable_params: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: no_launch_file_cpp_pkg
             template: cpp_pkg
             has_launch_file: false
             auto_shutdown: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: all_cpp_pkg
             template: cpp_pkg
             is_component: true
@@ -89,36 +89,36 @@ jobs:
             has_timer: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: default_python_pkg
             template: python_pkg
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: service_python_pkg
             template: python_pkg
             has_service_server: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: action_python_pkg
             template: python_pkg
             has_action_server: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: timer_python_pkg
             template: python_pkg
             has_timer: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: no_params_python_pkg
             template: python_pkg
             has_params: false
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: no_launch_file_python_pkg
             template: python_pkg
             has_launch_file: false
@@ -131,7 +131,7 @@ jobs:
             has_timer: true
             auto_shutdown: true
             has_launch_file: true
-            launch_file_type: python
+            launch_file_type: py
           - package_name: msgs_pkg
             template: msgs_pkg
     steps:
