@@ -6,8 +6,8 @@ from ament_index_python import get_package_share_directory
 from launch import LaunchDescription
 {% if is_lifecycle %}
 from launch.actions import DeclareLaunchArgument, GroupAction
-from launch.conditions import LaunchConfigurationNotEquals
-from launch.substitutions import LaunchConfiguration
+from launch.conditions import IfCondition
+from launch.substitutions import LaunchConfiguration, NotEqualsSubstitution
 from launch_ros.actions import LifecycleNode, SetParameter
 {% else %}
 from launch.actions import DeclareLaunchArgument
@@ -45,12 +45,15 @@ def generate_launch_description():
                 SetParameter(
                     name="startup_state",
                     value=LaunchConfiguration("startup_state"),
-                    condition=LaunchConfigurationNotEquals("startup_state", "None")
+                    condition=IfCondition(
+                    NotEqualsSubstitution(LaunchConfiguration("startup_state"), "None")
+                    ),
                 ),
                 LifecycleNode(
                     package="{{ package_name }}",
                     executable="{{ node_name }}",
                     name=LaunchConfiguration("name"),
+                    namespace="",
 {% if has_params %}
                     parameters=[LaunchConfiguration("params")],
 {% else %}
