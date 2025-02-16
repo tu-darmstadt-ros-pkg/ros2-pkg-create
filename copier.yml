@@ -23,7 +23,6 @@ description:
   default: TODO
   when: "{{ 'pkg' in template }}"
 
-
 maintainer:
   help: Maintainer
   type: str
