@@ -222,8 +222,6 @@ jobs:
         run: |
           source /opt/ros/$ROS_DISTRO/setup.bash
           colcon build --packages-up-to ${{ matrix.package }}
-      - name: Display launch files
-        run: ls -l /__w/ros2-pkg-create/ros2-pkg-create/install/${{ matrix.package }}/share/${{ matrix.package }}/launch
       - name: Run
         shell: bash
         run: |
