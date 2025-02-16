@@ -190,6 +190,10 @@ jobs:
             command: ros2 launch action_cpp_pkg action_cpp_pkg_launch.py
           - package: timer_cpp_pkg
             command: ros2 launch timer_cpp_pkg timer_cpp_pkg_launch.py
+          - package: startup_params_cpp_pkg
+            command: ros2 launch startup_params_cpp_pkg startup_params_cpp_pkg_launch.py
+          - package: reconfigurable_params_cpp_pkg
+            command: ros2 launch reconfigurable_params_cpp_pkg reconfigurable_params_cpp_pkg_launch.py
           - package: no_params_cpp_pkg
             command: ros2 launch no_params_cpp_pkg no_params_cpp_pkg_launch.py
           - package: no_launch_file_cpp_pkg
