@@ -159,8 +159,8 @@ jobs:
             $( [ "${{ matrix.has_service_server }}" = "true" ] && echo "-d has_service_server=true" ) \
             $( [ "${{ matrix.has_action_server }}" = "true" ] && echo "-d has_action_server=true" ) \
             $( [ "${{ matrix.has_timer }}" = "true" ] && echo "-d has_timer=true" ) \
-            $( [ "${{ matrix.has_params }}" = "false" ] && echo "-d has_params=false" ) \
-            $( [ "${{ matrix.has_launch_file }}" = "false" ] && echo "-d has_launch_file=false" ) \
+            $( [ "${{ matrix.has_params }}" = "true" ] && echo "-d has_params=true" ) \
+            $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d has_launch_file=true" ) \
             . packages
       - name: Upload artifacts
         uses: actions/upload-artifact@v4
