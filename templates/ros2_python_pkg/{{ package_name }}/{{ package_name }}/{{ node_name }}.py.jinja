@@ -117,11 +117,11 @@ class {{ node_class_name }}(Node):
         return param
 
     def parametersCallback(self,
-                           parameters: rclpy.Parameter) -> SetParametersResult:
+                           parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
         Args:
-            parameters (rclpy.Parameter): parameters
+            parameters (list[rclpy.Parameter]): parameters
 
         Returns:
             SetParametersResult: parameter change result
