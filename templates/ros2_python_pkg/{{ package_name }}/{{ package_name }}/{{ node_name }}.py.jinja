@@ -9,6 +9,7 @@ from rclpy.action import ActionServer, CancelResponse, GoalResponse
 {% endif %}
 from rclpy.node import Node
 {% if has_params %}
+import rclpy.exceptions
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 {% endif %}
 {% if has_subscriber or has_publisher %}
