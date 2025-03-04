@@ -15,26 +15,24 @@ class Ros2PythonNode(Node):
 
     def __init__(self):
         """Constructor"""
-
         super().__init__("ros2_python_node")
 
-        self.auto_reconfigurable_params = []
-        self.parameters_callback = None
         self.subscriber = None
+
         self.publisher = None
 
-        self.param = 1.0
-        self.param = self.declareAndLoadParameter(name="param",
-                                                  param_type=rclpy.Parameter.Type.DOUBLE,
-                                                  description="TODO",
-                                                  default=self.param,
-                                                  from_value=0.0,
-                                                  to_value=10.0,
-                                                  step_value=0.1)
+        self.auto_reconfigurable_params: list[str] = []
+        self.param = self.declare_and_load_parameter(name="param",
+                                                    param_type=rclpy.Parameter.Type.DOUBLE,
+                                                    description="TODO",
+                                                    default=1.0,
+                                                    from_value=0.0,
+                                                    to_value=10.0,
+                                                    step_value=0.1)
 
         self.setup()
 
-    def declareAndLoadParameter(self,
+    def declare_and_load_parameter(self,
         name: str,
         param_type: rclpy.Parameter.Type,
         description: str,
@@ -100,7 +98,7 @@ class Ros2PythonNode(Node):
 
         return param
 
-    def parametersCallback(self,
+    def parameters_callback(self,
                            parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
@@ -125,13 +123,12 @@ class Ros2PythonNode(Node):
         """Sets up subscribers, publishers, etc. to configure the node"""
 
         # callback for dynamic parameter configuration
-        self.parameters_callback = self.add_on_set_parameters_callback(
-            self.parametersCallback)
+        self.add_on_set_parameters_callback(self.parameters_callback)
 
         # subscriber for handling incoming messages
         self.subscriber = self.create_subscription(Int32,
                                                    "~/input",
-                                                   self.topicCallback,
+                                                   self.topic_callback,
                                                    qos_profile=10)
         self.get_logger().info(f"Subscribed to '{self.subscriber.topic_name}'")
 
@@ -142,23 +139,23 @@ class Ros2PythonNode(Node):
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 
         # service server for handling service calls
-        self.service_server = self.create_service(SetBool, "~/service", self.serviceCallback)
+        self.service_server = self.create_service(SetBool, "~/service", self.service_callback)
 
         # action server for handling action goal requests
         self.action_server = ActionServer(
             self,
             Fibonacci,
             "~/action",
-            execute_callback=self.actionExecute,
-            goal_callback=self.actionHandleGoal,
-            cancel_callback=self.actionHandleCancel,
-            handle_accepted_callback=self.actionHandleAccepted
+            execute_callback=self.action_execute,
+            goal_callback=self.action_handle_goal,
+            cancel_callback=self.action_handle_cancel,
+            handle_accepted_callback=self.action_handle_accepted
         )
 
         # timer for repeatedly invoking a callback to publish messages
-        self.timer = self.create_timer(1.0, self.timerCallback)
+        self.timer = self.create_timer(1.0, self.timer_callback)
 
-    def topicCallback(self, msg: Int32):
+    def topic_callback(self, msg: Int32):
         """Processes messages received by a subscriber
 
         Args:
@@ -167,7 +164,7 @@ class Ros2PythonNode(Node):
 
         self.get_logger().info(f"Message received: '{msg.data}'")
 
-    def serviceCallback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
+    def service_callback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
         """Processes service requests
 
         Args:
@@ -183,7 +180,7 @@ class Ros2PythonNode(Node):
 
         return response
 
-    def actionHandleGoal(self, goal: Fibonacci.Goal) -> GoalResponse:
+    def action_handle_goal(self, goal: Fibonacci.Goal) -> GoalResponse:
         """Processes action goal requests
 
         Args:
@@ -197,7 +194,7 @@ class Ros2PythonNode(Node):
 
         return GoalResponse.ACCEPT
 
-    def actionHandleCancel(self, goal: Fibonacci.Goal) -> CancelResponse:
+    def action_handle_cancel(self, goal: Fibonacci.Goal) -> CancelResponse:
         """Processes action cancel requests
 
         Args:
@@ -211,7 +208,7 @@ class Ros2PythonNode(Node):
 
         return CancelResponse.ACCEPT
 
-    def actionHandleAccepted(self, goal: Fibonacci.Goal):
+    def action_handle_accepted(self, goal: Fibonacci.Goal):
         """Processes accepted action goal requests
 
         Args:
@@ -221,7 +218,7 @@ class Ros2PythonNode(Node):
         # execute action in a separate thread to avoid blocking
         goal.execute()
 
-    async def actionExecute(self, goal: Fibonacci.Goal) -> Fibonacci.Result:
+    async def action_execute(self, goal: Fibonacci.Goal) -> Fibonacci.Result:
         """Executes an action
 
         Args:
@@ -271,7 +268,7 @@ class Ros2PythonNode(Node):
 
         return result
 
-    def timerCallback(self):
+    def timer_callback(self):
         """Processes timer triggers
         """
 
