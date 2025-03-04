@@ -2,6 +2,7 @@ from typing import Any, Optional, Union
 
 import rclpy
 from rclpy.node import Node
+import rclpy.exceptions
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 from std_msgs.msg import Int32
 
@@ -96,11 +97,11 @@ class Ros2PythonNode(Node):
         return param
 
     def parametersCallback(self,
-                           parameters: rclpy.Parameter) -> SetParametersResult:
+                           parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
         Args:
-            parameters (rclpy.Parameter): parameters
+            parameters (list[rclpy.Parameter]): parameters
 
         Returns:
             SetParametersResult: parameter change result

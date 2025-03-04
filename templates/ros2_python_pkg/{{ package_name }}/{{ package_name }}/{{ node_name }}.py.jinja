@@ -9,6 +9,7 @@ from rclpy.action import ActionServer, CancelResponse, GoalResponse
 {% endif %}
 from rclpy.node import Node
 {% if has_params %}
+import rclpy.exceptions
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 {% endif %}
 {% if has_subscriber or has_publisher %}
@@ -117,11 +118,11 @@ class {{ node_class_name }}(Node):
         return param
 
     def parameters_callback(self,
-                           parameters: rclpy.Parameter) -> SetParametersResult:
+                           parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
         Args:
-            parameters (rclpy.Parameter): parameters
+            parameters (list[rclpy.Parameter]): parameters
 
         Returns:
             SetParametersResult: parameter change result
