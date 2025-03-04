@@ -11,26 +11,24 @@ class Ros2PythonNode(Node):
 
     def __init__(self):
         """Constructor"""
-
         super().__init__("ros2_python_node")
 
-        self.auto_reconfigurable_params = []
-        self.parameters_callback = None
         self.subscriber = None
+
         self.publisher = None
 
-        self.param = 1.0
-        self.param = self.declareAndLoadParameter(name="param",
-                                                  param_type=rclpy.Parameter.Type.DOUBLE,
-                                                  description="TODO",
-                                                  default=self.param,
-                                                  from_value=0.0,
-                                                  to_value=10.0,
-                                                  step_value=0.1)
+        self.auto_reconfigurable_params: list[str] = []
+        self.param = self.declare_and_load_parameter(name="param",
+                                                    param_type=rclpy.Parameter.Type.DOUBLE,
+                                                    description="TODO",
+                                                    default=1.0,
+                                                    from_value=0.0,
+                                                    to_value=10.0,
+                                                    step_value=0.1)
 
         self.setup()
 
-    def declareAndLoadParameter(self,
+    def declare_and_load_parameter(self,
         name: str,
         param_type: rclpy.Parameter.Type,
         description: str,
@@ -96,7 +94,7 @@ class Ros2PythonNode(Node):
 
         return param
 
-    def parametersCallback(self,
+    def parameters_callback(self,
                            parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
@@ -121,13 +119,12 @@ class Ros2PythonNode(Node):
         """Sets up subscribers, publishers, etc. to configure the node"""
 
         # callback for dynamic parameter configuration
-        self.parameters_callback = self.add_on_set_parameters_callback(
-            self.parametersCallback)
+        self.add_on_set_parameters_callback(self.parameters_callback)
 
         # subscriber for handling incoming messages
         self.subscriber = self.create_subscription(Int32,
                                                    "~/input",
-                                                   self.topicCallback,
+                                                   self.topic_callback,
                                                    qos_profile=10)
         self.get_logger().info(f"Subscribed to '{self.subscriber.topic_name}'")
 
@@ -137,7 +134,7 @@ class Ros2PythonNode(Node):
                                                qos_profile=10)
         self.get_logger().info(f"Publishing to '{self.publisher.topic_name}'")
 
-    def topicCallback(self, msg: Int32):
+    def topic_callback(self, msg: Int32):
         """Processes messages received by a subscriber
 
         Args:
