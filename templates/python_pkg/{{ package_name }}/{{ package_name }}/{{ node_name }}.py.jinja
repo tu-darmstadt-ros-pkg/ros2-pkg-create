@@ -40,11 +40,9 @@ class {{ node_class_name }}(Node):
         self.subscriber = None
 {% endif %}
 {% if has_publisher %}
-
         self.publisher = None
-{% if has_reconfigurable_params %}
 {% endif %}
-{% if has_params %}
+{% if has_reconfigurable_params %}
 
         self.auto_reconfigurable_params: list[str] = []
         self.param = self.declare_and_load_parameter(name="param",
