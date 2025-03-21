@@ -2,10 +2,10 @@ name: Lint, Build & Test
 on:
   push:
     branches:
-      - ros2
+      - {{ default_branch }}
   pull_request:
     branches:
-      - ros2
+      - {{ default_branch }}
 defaults:
   run:
     shell: bash
@@ -21,7 +21,7 @@ jobs:
           fetch-depth: 0
       - name: Setup
         run: |
-          sudo apt-get update && sudo apt-get install -y clang-format cppcheck libxml2-utils
+          sudo apt-get update && sudo apt-get install -y black clang-format cppcheck libxml2-utils
       - name: Lint C++ code
         run: |
           echo "Linting C++ code..."
@@ -30,7 +30,7 @@ jobs:
       - name: Run cppcheck on C++ code
         run: |
           echo "Running cppcheck on C++ code..."
-          cppcheck --force --quiet --error-exitcode=1 --language=c++ $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
+          cppcheck --force --quiet --inline-suppr --error-exitcode=1 --language=c++ $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
 
       - name: Lint package.xml
         run: |
@@ -44,9 +44,16 @@ jobs:
 
   build-and-test:
     needs: Linting
-    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        setup:
+          - rosdistro: jazzy
+            os: ubuntu-24.04
+          - rosdistro: rolling
+            os: ubuntu-latest
+    runs-on: {{ '${{ matrix.setup.os }}' }}
     container:
-      image: ros:{{ ros_distro }}-ros-base
+      image: ros:{{ '${{ matrix.setup.rosdistro }}' }}-ros-base
     steps:
       - name: install build tools
         run: |
@@ -54,17 +61,21 @@ jobs:
           sudo apt-get install -y ros-dev-tools
       - uses: actions/checkout@v4
         with:
-          path: src/e_stop_manager
+          repository: tu-darmstadt-ros-pkg/hector_ros2_utils
+          path: src/hector_ros2_utils
+      - uses: actions/checkout@v4
+        with:
+          path: src/repo
       - name: rosdep
         run: |
-          rosdep update --rosdistro {{ ros_distro }} --include-eol-distros
-          rosdep install -y --from-paths src --ignore-src --rosdistro {{ ros_distro }}
+          rosdep update --rosdistro {{ '${{ matrix.setup.rosdistro }}' }} --include-eol-distros
+          rosdep install -y --from-paths src --ignore-src --rosdistro {{ '${{ matrix.setup.rosdistro }} '}}
       - name: build
         run: |
-          source /opt/ros/{{ ros_distro }}/setup.bash
+          source /opt/ros/{{ '${{ matrix.setup.rosdistro }}' }}/setup.bash
           colcon build
       - name: test
         run: |
-          source /opt/ros/{{ ros_distro }}/setup.bash
-          colcon test --packages-select e_stop_manager
+          source /opt/ros/{{ '${{ matrix.setup.rosdistro }}' }}/setup.bash
+          colcon test
           colcon test-result --verbose

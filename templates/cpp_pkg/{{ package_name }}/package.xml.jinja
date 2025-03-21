@@ -1,18 +1,18 @@
 <?xml version="1.0"?>
 <?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
 <package format="3">
-
   <name>{{ package_name }}</name>
   <version>0.0.0</version>
   <description>{{ description }}</description>
 
   <maintainer email="{{ maintainer_email }}">{{ maintainer }}</maintainer>
+  <license>{{ license }}</license>
   <author email="{{ author_email }}">{{ author }}</author>
 
-  <license>{{ license }}</license>
-
   <buildtool_depend>ament_cmake</buildtool_depend>
-
+{% if has_reconfigurable_params or is_lifecycle %}
+  <build_depend>hector_ros2_utils</build_depend>
+{% endif %}
   <depend>rclcpp</depend>
 {% if has_action_server %}
   <depend>rclcpp_action</depend>
@@ -34,5 +34,4 @@
   <export>
     <build_type>ament_cmake</build_type>
   </export>
-
 </package>

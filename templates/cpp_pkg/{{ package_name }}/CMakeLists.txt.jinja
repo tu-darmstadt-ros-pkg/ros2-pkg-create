@@ -1,11 +1,19 @@
 cmake_minimum_required(VERSION 3.8)
 project({{ package_name }})
 
+# Default to C++17
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 17)
+endif()
+
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
 find_package(ament_cmake REQUIRED)
+{% if has_reconfigurable_params or is_lifecycle %}
+find_package(hector_ros2_utils REQUIRED)
+{% endif %}
 find_package(rclcpp REQUIRED)
 {% if has_action_server %}
 find_package(rclcpp_action REQUIRED)
@@ -23,29 +31,31 @@ find_package(std_srvs REQUIRED)
 {% endif %}
 
 {% if is_component %}
-set(TARGET_NAME {{ node_name }}_component)
+{% set target_name = node_name + '_component' %}
 {% else %}
-set(TARGET_NAME {{ node_name }})
+{% set target_name = node_name %}
 {% endif %}
 
 {% if is_component %}
-add_library(${TARGET_NAME} SHARED src/{{ node_name }}.cpp)
+add_library({{ target_name }} SHARED src/{{ node_name }}.cpp)
 
-rclcpp_components_register_node(${TARGET_NAME}
+rclcpp_components_register_node({{ target_name }}
   PLUGIN "{{ package_name }}::{{ node_class_name }}"
   EXECUTABLE {{ node_name }}
 )
 {% else %}
-add_executable(${TARGET_NAME} src/{{ node_name }}.cpp)
+add_executable({{ target_name }} src/{{ node_name }}.cpp)
 {% endif %}
 
-target_include_directories(${TARGET_NAME} PUBLIC
+target_include_directories({{ target_name }} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include>
 )
-target_compile_features(${TARGET_NAME} PUBLIC c_std_99 cxx_std_17)
 
-ament_target_dependencies(${TARGET_NAME}
+ament_target_dependencies({{ target_name }}
+{% if has_reconfigurable_params or is_lifecycle %}
+  hector_ros2_utils
+{% endif %}
   rclcpp
 {% if has_action_server %}
   rclcpp_action
@@ -64,23 +74,18 @@ ament_target_dependencies(${TARGET_NAME}
 )
 
 {% if is_component %}
-install(TARGETS ${TARGET_NAME}
+install(TARGETS {{ target_name }}
   ARCHIVE DESTINATION lib
   LIBRARY DESTINATION lib
   RUNTIME DESTINATION bin
 )
 {% else %}
-install(TARGETS ${TARGET_NAME}
+install(TARGETS {{ target_name }}
   DESTINATION lib/${PROJECT_NAME}
 )
 {% endif %}
 
-install(DIRECTORY launch
-  DESTINATION share/${PROJECT_NAME}
-  OPTIONAL
-)
-
-install(DIRECTORY config
+install(DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
   OPTIONAL
 )
