@@ -196,6 +196,12 @@ add_pre_commit:
   type: bool
   when: "{{ 'ci' in template }}"
 
+default_branch:
+  help: Default branch
+  type: str
+  default: main
+  when: "{{ 'ci' in template }}"
+
 ros_distro:
   help: ROS distro
   type: str
