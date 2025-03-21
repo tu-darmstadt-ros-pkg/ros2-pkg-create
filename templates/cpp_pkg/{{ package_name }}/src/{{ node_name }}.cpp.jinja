@@ -23,7 +23,7 @@ namespace {{ package_name }}
 {% if is_lifecycle and is_component %}
 {{ node_class_name }}::{{ node_class_name }}(const rclcpp::NodeOptions& options) : LifecycleNode("{{ node_name }}", options)
 {% elif is_lifecycle %}
-{{ node_class_name }}::{{ node_class_name }}() : rclcpp_lifecycle::LifecycleNode("{{ node_name }}")
+{{ node_class_name }}::{{ node_class_name }}() : LifecycleNode("{{ node_name }}")
 {% elif is_component %}
 {{ node_class_name }}::{{ node_class_name }}(const rclcpp::NodeOptions& options) : Node("{{ node_name }}", options)
 {% else %}
