@@ -8,6 +8,7 @@ import rclpy
 from rclpy.action import ActionServer, CancelResponse, GoalResponse
 {% endif %}
 from rclpy.node import Node
+import rclpy.exceptions
 {% if has_reconfigurable_params %}
 from rcl_interfaces.msg import (FloatingPointRange, IntegerRange, ParameterDescriptor, SetParametersResult)
 {% endif %}
@@ -26,7 +27,6 @@ class {{ node_class_name }}(Node):
 
     def __init__(self):
         """Constructor"""
-
         super().__init__("{{ node_name }}")
 {% if has_startup_params %}
         self.declare_parameter("param", rclpy.Parameter.Type.DOUBLE, 0.0)
@@ -36,24 +36,28 @@ class {{ node_class_name }}(Node):
         self.auto_reconfigurable_params = []
         self.parameters_callback = None
 {% endif %}
+{% if has_subscriber %}
         self.subscriber = None
+{% endif %}
+{% if has_publisher %}
         self.publisher = None
+{% endif %}
 {% if has_reconfigurable_params %}
 
-        self.param = 1.0
-        self.param = self.declareAndLoadParameter(name="param",
-                                                  param_type=rclpy.Parameter.Type.DOUBLE,
-                                                  description="TODO",
-                                                  default=self.param,
-                                                  from_value=0.0,
-                                                  to_value=10.0,
-                                                  step_value=0.1)
+        self.auto_reconfigurable_params: list[str] = []
+        self.param = self.declare_and_load_parameter(name="param",
+                                                    param_type=rclpy.Parameter.Type.DOUBLE,
+                                                    description="TODO",
+                                                    default=1.0,
+                                                    from_value=0.0,
+                                                    to_value=10.0,
+                                                    step_value=0.1)
 {% endif %}
 
         self.setup()
 {% if has_reconfigurable_params %}
 
-    def declareAndLoadParameter(self,
+    def declare_and_load_parameter(self,
         name: str,
         param_type: rclpy.Parameter.Type,
         description: str,
@@ -119,12 +123,12 @@ class {{ node_class_name }}(Node):
 
         return param
 
-    def parametersCallback(self,
-                           parameters: rclpy.Parameter) -> SetParametersResult:
+    def parameters_callback(self,
+                           parameters: list[rclpy.Parameter]) -> SetParametersResult:
         """Handles reconfiguration when a parameter value is changed
 
         Args:
-            parameters (rclpy.Parameter): parameters
+            parameters (list[rclpy.Parameter]): parameters
 
         Returns:
             SetParametersResult: parameter change result
@@ -146,15 +150,14 @@ class {{ node_class_name }}(Node):
 {% if has_reconfigurable_params %}
 
         # callback for dynamic parameter configuration
-        self.parameters_callback = self.add_on_set_parameters_callback(
-            self.parametersCallback)
+        self.add_on_set_parameters_callback(self.parameters_callback)
 {% endif %}
 {% if has_subscriber %}
 
         # subscriber for handling incoming messages
         self.subscriber = self.create_subscription(Int32,
                                                    "~/input",
-                                                   self.topicCallback,
+                                                   self.topic_callback,
                                                    qos_profile=10)
         self.get_logger().info(f"Subscribed to '{self.subscriber.topic_name}'")
 {% endif %}
@@ -169,7 +172,7 @@ class {{ node_class_name }}(Node):
 {% if has_service_server %}
 
         # service server for handling service calls
-        self.service_server = self.create_service(SetBool, "~/service", self.serviceCallback)
+        self.service_server = self.create_service(SetBool, "~/service", self.service_callback)
 {% endif %}
 {% if has_action_server %}
 
@@ -178,24 +181,24 @@ class {{ node_class_name }}(Node):
             self,
             Fibonacci,
             "~/action",
-            execute_callback=self.actionExecute,
-            goal_callback=self.actionHandleGoal,
-            cancel_callback=self.actionHandleCancel,
-            handle_accepted_callback=self.actionHandleAccepted
+            execute_callback=self.action_execute,
+            goal_callback=self.action_handle_goal,
+            cancel_callback=self.action_handle_cancel,
+            handle_accepted_callback=self.action_handle_accepted
         )
 {% endif %}
 {% if has_timer %}
 
         # timer for repeatedly invoking a callback to publish messages
-        self.timer = self.create_timer(1.0, self.timerCallback)
+        self.timer = self.create_timer(1.0, self.timer_callback)
 {% endif %}
 {% if auto_shutdown %}
 
-        self.auto_shutdown_timer = self.create_timer(3.0, self.autoShutdownTimerCallback)
+        self.auto_shutdown_timer = self.create_timer(3.0, self.auto_shutdown_timer_callback)
 {% endif %}
 {% if has_subscriber %}
 
-    def topicCallback(self, msg: Int32):
+    def topic_callback(self, msg: Int32):
         """Processes messages received by a subscriber
 
         Args:
@@ -206,7 +209,7 @@ class {{ node_class_name }}(Node):
 {% endif %}
 {% if has_service_server %}
 
-    def serviceCallback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
+    def service_callback(self, request: SetBool.Request, response: SetBool.Response) -> SetBool.Response:
         """Processes service requests
 
         Args:
@@ -224,7 +227,7 @@ class {{ node_class_name }}(Node):
 {% endif %}
 {% if has_action_server %}
 
-    def actionHandleGoal(self, goal: Fibonacci.Goal) -> GoalResponse:
+    def action_handle_goal(self, goal: Fibonacci.Goal) -> GoalResponse:
         """Processes action goal requests
 
         Args:
@@ -238,7 +241,7 @@ class {{ node_class_name }}(Node):
 
         return GoalResponse.ACCEPT
 
-    def actionHandleCancel(self, goal: Fibonacci.Goal) -> CancelResponse:
+    def action_handle_cancel(self, goal: Fibonacci.Goal) -> CancelResponse:
         """Processes action cancel requests
 
         Args:
@@ -252,7 +255,7 @@ class {{ node_class_name }}(Node):
 
         return CancelResponse.ACCEPT
 
-    def actionHandleAccepted(self, goal: Fibonacci.Goal):
+    def action_handle_accepted(self, goal: Fibonacci.Goal):
         """Processes accepted action goal requests
 
         Args:
@@ -262,7 +265,7 @@ class {{ node_class_name }}(Node):
         # execute action in a separate thread to avoid blocking
         goal.execute()
 
-    async def actionExecute(self, goal: Fibonacci.Goal) -> Fibonacci.Result:
+    async def action_execute(self, goal: Fibonacci.Goal) -> Fibonacci.Result:
         """Executes an action
 
         Args:
@@ -314,7 +317,7 @@ class {{ node_class_name }}(Node):
 {% endif %}
 {% if has_timer %}
 
-    def timerCallback(self):
+    def timer_callback(self):
         """Processes timer triggers
         """
 
@@ -322,7 +325,7 @@ class {{ node_class_name }}(Node):
 {% endif %}
 {% if auto_shutdown %}
 
-    def autoShutdownTimerCallback(self):
+    def auto_shutdown_timer_callback(self):
         """Processes timer triggers to auto-shutdown the node
         """
 
