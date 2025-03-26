@@ -200,7 +200,7 @@ default_branch:
   help: Default branch
   type: str
   default: main
-  when: "{{ 'ci' in template }}"
+  when: "{{ 'ci' in template and ci_type == 'github' }}"
 
 ros_distro:
   help: ROS distro

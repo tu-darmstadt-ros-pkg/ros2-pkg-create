@@ -8,29 +8,34 @@ variables:
 linting:
   stage: linting
   image: ubuntu:latest
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
   before_script:
     - apt-get update && apt-get install -y clang-format cppcheck libxml2-utils black
   script:
     - echo "Linting C++ code..."
     - clang-format -Werror -n -style=file $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
     - echo "Running cppcheck on C++ code..."
-    - cppcheck --force --quiet --error-exitcode=1 --language=c++ $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
-#    - echo "Validating package.xml..."
-#    - xmllint --noout --schema http://download.ros.org/schema/package_format3.xsd $(find . -name 'package.xml')
+    - cppcheck --force --quiet --inline-suppr --error-exitcode=1 --language=c++ $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
+    - echo "Validating package.xml..."
+    - xmllint --noout --schema http://download.ros.org/schema/package_format3.xsd $(find . -name 'package.xml')
     - echo "Linting Python files..."
     - black --check .
-  only:
-    - main
 
 build-and-test:
   stage: build_and_test
-  image: ros:${ROS_DISTRO}-ros-base
+  image: $CI_REGISTRY/hector/workspace/docker_workspace:dev-amd64
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
   before_script:
-    - apt-get update && apt-get install -y python3-colcon-common-extensions python3-rosdep
+    - sudo apt-get update && sudo apt-get install -y python3-colcon-common-extensions python3-rosdep
     - rosdep update --rosdistro ${ROS_DISTRO}
   script:
     - echo "Installing dependencies..."
     - rosdep install --from-paths . --ignore-src -r -y
+    - source /opt/ros/${ROS_DISTRO}/setup.bash && source /opt/hector/${ROS_DISTRO}/setup.bash
     - echo "Building packages..."
     - colcon build
     - echo "Running tests..."
@@ -39,5 +44,3 @@ build-and-test:
     - if [ $FAILED ]; then exit 1; fi
   needs:
     - linting
-  only:
-    - main
