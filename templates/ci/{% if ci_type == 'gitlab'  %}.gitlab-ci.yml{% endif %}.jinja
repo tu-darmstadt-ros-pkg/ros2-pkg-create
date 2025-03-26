@@ -35,7 +35,7 @@ build-and-test:
   script:
     - echo "Installing dependencies..."
     - rosdep install --from-paths . --ignore-src -r -y
-    - source /opt/ros/jazzy/setup.bash && source /opt/hector/jazzy/setup.bash
+    - source /opt/ros/${ROS_DISTRO}/setup.bash && source /opt/hector/${ROS_DISTRO}/setup.bash
     - echo "Building packages..."
     - colcon build
     - echo "Running tests..."
