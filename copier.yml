@@ -186,7 +186,7 @@ action_name:
 ci_type:
   help: CI type
   type: str
-  default: github
+  default: "{% if git_provider %}{{ git_provider }}{% else %}gitlab{% endif %}"
   choices: [github, gitlab]
   when: "{{ 'ci' in template }}"
 
