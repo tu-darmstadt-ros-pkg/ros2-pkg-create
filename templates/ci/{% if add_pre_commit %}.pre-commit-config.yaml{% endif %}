@@ -38,9 +38,9 @@ repos:
     - id: cmake-lint
 
 
-  - repo: git@github.com:Joschi3/ros_pkg_validator.git #TODO #BUG
-    rev: v0.2.0
+  - repo: git@github.com:Joschi3/package_xml_validation.git
+    rev: v1.0.5
     hooks:
       - id: format-package-xml
-        name: Format package.xml
+        name: Validate and Format package.xml
 
