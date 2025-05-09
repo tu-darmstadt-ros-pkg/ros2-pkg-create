@@ -155,7 +155,6 @@ jobs:
             -d template=${{ matrix.template }} \
             -d auto_shutdown=${{ matrix.auto_shutdown }} \
             -d package_name=${{ matrix.package_name }} \
-            -d interface_types='[action, msg, srv]' \
             $( [ "${{ matrix.is_component }}" = "true" ] && echo "-d is_component=true" ) \
             $( [ "${{ matrix.is_lifecycle }}" = "true" ] && echo "-d is_lifecycle=true" ) \
             $( [ "${{ matrix.has_service_server }}" = "true" ] && echo "-d has_service_server=true" ) \

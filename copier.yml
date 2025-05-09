@@ -163,7 +163,7 @@ interface_types:
   help: Interfaces types
   when: "{{ template == 'msgs_pkg' }}"
   type: str
-  default: []
+  default: [msg, srv, action]
   choices:
     Message: msg
     Service: srv
