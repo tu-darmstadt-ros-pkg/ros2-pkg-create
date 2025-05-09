@@ -106,6 +106,11 @@ param_types:
     - reconfigurable
     - startup
   multiselect: true
+  validator: >-
+    {% if not param_types or param_types | length == 0 %}
+    You must select at least one parameter type.
+    {% endif %}
+
 
 has_reconfigurable_params:
   when: "{{ false }}"
@@ -158,30 +163,48 @@ interface_types:
   help: Interfaces types
   when: "{{ template == 'msgs_pkg' }}"
   type: str
-  default: [msg, srv, action]
+  default: []
   choices:
     Message: msg
     Service: srv
     Action: action
   multiselect: true
+  validator: >-
+    {% if not interface_types or interface_types | length == 0 %}
+    You must select at least one interface type.
+    {% endif %}
+
 
 msg_name:
   help: Message name
   when: "{{ template == 'msgs_pkg' and 'msg' in interface_types }}"
   type: str
   default: Message
+  validator: >-
+    {% if not (msg_name | regex_search('^[A-Z][A-Za-z0-9]*$')) %}
+    Must start with a capital letter and contain only letters and numbers.
+    {% endif %}
 
 srv_name:
   help: Service name
   when: "{{ template == 'msgs_pkg' and 'srv' in interface_types }}"
   type: str
   default: Service
+  validator: >-
+    {% if not (srv_name | regex_search('^[A-Z][A-Za-z0-9]*$')) %}
+    Must start with a capital letter and contain only letters and numbers.
+    {% endif %}
 
 action_name:
   help: Action name
   when: "{{ template == 'msgs_pkg' and 'action' in interface_types }}"
   type: str
   default: Action
+  validator: >-
+    {% if not (action_name | regex_search('^[A-Z][A-Za-z0-9]*$')) %}
+    Must start with a capital letter and contain only letters and numbers.
+    {% endif %}
+
 
 ci_type:
   help: CI type
