@@ -134,6 +134,7 @@ jobs:
             launch_file_type: py
           - package_name: msgs_pkg
             template: msgs_pkg
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -154,6 +155,7 @@ jobs:
             -d template=${{ matrix.template }} \
             -d auto_shutdown=${{ matrix.auto_shutdown }} \
             -d package_name=${{ matrix.package_name }} \
+            -d interface_types='["Message", "Service", "Action"]' \
             $( [ "${{ matrix.is_component }}" = "true" ] && echo "-d is_component=true" ) \
             $( [ "${{ matrix.is_lifecycle }}" = "true" ] && echo "-d is_lifecycle=true" ) \
             $( [ "${{ matrix.has_service_server }}" = "true" ] && echo "-d has_service_server=true" ) \
