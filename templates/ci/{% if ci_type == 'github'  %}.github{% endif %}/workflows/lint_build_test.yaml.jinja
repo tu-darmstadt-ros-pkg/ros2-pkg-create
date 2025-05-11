@@ -19,9 +19,21 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
+
       - name: Setup
         run: |
           sudo apt-get update && sudo apt-get install -y black clang-format cppcheck libxml2-utils
+
+      {% if add_pre_commit %}
+      - name: Set up Python
+        uses: actions/setup-python@v4
+
+      - name: Install and Run pre-commit
+        uses: pre-commit/action@v3.0.1
+        with:
+          extra_args: --all-files
+
+      {% else %}
       - name: Lint C++ code
         run: |
           echo "Linting C++ code..."
@@ -40,6 +52,8 @@ jobs:
         run: |
           echo "Linting Python code..."
           black --check .
+      {% endif %}
+
          
 
   build-and-test:

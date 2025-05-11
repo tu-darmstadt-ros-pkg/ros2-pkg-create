@@ -14,6 +14,11 @@ linting:
   before_script:
     - apt-get update && apt-get install -y clang-format cppcheck libxml2-utils black
   script:
+  {% if add_pre_commit %}
+    - echo "Running pre-commit hooks..."
+    - apt-get install -y pre-commit
+    - pre-commit run --all-files
+  {% else %}
     - echo "Linting C++ code..."
     - clang-format -Werror -n -style=file $(find . -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')
     - echo "Running cppcheck on C++ code..."
@@ -22,6 +27,7 @@ linting:
     - xmllint --noout --schema http://download.ros.org/schema/package_format3.xsd $(find . -name 'package.xml')
     - echo "Linting Python files..."
     - black --check .
+   {% endif %}
 
 build-and-test:
   stage: build_and_test
