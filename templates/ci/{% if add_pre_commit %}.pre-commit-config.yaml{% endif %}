@@ -7,13 +7,10 @@ repos:
         args: [--style=file]
         files: \.(cpp|hpp|h|c|cc)$
 
-  - repo: local
+  - repo: https://github.com/pocc/pre-commit-hooks
+    rev: v1.3.5
     hooks:
       - id: cppcheck
-        name: Cppcheck
-        entry: cppcheck --force --quiet --language=c++
-        language: system
-        files: \.(cpp|hpp|h|c|cc)$
 
   - repo: https://github.com/psf/black
     rev: 24.2.0
