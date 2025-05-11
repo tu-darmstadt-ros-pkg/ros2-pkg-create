@@ -35,7 +35,7 @@ repos:
     - id: cmake-lint
 
 
-  - repo: git@github.com:Joschi3/package_xml_validation.git
+  - repo: https://github.com/Joschi3/package_xml_validation.git
     rev: v1.1.0
     hooks:
       - id: format-package-xml
