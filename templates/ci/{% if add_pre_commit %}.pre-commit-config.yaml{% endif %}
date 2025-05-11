@@ -7,10 +7,14 @@ repos:
         args: [--style=file]
         files: \.(cpp|hpp|h|c|cc)$
 
-  - repo: https://github.com/pocc/pre-commit-hooks
-    rev: v1.3.5
+  - repo: local
     hooks:
       - id: cppcheck
+        name: Cppcheck
+        entry: bash -c "cppcheck --force --quiet --inline-suppr --error-exitcode=1 --language=c++ $(find . -type d -name 'cmake-build-*' -prune -false -o -name '*.cpp' -o -name '*.hpp' -o -name '*.h' -o -name '*.c' -o -name '*.cc')"
+        language: system
+        files: \.(cpp|cc|hpp|h)$
+        pass_filenames: false
 
   - repo: https://github.com/psf/black
     rev: 24.2.0
