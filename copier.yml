@@ -214,8 +214,8 @@ ci_type:
   when: "{{ 'ci' in template }}"
 
 add_pre_commit:
-  help: Add pre-commit hooks?
-  default: false
+  help: Add pre-commit hooks? [Recommended]
+  default: true
   type: bool
   when: "{{ 'ci' in template }}"
 

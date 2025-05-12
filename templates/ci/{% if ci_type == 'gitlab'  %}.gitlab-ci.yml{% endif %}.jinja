@@ -7,6 +7,19 @@ variables:
 
 linting:
   stage: linting
+  {% if add_pre_commit %}
+  image: $CI_REGISTRY/hector/workspace/docker_workspace:dev-amd64
+  rules:
+    - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event" && $CI_MERGE_REQUEST_TARGET_BRANCH_NAME == $CI_DEFAULT_BRANCH'
+  before_script:
+    - sudo apt-get update && sudo apt-get install -y clang-format cppcheck libxml2-utils black git pre-commit
+    - git config --global --add safe.directory "$CI_PROJECT_DIR"
+    - rosdep update --rosdistro ${ROS_DISTRO}
+  script:
+    - echo "Running pre-commit hooks..."
+    - pre-commit run --all-files
+  {% else %}
   image: ubuntu:latest
   rules:
     - if: '$CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH'
@@ -22,6 +35,8 @@ linting:
     - xmllint --noout --schema http://download.ros.org/schema/package_format3.xsd $(find . -name 'package.xml')
     - echo "Linting Python files..."
     - black --check .
+  {% endif %}
+
 
 build-and-test:
   stage: build_and_test
