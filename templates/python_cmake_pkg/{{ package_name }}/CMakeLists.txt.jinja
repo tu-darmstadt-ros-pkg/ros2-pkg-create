@@ -24,24 +24,9 @@ find_package(std_msgs REQUIRED)
 {% if has_service_server %}
 find_package(std_srvs REQUIRED)
 {% endif %}
-
 {% if use_venv %}
-set(REQUIREMENTS_OUTPUT ${CMAKE_BINARY_DIR}/requirements.txt)
-
-# Custom command to setup venv if requirements.txt changed
-add_custom_command(
-  OUTPUT ${REQUIREMENTS_OUTPUT}
-  COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_SOURCE_DIR}/requirements.txt
-          ${REQUIREMENTS_OUTPUT}
-  COMMAND bash ${CMAKE_SOURCE_DIR}/setup_env.bash ${CMAKE_SOURCE_DIR}
-          ${PROJECT_NAME}
-  DEPENDS ${CMAKE_SOURCE_DIR}/requirements.txt
-  COMMENT "Running setup.bash after copying requirements.txt")
-
-add_custom_target(
-  rebuild_venv ALL
-  DEPENDS ${REQUIREMENTS_OUTPUT}
-  COMMENT "Add venv setup target")
+find_package(ament_index_cpp REQUIRED)
+find_package(ros2_venv_scripts REQUIRED)
 {% endif %}
 
 # Install Python modules
@@ -55,6 +40,24 @@ install(DIRECTORY config launch
   DESTINATION share/${PROJECT_NAME}
   OPTIONAL
 )
+
+{% if use_venv %}
+set(SKIP_VENV
+    ON
+    CACHE
+      BOOL
+      "Whether to skip the venv setup. Should be True for distribution builds.")
+
+if(SKIP_VENV)
+  message(STATUS "Skipping venv setup")
+else()
+  ament_index_get_resource(venv_util_scripts_path "ros2_venv_utility_scripts"
+                           "ros2_venv_scripts")
+  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt"
+          DESTINATION "venv")
+  install(SCRIPT "${venv_util_scripts_path}/post_install_venv.cmake")
+endif()
+{% endif %}
 
 # ament_export_dependencies(${DEPENDENCIES})
 

@@ -9,6 +9,7 @@
   <license>{{ license }}</license>
   <author email="{{ author_email }}">{{ author }}</author>
 
+  <buildtool_depend>ament_cmake</buildtool_depend>
   <depend>rclpy</depend>
   <depend>std_msgs</depend>
 {% if has_service_server %}
@@ -16,6 +17,11 @@
 {% endif %}
 {% if has_action_server %}
   <depend>{{ package_name }}_msgs</depend>
+{% endif %}
+{% if use_venv %}
+  <depend>ament_index_cpp</depend>
+  <depend>ros2_venv_scripts</depend>
+  <exec_depend>ros2_venv_launch_util</exec_depend>
 {% endif %}
 
   <export>
