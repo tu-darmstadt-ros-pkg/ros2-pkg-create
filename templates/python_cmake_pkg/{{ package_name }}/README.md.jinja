@@ -5,7 +5,20 @@
 - [{{ node_name }}](#{{ node_name }})
 
 
+### Venv utility
+
+The venv can be manually build via
+
+'''colcon build --select-packages {{ package_name }}  --ament-cmake-args -DSKIP_VENV=OFF'''
+
+The installing process makes sure that all python packages in the requirements.txt are either already available from the system-interpreter or are directly installed in the venv.
+This also includes missing dependencies or those which have version conflicts with system packages.
+
+The launch template also contains a function that automatically sources the venv in the launch process after checking for compatibility issues with the current system-interpreter configuration.
+These issues can be resolved by rebuilding the venv.
+
 ## `{{ node_name }}`
+
 
 ### Subscribed Topics
 

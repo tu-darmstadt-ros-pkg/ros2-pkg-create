@@ -28,8 +28,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("destination", type=str, help="Destination directory")
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
     parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
-
-    parser.add_argument("--template", type=str, default=None, choices=["cpp_pkg", "msgs_pkg", "python_pkg", "ci"], required=True, help="Template")
+    parser.add_argument("--template", type=str, default=None, choices=["cpp_pkg", "msgs_pkg", "python_pkg", "ci", "python_cmake_pkg"], required=True, help="Template")
     parser.add_argument("--package-name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")

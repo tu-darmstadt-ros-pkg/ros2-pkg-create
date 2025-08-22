@@ -42,20 +42,22 @@ install(DIRECTORY config launch
 )
 
 {% if use_venv %}
-set(SKIP_VENV
-    ON
-    CACHE
-      BOOL
-      "Whether to skip the venv setup. Should be True for distribution builds.")
+install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt"
+        DESTINATION "venv")
+
+set(SKIP_VENV ON CACHE BOOL "Whether to skip the venv setup. Should be True for distribution builds.")
+set(ISOLATED_VENV OFF CACHE BOOL "Whether to install the venv isolated from the system python.")
 
 if(SKIP_VENV)
   message(STATUS "Skipping venv setup")
 else()
   ament_index_get_resource(venv_util_scripts_path "ros2_venv_utility_scripts"
                            "ros2_venv_scripts")
-  install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/requirements.txt"
-          DESTINATION "venv")
-  install(SCRIPT "${venv_util_scripts_path}/post_install_venv.cmake")
+  if(ISOLATED_VENV)
+    install(SCRIPT "${venv_util_scripts_path}/post_install__venv.cmake")
+  else()
+    install(SCRIPT "${venv_util_scripts_path}/post_install_system_visible_venv.cmake")
+  endif()
 endif()
 {% endif %}
 
