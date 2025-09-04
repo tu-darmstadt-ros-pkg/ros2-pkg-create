@@ -1,12 +1,12 @@
 name: Generate and test packages
 
 on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
 
@@ -15,160 +15,220 @@ jobs:
     strategy:
       matrix:
         include:
-          - package_name: default_cpp_pkg
-            template: cpp_pkg
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: component_cpp_pkg
-            template: cpp_pkg
-            is_component: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: lifecycle_cpp_pkg
-            template: cpp_pkg
-            is_lifecycle: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: service_cpp_pkg
-            template: cpp_pkg
-            has_service_server: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: action_cpp_pkg
-            template: cpp_pkg
-            has_action_server: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: timer_cpp_pkg
-            template: cpp_pkg
-            has_timer: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: no_params_cpp_pkg
-            template: cpp_pkg
-            has_params: false
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: startup_params_cpp_pkg
-            template: cpp_pkg
-            has_params: true
-            has_startup_params: true
-            has_reconfigurable_params: false
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: reconfigurable_params_cpp_pkg
-            template: cpp_pkg
-            has_params: true
-            has_startup_params: false
-            has_reconfigurable_params: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: no_launch_file_cpp_pkg
-            template: cpp_pkg
-            has_launch_file: false
-            auto_shutdown: true
-            launch_file_type: py
-          - package_name: all_cpp_pkg
-            template: cpp_pkg
-            is_component: true
-            is_lifecycle: true
-            has_params: true
-            has_reconfigurable_params: true
-            has_startup_params: true
-            has_service_server: true
-            has_action_server: true
-            has_timer: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: default_python_pkg
-            template: python_pkg
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: service_python_pkg
-            template: python_pkg
-            has_service_server: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: action_python_pkg
-            template: python_pkg
-            has_action_server: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: timer_python_pkg
-            template: python_pkg
-            has_timer: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: no_params_python_pkg
-            template: python_pkg
-            has_params: false
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: no_launch_file_python_pkg
-            template: python_pkg
-            has_launch_file: false
-            auto_shutdown: true
-          - package_name: all_python_pkg
-            template: python_pkg
-            is_lifecycle: true
-            has_service_server: true
-            has_action_server: true
-            has_timer: true
-            auto_shutdown: true
-            has_launch_file: true
-            launch_file_type: py
-          - package_name: msgs_pkg
-            template: msgs_pkg
+        - package_name: default_cpp_pkg
+          template: cpp_pkg
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: component_cpp_pkg
+          template: cpp_pkg
+          is_component: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: lifecycle_cpp_pkg
+          template: cpp_pkg
+          is_lifecycle: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: service_cpp_pkg
+          template: cpp_pkg
+          has_service_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: action_cpp_pkg
+          template: cpp_pkg
+          has_action_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: timer_cpp_pkg
+          template: cpp_pkg
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: no_params_cpp_pkg
+          template: cpp_pkg
+          has_params: false
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: startup_params_cpp_pkg
+          template: cpp_pkg
+          has_params: true
+          has_startup_params: true
+          has_reconfigurable_params: false
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: reconfigurable_params_cpp_pkg
+          template: cpp_pkg
+          has_params: true
+          has_startup_params: false
+          has_reconfigurable_params: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: no_launch_file_cpp_pkg
+          template: cpp_pkg
+          has_launch_file: false
+          auto_shutdown: true
+          launch_file_type: py
+        - package_name: all_cpp_pkg
+          template: cpp_pkg
+          is_component: true
+          is_lifecycle: true
+          has_params: true
+          has_reconfigurable_params: true
+          has_startup_params: true
+          has_service_server: true
+          has_action_server: true
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: default_python_pkg
+          template: python_pkg
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: service_python_pkg
+          template: python_pkg
+          has_service_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: action_python_pkg
+          template: python_pkg
+          has_action_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: timer_python_pkg
+          template: python_pkg
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: no_params_python_pkg
+          template: python_pkg
+          has_params: false
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: no_launch_file_python_pkg
+          template: python_pkg
+          has_launch_file: false
+          auto_shutdown: true
+        - package_name: all_python_pkg
+          template: python_pkg
+          is_lifecycle: true
+          has_service_server: true
+          has_action_server: true
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+        - package_name: msgs_pkg
+          template: msgs_pkg
+        - package_name: default_python_pkg
+          template: python_pkg
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: python_cmake__pkg
+          template: python_cmake_pkg
+          has_service_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: action_python_cmake_pkg
+          template: python_cmake_pkg
+          has_action_server: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: timer_python_pkg
+          template: python_pkg
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: no_params_python_cmake_pkg
+          template: python_cmake_pkg
+          has_params: false
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: no_launch_file_python_cmake_pkg
+          template: python_cmake_pkg
+          has_launch_file: false
+          auto_shutdown: true
+          use_venv: true
+        - package_name: all_python_cmake_pkg
+          template: python_cmake_pkg
+          is_lifecycle: true
+          has_service_server: true
+          has_action_server: true
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: true
+        - package_name: all_python_cmake_pkg_no_venv
+          template: python_cmake_pkg
+          is_lifecycle: true
+          has_service_server: true
+          has_action_server: true
+          has_timer: true
+          auto_shutdown: true
+          has_launch_file: true
+          launch_file_type: py
+          use_venv: false
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-      - name: Install dependencies
-        run: |
-          pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
-      - name: Configure git to run copier
-        run: |
-          git config --global user.name "dummy"
-          git config --global user.email "dummy@dummy.com"
-      - name: Generate packages
-        run: |
-          copier copy --trust --defaults \
-            -d template=${{ matrix.template }} \
-            -d auto_shutdown=${{ matrix.auto_shutdown }} \
-            -d package_name=${{ matrix.package_name }} \
-            $( [ "${{ matrix.is_component }}" = "true" ] && echo "-d is_component=true" ) \
-            $( [ "${{ matrix.is_lifecycle }}" = "true" ] && echo "-d is_lifecycle=true" ) \
-            $( [ "${{ matrix.has_service_server }}" = "true" ] && echo "-d has_service_server=true" ) \
-            $( [ "${{ matrix.has_action_server }}" = "true" ] && echo "-d has_action_server=true" ) \
-            $( [ "${{ matrix.has_timer }}" = "true" ] && echo "-d has_timer=true" ) \
-            $( [ "${{ matrix.has_params }}" = "true" ] && echo "-d has_params=true" ) \
-            $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d has_launch_file=true" ) \
-            $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d launch_file_type=${{ matrix.launch_file_type }}" ) \
-            . packages
-      - name: Upload artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.package_name }}
-          path: "packages/${{ matrix.package_name }}*"
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.10"
+    - name: Install dependencies
+      run: |
+        pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
+    - name: Configure git to run copier
+      run: |
+        git config --global user.name "dummy"
+        git config --global user.email "dummy@dummy.com"
+    - name: Generate packages
+      run: |
+        copier copy --trust --defaults \
+          -d template=${{ matrix.template }} \
+          -d auto_shutdown=${{ matrix.auto_shutdown }} \
+          -d package_name=${{ matrix.package_name }} \
+          $( [ "${{ matrix.is_component }}" = "true" ] && echo "-d is_component=true" ) \
+          $( [ "${{ matrix.is_lifecycle }}" = "true" ] && echo "-d is_lifecycle=true" ) \
+          $( [ "${{ matrix.has_service_server }}" = "true" ] && echo "-d has_service_server=true" ) \
+          $( [ "${{ matrix.has_action_server }}" = "true" ] && echo "-d has_action_server=true" ) \
+          $( [ "${{ matrix.has_timer }}" = "true" ] && echo "-d has_timer=true" ) \
+          $( [ "${{ matrix.has_params }}" = "true" ] && echo "-d has_params=true" ) \
+          $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d has_launch_file=true" ) \
+          $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d launch_file_type=${{ matrix.launch_file_type }}" ) \
+          $( [ "${{ matrix.use_venv }}" = "true" ] && echo "-d use_venv=${{ matrix.use_venv }}" ) \
+          . packages
+    - name: Upload artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: ${{ matrix.package_name }}
+        path: "packages/${{ matrix.package_name }}*"
 
   build:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
@@ -179,61 +239,104 @@ jobs:
     strategy:
       matrix:
         include:
-          - package: default_cpp_pkg
-            command: ros2 launch default_cpp_pkg default_cpp_pkg_launch.py
-          - package: component_cpp_pkg
-            command: ros2 launch component_cpp_pkg component_cpp_pkg_launch.py
-          - package: lifecycle_cpp_pkg
-            command: ros2 launch lifecycle_cpp_pkg lifecycle_cpp_pkg_launch.py
-          - package: service_cpp_pkg
-            command: ros2 launch service_cpp_pkg service_cpp_pkg_launch.py
-          - package: action_cpp_pkg
-            command: ros2 launch action_cpp_pkg action_cpp_pkg_launch.py
-          - package: timer_cpp_pkg
-            command: ros2 launch timer_cpp_pkg timer_cpp_pkg_launch.py
-          - package: startup_params_cpp_pkg
-            command: ros2 launch startup_params_cpp_pkg startup_params_cpp_pkg_launch.py
-          - package: reconfigurable_params_cpp_pkg
-            command: ros2 launch reconfigurable_params_cpp_pkg reconfigurable_params_cpp_pkg_launch.py
-          - package: no_params_cpp_pkg
-            command: ros2 launch no_params_cpp_pkg no_params_cpp_pkg_launch.py
-          - package: no_launch_file_cpp_pkg
-            command: ros2 run no_launch_file_cpp_pkg no_launch_file_cpp_pkg --ros-args -p param:=1.0
-          - package: all_cpp_pkg
-            command: ros2 launch all_cpp_pkg all_cpp_pkg_launch.py
-          - package: default_python_pkg
-            command: ros2 launch default_python_pkg default_python_pkg_launch.py
-          - package: service_python_pkg
-            command: ros2 launch service_python_pkg service_python_pkg_launch.py
-          - package: action_python_pkg
-            command: ros2 launch action_python_pkg action_python_pkg_launch.py
-          - package: timer_python_pkg
-            command: ros2 launch timer_python_pkg timer_python_pkg_launch.py
-          - package: no_params_python_pkg
-            command: ros2 launch no_params_python_pkg no_params_python_pkg_launch.py
-          - package: no_launch_file_python_pkg
-            command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
-          - package: all_python_pkg
-            command: ros2 launch all_python_pkg all_python_pkg_launch.py
-          - package: msgs_pkg
-            command: |
-              ros2 interface show msgs_pkg/msg/Message && \
-              ros2 interface show msgs_pkg/srv/Service && \
-              ros2 interface show msgs_pkg/action/Action
+        - package: default_cpp_pkg
+          command: ros2 launch default_cpp_pkg default_cpp_pkg_launch.py
+        - package: component_cpp_pkg
+          command: ros2 launch component_cpp_pkg component_cpp_pkg_launch.py
+        - package: lifecycle_cpp_pkg
+          command: ros2 launch lifecycle_cpp_pkg lifecycle_cpp_pkg_launch.py
+        - package: service_cpp_pkg
+          command: ros2 launch service_cpp_pkg service_cpp_pkg_launch.py
+        - package: action_cpp_pkg
+          command: ros2 launch action_cpp_pkg action_cpp_pkg_launch.py
+        - package: timer_cpp_pkg
+          command: ros2 launch timer_cpp_pkg timer_cpp_pkg_launch.py
+        - package: startup_params_cpp_pkg
+          command: ros2 launch startup_params_cpp_pkg startup_params_cpp_pkg_launch.py
+        - package: reconfigurable_params_cpp_pkg
+          command: ros2 launch reconfigurable_params_cpp_pkg reconfigurable_params_cpp_pkg_launch.py
+        - package: no_params_cpp_pkg
+          command: ros2 launch no_params_cpp_pkg no_params_cpp_pkg_launch.py
+        - package: no_launch_file_cpp_pkg
+          command: ros2 run no_launch_file_cpp_pkg no_launch_file_cpp_pkg --ros-args -p param:=1.0
+        - package: all_cpp_pkg
+          command: ros2 launch all_cpp_pkg all_cpp_pkg_launch.py
+        - package: default_python_pkg
+          command: ros2 launch default_python_pkg default_python_pkg_launch.py
+        - package: service_python_pkg
+          command: ros2 launch service_python_pkg service_python_pkg_launch.py
+        - package: action_python_pkg
+          command: ros2 launch action_python_pkg action_python_pkg_launch.py
+        - package: timer_python_pkg
+          command: ros2 launch timer_python_pkg timer_python_pkg_launch.py
+        - package: no_params_python_pkg
+          command: ros2 launch no_params_python_pkg no_params_python_pkg_launch.py
+        - package: no_launch_file_python_pkg
+          command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
+        - package: all_python_pkg
+          command: ros2 launch all_python_pkg all_python_pkg_launch.py
+        - package: default_python_cmake_pkg
+          command: ros2 launch default_python_cmake_pkg default_python_cmake_pkg_launch.py
+        - package: service_python_cmake_pkg
+          command: ros2 launch service_python_cmake_pkg service_python_cmake_pkg_launch.py
+        - package: action_python_cmake_pkg
+          command: ros2 launch action_python_cmake_pkg action_python_cmake_pkg_launch.py
+        - package: timer_python_cmake_pkg
+          command: ros2 launch timer_python_cmake_pkg timer_python_cmake_pkg_launch.py
+        - package: no_params_python_cmake_pkg
+          command: ros2 launch no_params_python_cmake_pkg no_params_python_cmake_pkg_launch.py
+        - package: no_launch_file_python_cmake_pkg
+          command: ros2 run no_launch_file_python_pkg no_launch_file_python_cmake_pkg --ros-args -p param:=1.0
+        - package: all_python_cmake_pkg
+          command: ros2 launch all_python_cmake_pkg all_python_cmake_pkg_launch.py
+        - package: msgs_pkg
+          command: |
+            ros2 interface show msgs_pkg/msg/Message && \
+            ros2 interface show msgs_pkg/srv/Service && \
+            ros2 interface show msgs_pkg/action/Action
     steps:
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-      - uses: actions/checkout@v4
-        with:
-          repository: tu-darmstadt-ros-pkg/hector_ros2_utils
-          path: src/hector_ros2_utils
-      - name: Build
-        shell: bash
-        run: |
-          source /opt/ros/$ROS_DISTRO/setup.bash
-          colcon build --packages-up-to ${{ matrix.package }}
-      - name: Run
-        shell: bash
-        run: |
-          source install/setup.bash
-          ${{ matrix.command }}
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+    - uses: actions/checkout@v4
+      with:
+        repository: tu-darmstadt-ros-pkg/hector_ros2_utils
+        path: src/hector_ros2_utils
+    - name: Build
+      shell: bash
+      run: |
+        source /opt/ros/$ROS_DISTRO/setup.bash
+        colcon build --packages-up-to ${{ matrix.package }}
+    - name: Run
+      shell: bash
+      run: |
+        source install/setup.bash
+        ${{ matrix.command }}
+
+  build:
+    if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
+    runs-on: ubuntu-latest
+    container:
+      image: rwthika/ros2:jazzy
+    needs: generate
+    strategy:
+      matrix:
+        include:
+        - package: all_python_cmake_pkg
+          command: ros2 launch all_python_cmake_pkg all_python_cmake_pkg_launch.py
+    steps:
+    - name: Download artifacts
+      uses: actions/download-artifact@v4
+    - uses: actions/checkout@v4
+      with:
+        repository: tu-darmstadt-ros-pkg/hector_ros2_utils
+        path: src/hector_ros2_utils
+    - name: Build
+      shell: bash
+      run: |
+        source /opt/ros/$ROS_DISTRO/setup.bash
+        colcon build --packages-up-to ${{ matrix.package }}  --ament-cmake-args -DSKIP_VENV=OFF
+    - name: Run
+      shell: bash
+      run: |
+        source install/setup.bash
+        ${{ matrix.command }}
