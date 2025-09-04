@@ -1,15 +1,14 @@
 name: Generate and test packages
 
 on:
-    push:
-      branches:
-        - main
-    pull_request:
-      branches:
-        - main
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
 
 jobs:
-
   generate:
     runs-on: ubuntu-latest
     strategy:
@@ -312,7 +311,7 @@ jobs:
         source install/setup.bash
         ${{ matrix.command }}
 
-  build:
+  build_venv:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     container:
