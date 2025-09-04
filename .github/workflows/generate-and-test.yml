@@ -153,8 +153,8 @@ jobs:
           has_launch_file: true
           launch_file_type: py
           use_venv: true
-        - package_name: timer_python_pkg
-          template: python_pkg
+        - package_name: timer_python_cmake_pkg
+          template: python_cmake_pkg
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
