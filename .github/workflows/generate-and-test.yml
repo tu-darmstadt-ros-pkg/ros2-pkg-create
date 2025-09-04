@@ -133,8 +133,8 @@ jobs:
           launch_file_type: py
         - package_name: msgs_pkg
           template: msgs_pkg
-        - package_name: default_python_pkg
-          template: python_pkg
+        - package_name: default_python_cmake_pkg
+          template: python_cmake_pkg
           auto_shutdown: true
           has_launch_file: true
           launch_file_type: py
