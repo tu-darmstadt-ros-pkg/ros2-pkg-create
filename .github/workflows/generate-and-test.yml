@@ -308,7 +308,7 @@ jobs:
       shell: bash
       run: |
         source /opt/ros/$ROS_DISTRO/setup.bash
-        colcon build --packages-up-to ${{ matrix.package }}
+        colcon build --packages-up-to ${{ matrix.package }} --ament-cmake-args -DSKIP_VENV=OFF
     - name: Run
       shell: bash
       run: |
@@ -333,11 +333,15 @@ jobs:
       with:
         repository: tu-darmstadt-ros-pkg/hector_ros2_utils
         path: src/hector_ros2_utils
+    - uses: actions/checkout@v4
+      with:
+        repository: tu-darmstadt-ros-pkg/ros2_venv_utility
+        path: src/ros2_venv_utils
     - name: Build
       shell: bash
       run: |
         source /opt/ros/$ROS_DISTRO/setup.bash
-        colcon build --packages-up-to ${{ matrix.package }}  --ament-cmake-args -DSKIP_VENV=OFF
+        colcon build --packages-up-to ${{ matrix.package }} --ament-cmake-args -DSKIP_VENV=OFF
     - name: Run
       shell: bash
       run: |

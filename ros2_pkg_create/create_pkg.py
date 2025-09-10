@@ -65,6 +65,8 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
     parser.add_argument("--ci-type", type=str, choices =["github", "gitlab"],default=None, help="CI type")
     parser.add_argument("--add_pre_commit", action="store_true", default=None, help="Add pre-commit hook?")
+    parser.add_argument("--use_venv", action="store_true", default=True, help="Use a virtual environment for this package?")
+
 
     argcomplete.autocomplete(parser)
     return parser.parse_args()
