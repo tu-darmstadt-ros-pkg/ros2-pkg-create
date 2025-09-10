@@ -13,7 +13,7 @@ from ros2_venv_launch_util.launch_util import add_venv_to_current_env
 def generate_launch_description():
 
 {% if use_venv %}
-        env = add_venv_to_current_env("{{ package_name }}")
+    env = add_venv_to_current_env("{{ package_name }}")
 {% endif %}
 
     remappable_topics = [
