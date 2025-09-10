@@ -300,7 +300,7 @@ jobs:
       with:
         repository: tu-darmstadt-ros-pkg/hector_ros2_utils
         path: src/hector_ros2_utils
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@jazzy
       with:
         repository: tu-darmstadt-ros-pkg/ros2_venv_utils
         path: src/ros2_venv_utils
