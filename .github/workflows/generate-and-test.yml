@@ -139,7 +139,7 @@ jobs:
           has_launch_file: true
           launch_file_type: py
           use_venv: true
-        - package_name: python_cmake__pkg
+        - package_name: service_python_cmake_pkg
           template: python_cmake_pkg
           has_service_server: true
           auto_shutdown: true
@@ -285,7 +285,7 @@ jobs:
         - package: no_params_python_cmake_pkg
           command: ros2 launch no_params_python_cmake_pkg no_params_python_cmake_pkg_launch.py
         - package: no_launch_file_python_cmake_pkg
-          command: ros2 run no_launch_file_python_pkg no_launch_file_python_cmake_pkg --ros-args -p param:=1.0
+          command: ros2 run no_launch_file_python_cmake_pkg no_launch_file_python_cmake_pkg --ros-args -p param:=1.0
         - package: all_python_cmake_pkg
           command: ros2 launch all_python_cmake_pkg all_python_cmake_pkg_launch.py
         - package: msgs_pkg
