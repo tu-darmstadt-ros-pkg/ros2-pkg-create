@@ -351,7 +351,7 @@ jobs:
     - name: Test venv setup
       shell: bash
       run: |
-        source install/setup.bash/${{ matrix.package }}/venv/${{ matrix.package }}/bin/activate
+        source install/${{ matrix.package }}/venv/${{ matrix.package }}/bin/activate
         if python3 -c "import numpy" 2>/dev/null; then
           echo "numpy is available in the global python environment"
           exit 1
