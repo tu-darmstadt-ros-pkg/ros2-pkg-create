@@ -33,7 +33,7 @@ def generate_launch_description():
     nodes = [
         Node(
             package="{{ package_name }}",
-            executable="{{ node_name }}",
+            executable="{{ node_name }}.py",
             name=LaunchConfiguration("name"),
             parameters=[node_config],
             arguments=["--ros-args", "--log-level", LaunchConfiguration("log_level")],

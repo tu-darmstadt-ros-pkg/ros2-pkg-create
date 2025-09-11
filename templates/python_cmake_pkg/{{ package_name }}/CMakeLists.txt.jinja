@@ -51,7 +51,7 @@ else()
   ament_index_get_resource(venv_util_scripts_path "ros2_venv_utility_scripts"
                            "ros2_venv_scripts")
   if(ISOLATED_VENV)
-    install(SCRIPT "${venv_util_scripts_path}/post_install__venv.cmake")
+    install(SCRIPT "${venv_util_scripts_path}/post_install_isolated_venv.cmake")
   else()
     install(SCRIPT "${venv_util_scripts_path}/post_install_system_visible_venv.cmake")
   endif()

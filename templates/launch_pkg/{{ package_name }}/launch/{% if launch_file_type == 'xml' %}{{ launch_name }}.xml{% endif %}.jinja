@@ -10,7 +10,7 @@
   <remap from="/tf_static" to="tf_static" />
 
   <!-- Node Definition -->
-  <node pkg="{{ package_name }}" exec="{{ node_name }}" name="$(var name)" output="screen">
+  <node pkg="{{ package_name }}" exec="{{ node_name }}.py" name="$(var name)" output="screen">
     <param from="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yaml" />
   </node>
 
