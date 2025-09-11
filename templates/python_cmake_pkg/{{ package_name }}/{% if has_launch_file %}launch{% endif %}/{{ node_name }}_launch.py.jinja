@@ -36,7 +36,7 @@ def generate_launch_description():
     nodes = [
         Node(
             package="{{ package_name }}",
-            executable="{{ node_name }}",
+            executable="{{ node_name }}.py",
             name=LaunchConfiguration("name"),
 {% if use_venv %}
             env=env,
