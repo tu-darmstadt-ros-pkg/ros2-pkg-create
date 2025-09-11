@@ -341,8 +341,7 @@ jobs:
       shell: bash
       run: |
         source /opt/ros/$ROS_DISTRO/setup.bash
-        ls
-        echo "numpy" >> src/${{ matrix.package }}/requirements.txt
+        echo "numpy" >> ${{ matrix.package }}/requirements.txt
         colcon build --packages-up-to ${{ matrix.package }} --ament-cmake-args -DSKIP_VENV=OFF -DISOLATED_VENV=ON
     - name: Run
       shell: bash
