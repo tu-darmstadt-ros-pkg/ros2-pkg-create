@@ -347,7 +347,8 @@ jobs:
       shell: bash
       run: |
         source install/setup.bash
-        ls install
+        ls install/${{ matrix.package }}
+        ls install/${{ matrix.package }}/venv
         ${{ matrix.command }}
     - name: Test venv setup
       shell: bash

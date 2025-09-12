@@ -1,3 +1,3 @@
-{% if has_param %}
+{% if has_params %}
 yaml
 {% endif %}
