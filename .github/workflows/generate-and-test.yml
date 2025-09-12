@@ -307,7 +307,6 @@ jobs:
     - name: Build
       shell: bash
       run: |
-        apt install python3-yaml
         source /opt/ros/$ROS_DISTRO/setup.bash
         colcon build --packages-up-to ${{ matrix.package }} --ament-cmake-args -DSKIP_VENV=OFF
     - name: Run
@@ -347,13 +346,12 @@ jobs:
     - name: Run
       shell: bash
       run: |
-        apt install python3-yaml
         source install/setup.bash
         ${{ matrix.command }}
     - name: Test venv setup
       shell: bash
       run: |
-        ls install/${{ matrix.package }}/venv/${{ matrix.package }}
+        ls install/${{ matrix.package }}/venv/${{ matrix.package }}/bin
         source install/${{ matrix.package }}/venv/${{ matrix.package }}/bin/activate
         if python3 -c "import numpy" 2>/dev/null; then
           echo "numpy is available in the global python environment"
