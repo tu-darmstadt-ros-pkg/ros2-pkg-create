@@ -8,13 +8,13 @@ import pytest
 @pytest.mark.launch_test
 def generate_test_description():
     {% if launch_file_type == 'py' %}
-    launch_file = os.path.join("{{package_name}}", "launch", "{{node_name}}_launch.py")
+    launch_file = os.path.join(get_package_share_directory("{{package_name}}"), "launch", "{{node_name}}_launch.py")
     {% endif %}
     {% if launch_file_type == 'xml' %}
-    launch_file = os.path.join("{{package_name}}", "launch", "{{node_name}}_launch.xml")
+    launch_file = os.path.join(get_package_share_directory("{{package_name}}"), "launch", "{{node_name}}_launch.xml")
     {% endif %}
     {% if launch_file_type == 'yml' %}
-    launch_file = os.path.join("{{package_name}}", "launch", "{{node_name}}_launch.yml")
+    launch_file = os.path.join(get_package_share_directory("{{package_name}}"), "launch", "{{node_name}}_launch.yml")
     {% endif %}
     
     included_launch = launch.actions.IncludeLaunchDescription(
