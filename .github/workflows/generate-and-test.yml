@@ -290,7 +290,7 @@ jobs:
         - package: no_launch_file_python_cmake_pkg
           command: ros2 run no_launch_file_python_cmake_pkg no_launch_file_python_cmake_pkg.py --ros-args -p param:=1.0
         - package: all_python_cmake_pkg
-          command: launch_test all_python_cmake_pkg/all_python_cmake_pkg/launch_tests/default_launch_test.launch.py all_python_cmake_pkg_launch.py
+          command: launch_test all_python_cmake_pkg/all_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: msgs_pkg
           command: |
             ros2 interface show msgs_pkg/msg/Message && \
