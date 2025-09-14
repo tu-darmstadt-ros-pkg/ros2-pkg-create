@@ -25,7 +25,10 @@ def generate_test_description():
     return (
         launch.LaunchDescription([
             included_launch,
-            launch_testing.actions.ReadyToTest()
+            launch.actions.TimerAction(
+                period=1.0,  
+                actions=[launch_testing.actions.ReadyToTest()]
+            ),
         ]),
         {'included_launch': included_launch}
     )
