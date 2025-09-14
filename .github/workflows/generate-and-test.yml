@@ -316,7 +316,8 @@ jobs:
       shell: bash
       run: |
         source install/setup.bash
-        ls
+        ls ${{ matrix.package }}
+
         ${{ matrix.command }}
 
   build_isolated_venv_with_dependencies:
