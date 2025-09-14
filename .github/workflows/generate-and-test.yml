@@ -18,42 +18,49 @@ jobs:
           template: cpp_pkg
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: component_cpp_pkg
           template: cpp_pkg
           is_component: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: lifecycle_cpp_pkg
           template: cpp_pkg
           is_lifecycle: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: service_cpp_pkg
           template: cpp_pkg
           has_service_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: action_cpp_pkg
           template: cpp_pkg
           has_action_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: timer_cpp_pkg
           template: cpp_pkg
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: no_params_cpp_pkg
           template: cpp_pkg
           has_params: false
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: startup_params_cpp_pkg
           template: cpp_pkg
@@ -62,6 +69,7 @@ jobs:
           has_reconfigurable_params: false
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: reconfigurable_params_cpp_pkg
           template: cpp_pkg
@@ -70,10 +78,12 @@ jobs:
           has_reconfigurable_params: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: no_launch_file_cpp_pkg
           template: cpp_pkg
           has_launch_file: false
+          has_launch_tests: false
           auto_shutdown: true
           launch_file_type: py
         - package_name: all_cpp_pkg
@@ -88,39 +98,46 @@ jobs:
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: default_python_pkg
           template: python_pkg
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: service_python_pkg
           template: python_pkg
           has_service_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: action_python_pkg
           template: python_pkg
           has_action_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: timer_python_pkg
           template: python_pkg
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: no_params_python_pkg
           template: python_pkg
           has_params: false
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: no_launch_file_python_pkg
           template: python_pkg
           has_launch_file: false
+          has_launch_tests: false
           auto_shutdown: true
         - package_name: all_python_pkg
           template: python_pkg
@@ -130,6 +147,7 @@ jobs:
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
         - package_name: msgs_pkg
           template: msgs_pkg
@@ -137,6 +155,7 @@ jobs:
           template: python_cmake_pkg
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
           use_venv: true
         - package_name: service_python_cmake_pkg
@@ -144,6 +163,7 @@ jobs:
           has_service_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
           use_venv: true
         - package_name: action_python_cmake_pkg
@@ -151,6 +171,7 @@ jobs:
           has_action_server: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
           use_venv: true
         - package_name: timer_python_cmake_pkg
@@ -158,6 +179,7 @@ jobs:
           has_timer: true
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
           use_venv: true
         - package_name: no_params_python_cmake_pkg
@@ -165,11 +187,13 @@ jobs:
           has_params: false
           auto_shutdown: true
           has_launch_file: true
+          has_launch_tests: true
           launch_file_type: py
           use_venv: true
         - package_name: no_launch_file_python_cmake_pkg
           template: python_cmake_pkg
           has_launch_file: false
+          has_launch_tests: false
           auto_shutdown: true
           use_venv: true
         - package_name: all_python_cmake_pkg
@@ -242,51 +266,51 @@ jobs:
       matrix:
         include:
         - package: default_cpp_pkg
-          command: ros2 launch default_cpp_pkg default_cpp_pkg_launch.py
+          command: launch_test default_cpp_pkg/default_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: component_cpp_pkg
-          command: ros2 launch component_cpp_pkg component_cpp_pkg_launch.py
+          command: launch_test component_cpp_pkg/component_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: lifecycle_cpp_pkg
-          command: ros2 launch lifecycle_cpp_pkg lifecycle_cpp_pkg_launch.py
+          command: launch_test lifecycle_cpp_pkg/lifecycle_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: service_cpp_pkg
-          command: ros2 launch service_cpp_pkg service_cpp_pkg_launch.py
+          command: launch_test service_cpp_pkg/service_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: action_cpp_pkg
-          command: ros2 launch action_cpp_pkg action_cpp_pkg_launch.py
+          command: launch_test action_cpp_pkg/action_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: timer_cpp_pkg
-          command: ros2 launch timer_cpp_pkg timer_cpp_pkg_launch.py
+          command: launch_test timer_cpp_pkg/timer_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: startup_params_cpp_pkg
-          command: ros2 launch startup_params_cpp_pkg startup_params_cpp_pkg_launch.py
+          command: launch_test startup_params_cpp_pkg/startup_params_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: reconfigurable_params_cpp_pkg
-          command: ros2 launch reconfigurable_params_cpp_pkg reconfigurable_params_cpp_pkg_launch.py
+          command: launch_test reconfigurable_params_cpp_pkg/reconfigurable_params_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: no_params_cpp_pkg
-          command: ros2 launch no_params_cpp_pkg no_params_cpp_pkg_launch.py
+          command: launch_test no_params_cpp_pkg/no_params_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: no_launch_file_cpp_pkg
           command: ros2 run no_launch_file_cpp_pkg no_launch_file_cpp_pkg --ros-args -p param:=1.0
         - package: all_cpp_pkg
-          command: ros2 launch all_cpp_pkg all_cpp_pkg_launch.py
+          command: launch_test all_cpp_pkg/all_cpp_pkg/launch_tests/default_launch_test.launch.py
         - package: default_python_pkg
-          command: ros2 launch default_python_pkg default_python_pkg_launch.py
+          command: launch_test default_python_pkg/default_python_pkg/launch_tests/default_launch_test.launch.py
         - package: service_python_pkg
-          command: ros2 launch service_python_pkg service_python_pkg_launch.py
+          command: launch_test service_python_pkg/service_python_pkg/launch_tests/default_launch_test.launch.py
         - package: action_python_pkg
-          command: ros2 launch action_python_pkg action_python_pkg_launch.py
+          command: launch_test action_python_pkg/action_python_pkg/launch_tests/default_launch_test.launch.py
         - package: timer_python_pkg
-          command: ros2 launch timer_python_pkg timer_python_pkg_launch.py
+          command: launch_test timer_python_pkg/timer_python_pkg/launch_tests/default_launch_test.launch.py
         - package: no_params_python_pkg
-          command: ros2 launch no_params_python_pkg no_params_python_pkg_launch.py
+          command: launch_test no_params_python_pkg/no_params_python_pkg/launch_tests/default_launch_test.launch.py
         - package: no_launch_file_python_pkg
           command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
         - package: all_python_pkg
-          command: ros2 launch all_python_pkg all_python_pkg_launch.py
+          command: launch_test all_python_pkg/all_python_pkg/launch_tests/default_launch_test.launch.py
         - package: default_python_cmake_pkg
-          command: ros2 launch default_python_cmake_pkg default_python_cmake_pkg_launch.py
+          command: launch_test default_python_cmake_pkg/default_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: service_python_cmake_pkg
-          command: ros2 launch service_python_cmake_pkg service_python_cmake_pkg_launch.py
+          command: launch_test service_python_cmake_pkg/service_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: action_python_cmake_pkg
-          command: ros2 launch action_python_cmake_pkg action_python_cmake_pkg_launch.py
+          command: launch_test action_python_cmake_pkg/action_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: timer_python_cmake_pkg
-          command: ros2 launch timer_python_cmake_pkg timer_python_cmake_pkg_launch.py
+          command: launch_test timer_python_cmake_pkg/timer_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: no_params_python_cmake_pkg
-          command: ros2 launch no_params_python_cmake_pkg no_params_python_cmake_pkg_launch.py
+          command: launch_test no_params_python_cmake_pkg/no_params_python_cmake_pkg/launch_tests/default_launch_test.launch.py
         - package: no_launch_file_python_cmake_pkg
           command: ros2 run no_launch_file_python_cmake_pkg no_launch_file_python_cmake_pkg.py --ros-args -p param:=1.0
         - package: all_python_cmake_pkg
@@ -328,7 +352,7 @@ jobs:
       matrix:
         include:
         - package: all_python_cmake_pkg
-          command: ros2 launch all_python_cmake_pkg all_python_cmake_pkg_launch.py
+          command: launch_test all_python_cmake_pkg/all_python_cmake_pkg/launch_tests/default_launch_test.launch.py
     steps:
     - name: Download artifacts
       uses: actions/download-artifact@v4
