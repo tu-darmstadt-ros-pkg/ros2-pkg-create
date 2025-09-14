@@ -84,7 +84,6 @@ has_launch_file:
   type: bool
   default: false
 
-
 launch_file_type:
   help: Type of launch file
   when: "{{ ((template == 'cpp_pkg' or template == 'python_pkg') and has_launch_file) or template == 'launch_pkg' }}" 
@@ -96,7 +95,7 @@ has_launch_tests:
   help: Add launch tests?
   when: "{{ has_launch_file }}"
   type: bool
-  default: false
+  default: true
 
 has_params:
   help: Add parameter loading?
