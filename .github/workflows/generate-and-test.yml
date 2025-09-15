@@ -229,9 +229,9 @@ jobs:
     - name: Install dependencies
       run: |
         pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
-    - name: Install PyYAML for ROS2 Python
+    - name: Install yaml dep for ROS2 Python
       run: |
-        /opt/ros/jazzy/bin/python3 -m pip install pyyaml
+        sudo apt install python3-yaml
     - name: Configure git to run copier
       run: |
         git config --global user.name "dummy"
