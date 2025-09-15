@@ -84,7 +84,7 @@ jobs:
           template: cpp_pkg
           has_launch_file: false
           has_launch_tests: false
-          auto_shutdown: false
+          auto_shutdown: true
           launch_file_type: py
         - package_name: all_cpp_pkg
           template: cpp_pkg
@@ -138,7 +138,7 @@ jobs:
           template: python_pkg
           has_launch_file: false
           has_launch_tests: false
-          auto_shutdown: false
+          auto_shutdown: true
         - package_name: all_python_pkg
           template: python_pkg
           is_lifecycle: true
@@ -194,7 +194,7 @@ jobs:
           template: python_cmake_pkg
           has_launch_file: false
           has_launch_tests: false
-          auto_shutdown: false
+          auto_shutdown: true
           use_venv: true
         - package_name: all_python_cmake_pkg
           template: python_cmake_pkg
