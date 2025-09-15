@@ -24,13 +24,24 @@ def generate_test_description():
     return (
         launch.LaunchDescription([
             included_launch,
-            launch.actions.TimerAction(
-                period=1.0,  
-                actions=[launch_testing.actions.ReadyToTest()]
-            ),
+            launch_testing.actions.ReadyToTest()
         ]),
         {'included_launch': included_launch}
     )
+
+class TestDummyWait(unittest.TestCase):
+    def test_wait_for_anything(self, proc_output):
+        """
+        Dummy test: wait for a string that will probably never appear.
+        This keeps launch_testing alive for a short period so
+        the node under test has time to start (or crash) and flush logs.
+        Workaround to sending the send the ReadyToTestsignal delayed via TimerAction which is bugged currently.
+        """
+        try:
+            # Wait for an unlikely string – timeout is expected.
+            proc_output.waitFor("___unlikely_string___", timeout=2, stream='stdout')
+        except AssertionError:
+            self.assertTrue(True)
 
 
 @launch_testing.post_shutdown_test()

@@ -34,7 +34,6 @@ class {{ node_class_name }}(Node):
 {% endif %}        
 {% if has_reconfigurable_params %}
         self.auto_reconfigurable_params = []
-        self.parameters_callback = None
 {% endif %}
 {% if has_subscriber %}
         self.subscriber = None
