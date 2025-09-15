@@ -147,6 +147,9 @@ class {{ node_class_name }}(Node):
 
     def setup(self):
         """Sets up subscribers, publishers, etc. to configure the node"""
+
+        self.get_logger().info("Setting up {{node_name}}")
+
 {% if has_reconfigurable_params %}
 
         # callback for dynamic parameter configuration
