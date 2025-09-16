@@ -232,6 +232,7 @@ jobs:
     - name: Install yaml dep for ROS2 Python
       run: |
         sudo apt install python3-yaml
+        pip install libyaml-dev
     - name: Configure git to run copier
       run: |
         git config --global user.name "dummy"
