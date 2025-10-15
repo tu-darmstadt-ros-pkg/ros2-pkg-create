@@ -231,8 +231,8 @@ jobs:
         pip install "copier~=9.2.0" "jinja2-strcase~=0.0.2"
     - name: Install yaml dep for ROS2 Python
       run: |
-        sudo apt install libyaml-dev
-        pip install pylibyaml
+        sudo apt install libyaml-dev 
+        pip install pylibyaml pyyaml pyaml
     - name: Configure git to run copier
       run: |
         git config --global user.name "dummy"
