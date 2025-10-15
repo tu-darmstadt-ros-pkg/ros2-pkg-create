@@ -330,7 +330,7 @@ jobs:
     - name: Install yaml dep for ROS2 Python
       run: |
         sudo apt install libyaml-dev
-        pip install pylibyaml pyyaml
+        pip install pylibyaml pyyaml pyaml
     - uses: actions/checkout@v4
       with:
         repository: tu-darmstadt-ros-pkg/hector_ros2_utils
