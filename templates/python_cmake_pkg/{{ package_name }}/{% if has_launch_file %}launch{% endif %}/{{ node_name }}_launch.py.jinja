@@ -7,9 +7,14 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node, SetParameter
+from ros2_venv_launch_util.launch_util import add_venv_to_current_env
 
 
 def generate_launch_description():
+
+{% if use_venv %}
+    env = add_venv_to_current_env("{{ package_name }}")
+{% endif %}
 
     remappable_topics = [
 {% if has_subscriber %}
@@ -31,8 +36,11 @@ def generate_launch_description():
     nodes = [
         Node(
             package="{{ package_name }}",
-            executable="{{ node_name }}",
+            executable="{{ node_name }}.py",
             name=LaunchConfiguration("name"),
+{% if use_venv %}
+            env=env,
+{% endif %}
 {% if has_params %}
             parameters=[LaunchConfiguration("params")],
 {% else %}
