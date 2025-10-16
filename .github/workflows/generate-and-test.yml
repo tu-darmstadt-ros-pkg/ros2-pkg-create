@@ -329,8 +329,9 @@ jobs:
       uses: actions/download-artifact@v4
     - name: Install yaml dep for ROS2 Python
       run: |
-        sudo apt install libyaml-dev
-        python3 -m pip install pylibyaml pyyaml pyaml
+        sudo apt-get update
+        sudo apt-get install -y python3-yaml
+        python3 -c "import yaml; print('✅ yaml import successful, version:', yaml.__version__)"
     - uses: actions/checkout@v4
       with:
         repository: tu-darmstadt-ros-pkg/hector_ros2_utils
@@ -362,6 +363,11 @@ jobs:
         - package: all_python_cmake_pkg
           command: launch_test all_python_cmake_pkg/all_python_cmake_pkg/launch_tests/default_launch_test.launch.py
     steps:
+    - name: Install yaml dep for ROS2 Python
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-yaml
+        python3 -c "import yaml; print('✅ yaml import successful, version:', yaml.__version__)"
     - name: Download artifacts
       uses: actions/download-artifact@v4
     - uses: actions/checkout@v4
