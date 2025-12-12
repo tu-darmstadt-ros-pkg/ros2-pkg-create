@@ -41,7 +41,7 @@ repos:
           - --nsclean
           - --XMLLINT_INDENT
           - "  "  # 2 spaces indentation
-        files: '\.(xml|urdf|srdf)$'  # Only check XML-based files
+        files: '\.(xml|urdf|srdf|xacro)$'  # Only check XML-based files
   
   # YAML Formatting
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
