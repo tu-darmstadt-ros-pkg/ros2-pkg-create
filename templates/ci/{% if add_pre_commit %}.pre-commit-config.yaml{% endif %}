@@ -31,7 +31,7 @@ repos:
   
   # XML Formatting
   - repo: https://github.com/lalten/xmllint-format-hook
-    rev: 1.0.0
+    rev: v1.0.0
     hooks:
       - id: xmllint-format
         args:
