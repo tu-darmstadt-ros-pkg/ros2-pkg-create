@@ -40,15 +40,16 @@ repos:
           - --noblanks
           - --nsclean
           - --XMLLINT_INDENT
-          - "  "  # 2 spaces indentation
-        files: '\.(xml|urdf|srdf|xacro)$'  # Only check XML-based files
-  
+          - '  '
+        files: \.(xml|urdf|srdf|xacro)$
+        exclude: (^|/)package\.xml$ 
+
   # YAML Formatting
   - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
     rev: v2.15.0
     hooks:
-    - id: pretty-format-yaml
-      args: [--autofix, --indent, '2']
+      - id: pretty-format-yaml
+        args: [--autofix, --indent, '2', --offset, '2']
 
   # CPP Checks
   - repo: https://github.com/pre-commit/mirrors-clang-format
