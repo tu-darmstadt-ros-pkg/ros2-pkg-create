@@ -1,0 +1,14 @@
+# ROS 2 Dependencies Manifest
+# ===========================
+# 1. Clone this repo into your workspace 'src' folder.
+# 2. Initial Import:   vcs import . < <repo_name>/dependencies.repos
+# 3. Nested Deps:      If new .repos files appear in cloned repositories, run vcs import again
+# 4. Finalize:         rosdep install --from-paths . --ignore-src -y && colcon build
+#
+# For more info on vcstool, see: https://github.com/dirk-thomas/vcstool
+
+repositories:
+  hector_ros2_utils:
+    type: git
+    url: https://github.com/tu-darmstadt-ros-pkg/hector_ros2_utils.git
+    version: jazzy
