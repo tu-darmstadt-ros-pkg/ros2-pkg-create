@@ -53,6 +53,8 @@ namespace {{ package_name }}
 
 void {{ node_class_name }}::setup()
 {
+  RCLCPP_INFO(get_logger(), "Setting up node");
+  
 {% if has_subscriber %}
   // subscriber for handling incoming messages
   subscriber_ = create_subscription<std_msgs::msg::Int32>("~/input", 10, std::bind(&{{ node_class_name }}::topicCallback, this, std::placeholders::_1));
@@ -310,7 +312,6 @@ int main(int argc, char *argv[]) {
 {% else %}
   rclcpp::spin(std::make_shared<{{ package_name }}::{{ node_class_name }}>());
 {% endif %}
-  rclcpp::shutdown();
 
   return 0;
 }

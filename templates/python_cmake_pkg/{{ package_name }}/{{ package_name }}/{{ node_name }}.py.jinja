@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 {% if has_action_server %}
 import time
 {% endif %}
@@ -29,7 +30,7 @@ class {{ node_class_name }}(Node):
         """Constructor"""
         super().__init__("{{ node_name }}")
 {% if has_startup_params %}
-        self.declare_parameter("param", 0.0, rclpy.Parameter.Type.DOUBLE)
+        self.declare_parameter("param", rclpy.Parameter.Type.DOUBLE, 0.0)
         self.startup_param = self.get_parameter(name).value
 {% endif %}        
 {% if has_reconfigurable_params %}
@@ -148,6 +149,7 @@ class {{ node_class_name }}(Node):
         """Sets up subscribers, publishers, etc. to configure the node"""
 
         self.get_logger().info("Setting up {{node_name}}")
+
 {% if has_reconfigurable_params %}
 
         # callback for dynamic parameter configuration

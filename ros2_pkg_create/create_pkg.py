@@ -28,8 +28,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("destination", type=str, help="Destination directory")
     parser.add_argument("--defaults", action="store_true", help="Use defaults for all options")
     parser.add_argument("--use-local-templates", action="store_true", help="Use locally installed templates instead of remotely pulling most recent ones")
-
-    # parser.add_argument("--template", type=str, default=None, choices=["cpp_pkg", "msgs_pkg", "python_pkg", "ci"], required=True, help="Template")
+    parser.add_argument("--template", type=str, default=None, choices=["cpp_pkg", "msgs_pkg", "python_pkg", "ci", "python_cmake_pkg"], required=True, help="Template")
     parser.add_argument("--package-name", type=str, default=None, help="Package name")
     parser.add_argument("--description", type=str, default=None, help="Description")
     parser.add_argument("--maintainer", type=str, default=None, help="Maintainer")
@@ -46,6 +45,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--has-launch-file", action="store_true", default=None, help="Add a launch file?")
     parser.add_argument("--no-has-launch-file", dest="has-launch-file", default=None, action="store_false")
     parser.add_argument("--launch-file-type", type=str, choices=["xml", "py", "yml"], help="Type of launch file")
+    parser.add_argument("--has_launch_tests", action="store_true", default=None, help="Add launch tests?")
     parser.add_argument("--has-params", action="store_true", default=None, help="Add parameter loading")
     parser.add_argument("--no-has-params", dest="has-params", default=None, action="store_false")
     parser.add_argument("--has-subscriber", action="store_true", default=None, help="Add a subscriber?")
@@ -66,6 +66,7 @@ def parseArguments() -> argparse.Namespace:
     parser.add_argument("--action-name", type=str, default=None, help="Action name")
     parser.add_argument("--ci-type", type=str, choices =["github", "gitlab"],default=None, help="CI type")
     parser.add_argument("--add_pre_commit", action="store_true", default=None, help="Add pre-commit hook?")
+    parser.add_argument("--use_venv", action="store_true", default=True, help="Use a virtual environment for this package?")
 
     argcomplete.autocomplete(parser)
     return parser.parse_args()
