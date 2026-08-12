@@ -47,7 +47,9 @@ jobs:
         run: black --check .
       {% endif %}
 
-
+  {# No Jinja templating below: the job body uses GitHub Actions ${{ ... }}
+     expressions, which would otherwise be parsed as Jinja expressions. #}
+  {% raw %}
   build-and-test:
     needs: Linting
     strategy:
@@ -118,3 +120,4 @@ jobs:
         run: |
           source /opt/ros/${{ matrix.setup.rosdistro }}/setup.bash
           colcon test-result --verbose
+  {% endraw %}
