@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.15)
 project({{ package_name }})
 
 # Default to C++17
@@ -11,9 +11,6 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
 endif()
 
 find_package(ament_cmake REQUIRED)
-{% if has_reconfigurable_params or is_lifecycle %}
-find_package(hector_ros2_utils REQUIRED)
-{% endif %}
 find_package(rclcpp REQUIRED)
 {% if has_action_server %}
 find_package(rclcpp_action REQUIRED)
@@ -52,24 +49,21 @@ target_include_directories({{ target_name }} PUBLIC
   $<INSTALL_INTERFACE:include>
 )
 
-ament_target_dependencies({{ target_name }}
-{% if has_reconfigurable_params or is_lifecycle %}
-  hector_ros2_utils
-{% endif %}
-  rclcpp
+target_link_libraries({{ target_name }}
+  rclcpp::rclcpp
 {% if has_action_server %}
-  rclcpp_action
-  {{ package_name }}_msgs
+  ${rclcpp_action_TARGETS}
+  {{ '${' ~ package_name ~ '_msgs_TARGETS}' }}
 {% endif %}
 {% if is_component %}
-  rclcpp_components
+  ${rclcpp_components_TARGETS}
 {% endif %}
 {% if is_lifecycle %}
-  rclcpp_lifecycle
+  ${rclcpp_lifecycle_TARGETS}
 {% endif %}
-  std_msgs
+  ${std_msgs_TARGETS}
 {% if has_service_server %}
-  std_srvs
+  ${std_srvs_TARGETS}
 {% endif %}
 )
 

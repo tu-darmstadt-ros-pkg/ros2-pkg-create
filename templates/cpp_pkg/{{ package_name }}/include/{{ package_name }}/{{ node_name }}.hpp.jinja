@@ -7,10 +7,9 @@
 
 {% if has_reconfigurable_params or is_lifecycle %}
 {% if is_lifecycle %}
-#include <hector_ros2_utils/lifecycle_node.hpp>
-{% else %}
-#include <hector_ros2_utils/node.hpp>
+#include <rclcpp_lifecycle/lifecycle_node.hpp>
 {% endif %}
+#include "hector_ros2_utils.hpp"
 {% endif %}
 {% if is_lifecycle %}
 #include <lifecycle_msgs/msg/state.hpp>

@@ -10,9 +10,6 @@
   <author email="{{ author_email }}">{{ author }}</author>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
-{% if has_reconfigurable_params or is_lifecycle %}
-  <build_depend>hector_ros2_utils</build_depend>
-{% endif %}
   <depend>rclcpp</depend>
 {% if has_action_server %}
   <depend>rclcpp_action</depend>
