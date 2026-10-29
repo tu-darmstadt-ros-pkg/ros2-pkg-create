@@ -47,16 +47,17 @@ jobs:
         run: black --check .
       {% endif %}
 
-  {# No Jinja templating below: the job body uses GitHub Actions ${{ ... }}
-     expressions, which would otherwise be parsed as Jinja expressions. #}
-  {% raw %}
+  {% set ubuntu_versions = {'jazzy': '24.04', 'kilted': '24.04', 'lyrical': '26.04', 'rolling': '26.04'} %}
   build-and-test:
     needs: Linting
     strategy:
       matrix:
         setup:
-          - rosdistro: jazzy
-            os: ubuntu-24.04
+          - rosdistro: {{ ros_distro }}
+            os: ubuntu-{{ ubuntu_versions[ros_distro] }}
+  {# No Jinja templating below: the job body uses GitHub Actions ${{ ... }}
+     expressions, which would otherwise be parsed as Jinja expressions. #}
+  {% raw %}
     runs-on: ${{ matrix.setup.os }}
     container:
       image: ros:${{ matrix.setup.rosdistro }}-ros-base

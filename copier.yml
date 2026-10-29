@@ -228,8 +228,8 @@ default_branch:
 ros_distro:
   help: ROS distro
   type: str
-  default: "{{ ros_distro }}"
-  choices: [galactic, foxy, humble, jazzy, rolling]
+  default: lyrical
+  choices: [jazzy, kilted, lyrical, rolling]
   when: "{{ not ros_distro }}"
 
 launch_name:

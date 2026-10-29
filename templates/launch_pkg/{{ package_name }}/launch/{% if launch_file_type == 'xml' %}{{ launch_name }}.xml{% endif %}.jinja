@@ -1,18 +1,19 @@
 <launch>
 
   <!-- Declare arguments -->
-  <arg name="name" default="{{ node_name }}" description="Node name" />
-  <arg name="params" default="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yml" description="Path to parameter file" />
+  <arg name="params" default="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yaml" description="Path to parameter file" />
 
-    
+
   <!-- TF Remappings -->
-  <remap from="/tf" to="tf" />
-  <remap from="/tf_static" to="tf_static" />
+  <set_remap from="/tf" to="tf" />
+  <set_remap from="/tf_static" to="tf_static" />
 
-  <!-- Node Definition -->
-  <node pkg="{{ package_name }}" exec="{{ node_name }}" name="$(var name)" output="screen">
-    <param from="$(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yaml" />
+  <!-- TODO: add the nodes to launch -->
+  <!--
+  <node pkg="<pkg_name>" exec="<executable>" name="<name>" output="screen">
+    <param from="$(var params)" />
   </node>
+  -->
 
 
 </launch>

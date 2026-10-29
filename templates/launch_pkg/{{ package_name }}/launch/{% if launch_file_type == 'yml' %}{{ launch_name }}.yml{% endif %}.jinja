@@ -7,13 +7,13 @@ launch:
     from: "/tf_static"
     to: "tf_static"
 
-# Spin up a node
-- node:
-    pkg: "<pkg_name>"
-    exec: "<executable>"
-    name: "<name>"
-    output: "screen"
-    respawn: "true"
-    param:
-        - from: $(find-pkg-share {{ package_name }})/config/<launch_name>.yaml
-          allow_substs: true
+# TODO: add the nodes to launch
+# - node:
+#     pkg: "<pkg_name>"
+#     exec: "<executable>"
+#     name: "<name>"
+#     output: "screen"
+#     respawn: "true"
+#     param:
+#         - from: $(find-pkg-share {{ package_name }})/config/{{ launch_name }}.yaml
+#           allow_substs: true

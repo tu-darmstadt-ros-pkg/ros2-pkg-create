@@ -29,12 +29,8 @@ class {{ node_class_name }}(Node):
         """Constructor"""
         super().__init__("{{ node_name }}")
 {% if has_startup_params %}
-        self.declare_parameter("param", rclpy.Parameter.Type.DOUBLE, 0.0)
-        self.startup_param = self.get_parameter(name).value
-{% endif %}        
-{% if has_reconfigurable_params %}
-        self.auto_reconfigurable_params = []
-        self.parameters_callback = None
+        self.declare_parameter("param_startup", 0.0)
+        self.startup_param = self.get_parameter("param_startup").value
 {% endif %}
 {% if has_subscriber %}
         self.subscriber = None
