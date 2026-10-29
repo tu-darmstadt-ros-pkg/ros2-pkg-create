@@ -59,16 +59,16 @@ jobs:
           - package_name: startup_params_cpp_pkg
             template: cpp_pkg
             has_params: true
-            has_startup_params: true
-            has_reconfigurable_params: false
+            param_types: "[startup]"
             auto_shutdown: true
             has_launch_file: true
             launch_file_type: py
           - package_name: reconfigurable_params_cpp_pkg
             template: cpp_pkg
             has_params: true
-            has_startup_params: false
-            has_reconfigurable_params: true
+            param_types: "[reconfigurable]"
+            has_subscriber: true
+            has_publisher: true
             auto_shutdown: true
             has_launch_file: true
             launch_file_type: py
@@ -82,8 +82,9 @@ jobs:
             is_component: true
             is_lifecycle: true
             has_params: true
-            has_reconfigurable_params: true
-            has_startup_params: true
+            param_types: "[reconfigurable,startup]"
+            has_subscriber: true
+            has_publisher: true
             has_service_server: true
             has_action_server: true
             has_timer: true
@@ -123,9 +124,26 @@ jobs:
             template: python_pkg
             has_launch_file: false
             auto_shutdown: true
+          - package_name: startup_params_python_pkg
+            template: python_pkg
+            has_params: true
+            param_types: "[startup]"
+            auto_shutdown: true
+            has_launch_file: true
+            launch_file_type: py
+          - package_name: reconfigurable_params_python_pkg
+            template: python_pkg
+            has_params: true
+            param_types: "[reconfigurable]"
+            auto_shutdown: true
+            has_launch_file: true
+            launch_file_type: py
           - package_name: all_python_pkg
             template: python_pkg
-            is_lifecycle: true
+            has_params: true
+            param_types: "[reconfigurable,startup]"
+            has_subscriber: true
+            has_publisher: true
             has_service_server: true
             has_action_server: true
             has_timer: true
@@ -151,7 +169,11 @@ jobs:
           git config --global user.email "dummy@dummy.com"
       - name: Generate packages
         run: |
-          copier copy --trust --defaults \
+          # multiselect answers must be passed via data file, -d values are not parsed as YAML
+          DATA_FILE="$RUNNER_TEMP/data.yml"
+          echo "{}" > "$DATA_FILE"
+          [ -n "${{ matrix.param_types }}" ] && echo "param_types: ${{ matrix.param_types }}" > "$DATA_FILE"
+          copier copy --trust --defaults --data-file "$DATA_FILE" \
             -d template=${{ matrix.template }} \
             -d auto_shutdown=${{ matrix.auto_shutdown }} \
             -d package_name=${{ matrix.package_name }} \
@@ -161,6 +183,8 @@ jobs:
             $( [ "${{ matrix.has_action_server }}" = "true" ] && echo "-d has_action_server=true" ) \
             $( [ "${{ matrix.has_timer }}" = "true" ] && echo "-d has_timer=true" ) \
             $( [ "${{ matrix.has_params }}" = "true" ] && echo "-d has_params=true" ) \
+            $( [ "${{ matrix.has_subscriber }}" = "true" ] && echo "-d has_subscriber=true" ) \
+            $( [ "${{ matrix.has_publisher }}" = "true" ] && echo "-d has_publisher=true" ) \
             $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d has_launch_file=true" ) \
             $( [ "${{ matrix.has_launch_file }}" = "true" ] && echo "-d launch_file_type=${{ matrix.launch_file_type }}" ) \
             . packages
@@ -174,10 +198,36 @@ jobs:
     if: (github.event_name != 'pull_request' && ! github.event.pull_request.head.repo.fork) || (github.event_name == 'pull_request' && github.event.pull_request.head.repo.fork)
     runs-on: ubuntu-latest
     container:
-      image: rwthika/ros2:jazzy
+      image: ros:${{ matrix.distro }}-ros-base
     needs: generate
     strategy:
+      fail-fast: false
       matrix:
+        distro:
+          - jazzy
+          - lyrical
+        package:
+          - default_cpp_pkg
+          - component_cpp_pkg
+          - lifecycle_cpp_pkg
+          - service_cpp_pkg
+          - action_cpp_pkg
+          - timer_cpp_pkg
+          - startup_params_cpp_pkg
+          - reconfigurable_params_cpp_pkg
+          - no_params_cpp_pkg
+          - no_launch_file_cpp_pkg
+          - all_cpp_pkg
+          - default_python_pkg
+          - service_python_pkg
+          - action_python_pkg
+          - timer_python_pkg
+          - no_params_python_pkg
+          - startup_params_python_pkg
+          - reconfigurable_params_python_pkg
+          - no_launch_file_python_pkg
+          - all_python_pkg
+          - msgs_pkg
         include:
           - package: default_cpp_pkg
             command: ros2 launch default_cpp_pkg default_cpp_pkg_launch.py
@@ -211,6 +261,10 @@ jobs:
             command: ros2 launch timer_python_pkg timer_python_pkg_launch.py
           - package: no_params_python_pkg
             command: ros2 launch no_params_python_pkg no_params_python_pkg_launch.py
+          - package: startup_params_python_pkg
+            command: ros2 launch startup_params_python_pkg startup_params_python_pkg_launch.py
+          - package: reconfigurable_params_python_pkg
+            command: ros2 launch reconfigurable_params_python_pkg reconfigurable_params_python_pkg_launch.py
           - package: no_launch_file_python_pkg
             command: ros2 run no_launch_file_python_pkg no_launch_file_python_pkg --ros-args -p param:=1.0
           - package: all_python_pkg
@@ -232,4 +286,8 @@ jobs:
         shell: bash
         run: |
           source install/setup.bash
-          ${{ matrix.command }}
+          {
+            ${{ matrix.command }}
+          } 2>&1 | tee run.log
+          # ros2 launch exits with 0 even if a node crashed
+          if grep -qE "process has died|Traceback" run.log; then exit 1; fi

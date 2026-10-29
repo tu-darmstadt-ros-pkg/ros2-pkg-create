@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.15)
 project(ros2_pkg_create)
 
 find_package(ament_cmake REQUIRED)

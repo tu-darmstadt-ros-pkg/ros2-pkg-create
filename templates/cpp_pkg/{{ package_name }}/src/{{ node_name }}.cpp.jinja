@@ -30,14 +30,6 @@ namespace {{ package_name }}
 {{ node_class_name }}::{{ node_class_name }}() : Node("{{ node_name }}")
 {% endif %}
 {
-{% if is_lifecycle %}
-  int startup_state = lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE;
-  declare_readonly_parameter("startup_state", startup_state, "Initial lifecycle state");
-  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
-    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
-  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
-    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
-{% else %}
 {% if has_reconfigurable_params %}
   declare_reconfigurable_parameter(
       "param", std::ref(param_), "TODO: Description",
@@ -47,6 +39,14 @@ namespace {{ package_name }}
   declare_parameter<double>("param_startup", 0.0);
   param_ = get_parameter("param_startup").as_double();
 {% endif %}
+{% if is_lifecycle %}
+  int startup_state = lifecycle_msgs::msg::State::PRIMARY_STATE_ACTIVE;
+  declare_readonly_parameter("startup_state", startup_state, "Initial lifecycle state");
+  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_UNCONFIGURED)
+    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_CONFIGURE);
+  if (startup_state > lifecycle_msgs::msg::State::PRIMARY_STATE_INACTIVE)
+    trigger_transition(lifecycle_msgs::msg::Transition::TRANSITION_ACTIVATE);
+{% else %}
   setup();
 {% endif %}
 }
@@ -212,11 +212,6 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 
   RCLCPP_INFO(get_logger(), "Configuring to enter 'inactive' state from '%s' state", state.label().c_str());
 
-{% if has_reconfigurable_params %}
-  declare_reconfigurable_parameter(
-    "param", std::ref(param_), "TODO: Description",
-    hector::ParameterOptions<double>().setRange( 0.0, 10.0, 1.0 ) );
-{% endif %}
   setup();
 
   return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
@@ -231,7 +226,7 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
   publisher_->on_activate();
 {% endif %}
 {% if has_timer %}
-  timer_ = create_wall_timer(std::chrono::duration<double>(param_), std::bind(&{{ node_class_name }}::timerCallback, this));
+  timer_ = create_wall_timer(std::chrono::duration<double>(1.0), std::bind(&{{ node_class_name }}::timerCallback, this));
 {% endif %}
 {% if auto_shutdown %}
 
@@ -272,9 +267,6 @@ rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn {{ nod
 {% endif %}
 {% if has_action_server %}
   action_server_.reset();
-{% endif %}
-{% if has_reconfigurable_params %}
-  parameters_callback_.reset();
 {% endif %}
 {% if has_timer %}
   timer_.reset();

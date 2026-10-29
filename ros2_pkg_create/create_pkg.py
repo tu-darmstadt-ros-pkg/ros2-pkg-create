@@ -1,7 +1,6 @@
 import argcomplete
 import argparse
 import os
-import copier
 from ament_index_python.packages import get_package_share_directory
 
 try:
@@ -16,7 +15,7 @@ try:
     import copier
 except ImportError:
     print(
-        "GitPython is required! Install using 'pip3 install --user copier'"
+        "copier is required! Install using 'pip3 install --user copier'"
     )
     raise
 
@@ -80,7 +79,9 @@ def add_git_config_info(answers):
         answers["user_email_git"] = git_config.get_value("user", "email")
 
 def add_ros_distro(answers):
-    answers["ros_distro"] = os.environ.get("ROS_DISTRO", "jazzy")
+    # only pass the sourced distro, otherwise copier asks for it
+    if os.environ.get("ROS_DISTRO"):
+        answers["ros_distro"] = os.environ["ROS_DISTRO"]
 
 def create():
 
@@ -94,15 +95,17 @@ def create():
     add_ros_distro(answers)
 
     # get pkg template location if installed as ros pkg
-    package_name = 'ros2-pkg-create'
+    package_name = 'ros2_pkg_create'
     try:
         template_location = get_package_share_directory(package_name)
         print(f"The share directory for '{package_name}' is: {template_location}")
     except KeyError:
         print(f"Package '{package_name}' not found in the ament index.")
-        if not __file__.startswith("/opt"):
-            print(f"Trying to use local templates in ")    
-            template_location = os.path.join(os.path.dirname(__file__), "..")
+        # fall back to the templates of the source repository
+        template_location = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+        print(f"Trying to use local templates in {template_location}")
+    if not os.path.isfile(os.path.join(template_location, "copier.yml")):
+        raise FileNotFoundError(f"No copier.yml found in '{template_location}'")
 
     # run copier
     try:
